@@ -1,0 +1,168 @@
+﻿body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+}
+
+/* Sidebar */
+
+.sidebar {
+    width: 150px;
+    height: 100vh;
+    background-color: dodgerblue;
+    padding: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.logo h2 {
+    color: #fff;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.nav-links {
+    list-style: none;
+    padding: 30px 10px;
+}
+
+    .nav-links a {
+        margin-bottom: 20px;
+        text-decoration: none;
+        color: #fff;
+        font-size: 16px;
+        display: block;
+    }
+
+        .nav-links a:hover {
+            color: #f1c40f;
+        }
+
+/* tabela za sedmicni raspored */
+
+.wschedule-container, .patients-container, .billing-container {
+    width: 85%;
+    height: 400px;
+    overflow-y: auto;
+    margin-left: 210px;
+}
+
+h3 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.wschedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+    .wschedule-table th, .wschedule-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .wschedule-table th {
+        background-color: dodgerblue;
+        color: white;
+        text-align: center;
+    }
+
+.patient-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+    .patient-box span {
+        display: block;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+.wschedule-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.wschedule-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+
+/* patients tabela */
+
+.patients-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+    .patients-table thead {
+        background-color: dodgerblue;
+        color: white;
+        position: sticky;
+    }
+
+    .patients-table th, .patients-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .patients-table th {
+        background-color: dodgerblue;
+        color: white;
+        text-align: center;
+    }
+
+    .patients-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .patients-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+/*billing table */
+
+.billing-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+    .billing-table thead th {
+        background-color: dodgerblue;
+        color: white;
+        position: sticky; /* Keep the header fixed */
+    }
+
+    .billing-table th, .billing-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .billing-table th {
+        background-color: dodgerblue;
+        color: white;
+        text-align: center;
+    }
+
+    .billing-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .billing-table tr:hover {
+        background-color: #f1f1f1;
+    }

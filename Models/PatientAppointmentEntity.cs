@@ -7,7 +7,7 @@ namespace PatientManagementApp.Models
         [Key]
         public int PatientAppointmentId { get; set; }
         public int PatientId { get; set; }
-        public PatientEntity Patient { get; set; }
+        public PatientEntity? Patient { get; set; }
         public DateTime Appointment { get; set; }
         public string AppointmentNote { get; set; }
     }
