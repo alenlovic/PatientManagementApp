@@ -14,11 +14,19 @@ namespace PatientManagementApp.Models
         public int RemainingAmount { get; set; }
         public string BillingStatus { get; set; }
 
-        public string PatientFullName
+        public string PatientFirstName
         {
             get
             {
-                return Patient?.FullName;
+                return Patient?.FirstName;
+            }
+        }
+
+        public string PatientLastName
+        {
+            get
+            {
+                return Patient?.LastName;
             }
         }
     }

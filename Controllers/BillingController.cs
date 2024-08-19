@@ -25,7 +25,9 @@ namespace PatientManagementApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BillingEntity>>> GetBilling()
         {
-            return await _context.Billing.ToListAsync();
+            return await _context.Billing
+                .Include(b => b.Patient)
+                .ToListAsync();
         }
 
         // GET: api/Billing/5
