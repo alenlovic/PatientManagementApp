@@ -30,6 +30,8 @@ namespace PatientManagementApp
 
             app.UseHttpsRedirection();
 
+            app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
             app.UseAuthorization();
 
 
