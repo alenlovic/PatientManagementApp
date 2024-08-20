@@ -40,20 +40,24 @@
             color: #f1c40f;
         }
 
-/* tabela za sedmicni raspored */
+/* weekly schedule table */
 
-.wschedule-container, .patients-container, .billing-container {
+.wschedule-container, 
+.patients-container, 
+.billing-container, 
+.dschedule-container {
     width: 85%;
     height: 400px;
     overflow-y: auto;
-    overflow-x:auto;
+    overflow-x: auto;
     margin-left: 210px;
 }
 
 h3 {
     color: #333;
     font-size: 24px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    margin-top: 5px;
 }
 
 .wschedule-table {
@@ -62,11 +66,13 @@ h3 {
     margin-bottom: 20px;
 }
 
-    .wschedule-table th, .wschedule-table td {
+    .wschedule-table th, 
+    .wschedule-table td {
         border: 1px solid #ddd;
         padding: 10px;
         text-align: left;
         vertical-align: top;
+        width: 20%
     }
 
     .wschedule-table th {
@@ -112,11 +118,13 @@ h3 {
         position: sticky;
     }
 
-    .patients-table th, .patients-table td {
+    .patients-table th, 
+    .patients-table td {
         border: 1px solid #ddd;
         padding: 10px;
         text-align: left;
         vertical-align: top;
+        width: 11%
     }
 
     .patients-table th {
@@ -147,11 +155,13 @@ h3 {
         position: sticky; /* Keep the header fixed */
     }
 
-    .billing-table th, .billing-table td {
+    .billing-table th, 
+    .billing-table td {
         border: 1px solid #ddd;
         padding: 10px;
         text-align: left;
         vertical-align: top;
+        width: 16%
     }
 
     .billing-table th {
@@ -167,3 +177,72 @@ h3 {
     .billing-table tr:hover {
         background-color: #f1f1f1;
     }
+
+/* daily schedule table*/
+
+.dschedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+    .dschedule-table th,
+    .dschedule-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+        vertical-align: top;
+        width: 33%
+    }
+
+    .dschedule-table th {
+        background-color: dodgerblue;
+        color: white;
+        text-align: center;
+        position: sticky;
+        top: 0;
+    }
+
+    .dschedule-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .dschedule-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+.patient-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+    .patient-box span {
+        display: block;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+/* button - add new patient */
+
+.button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-left: 10px;
+}
+
+.add-patient {
+    padding: 10px;
+    background-color: magenta;
+    color: greenyellow;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-patient:hover {
+    background-color: olive;
+}
