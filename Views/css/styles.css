@@ -2,6 +2,7 @@
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #f4f7fc;
+    padding: 10px
 }
 
 /* Sidebar */
@@ -42,9 +43,9 @@
 
 /* weekly schedule table */
 
-.wschedule-container, 
-.patients-container, 
-.billing-container, 
+.wschedule-container,
+.patients-container,
+.billing-container,
 .dschedule-container {
     width: 85%;
     height: 400px;
@@ -66,7 +67,7 @@ h3 {
     margin-bottom: 20px;
 }
 
-    .wschedule-table th, 
+    .wschedule-table th,
     .wschedule-table td {
         border: 1px solid #ddd;
         padding: 10px;
@@ -118,7 +119,7 @@ h3 {
         position: sticky;
     }
 
-    .patients-table th, 
+    .patients-table th,
     .patients-table td {
         border: 1px solid #ddd;
         padding: 10px;
@@ -152,10 +153,10 @@ h3 {
     .billing-table thead th {
         background-color: dodgerblue;
         color: white;
-        position: sticky; /* Keep the header fixed */
+        position: sticky;
     }
 
-    .billing-table th, 
+    .billing-table th,
     .billing-table td {
         border: 1px solid #ddd;
         padding: 10px;
@@ -236,13 +237,138 @@ h3 {
 
 .add-patient {
     padding: 10px;
-    background-color: magenta;
-    color: greenyellow;
+    background-color: midnightblue;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-.add-patient:hover {
-    background-color: olive;
+    .add-patient:hover {
+        background-color: dodgerblue;
+        border: solid 1px black;
+    }
+
+
+/* add new patient form */
+
+
+.form-container {
+    margin: 0 auto;
+    padding: 20px;
+    width: 50%;
+}
+
+.form-title {
+    font-size: 26px;
+    font-weight: 600;
+    text-align: left;
+    padding-bottom: 6px;
+    color: midnightblue;
+    border-bottom: solid 1px midnightblue;
+    width: 80%;
+}
+
+.form-table {
+    display: flex;
+    width: 90%;
+    margin-top: 20px;
+}
+
+.main-user-info,
+.health-info {
+    display: flex;
+    flex-wrap: wrap;
+    width: 48%;
+}
+
+.user-input-box, .health-input-box {
+    width: 80%;
+    padding-bottom: 5px;
+}
+
+    .user-input-box label, .health-input-box label {
+        width: 90%;
+        color: midnightblue;
+        font-size: 18px;
+        font-weight: 400;
+        margin: 5px 0;
+    }
+
+    .user-input-box input, .health-input-box input {
+        height: 30px;
+        width: 100%;
+        border-radius: 7px;
+        outline: none;
+        border: 1px solid grey;
+        padding: 0 10px;
+    }
+
+.form-submit-btn {
+    margin-top: 10px;
+}
+
+    .form-submit-btn .btnsave {
+        display: inline-block;
+        width: 40%;
+        margin-top: 10px;
+        font-size: 20px;
+        padding: 10px;
+        border: none;
+        border-radius: 3px;
+        color: #fff;
+        background: #009879;
+    }
+
+    .form-submit-btn .btnsave {
+        cursor:pointer;
+    }
+
+    .form-submit-btn .btncancel {
+        display: inline-block;
+        width: 40%;
+        margin-top: 40px;
+        font-size: 20px;
+        padding: 10px;
+        border: none;
+        border-radius: 3px;
+        color: #fff;
+        background: red;
+    }
+
+        .form-submit-btn .btncancel:hover {
+            cursor: pointer;
+        }
+
+
+
+.health-input-box input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: steelblue;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+}
+
+    .custom-file-upload:hover {
+        border: solid 1px black;
+        background-color: white;
+    }
+
+.note-textarea {
+    width: 100%;
+    height: 80px;
+    border-radius: 7px;
+    outline: none;
+    border: 1px solid grey;
+    padding: 10px;
+    resize: vertical;
 }

@@ -1,7 +1,7 @@
 ﻿
 const urlPatient = "https://localhost:44376/api/patient";
 
-const firstName = document.getElementById("firstName"); s
+const firstName = document.getElementById("firstName"); 
 const fathersName = document.getElementById("fathersName");
 const lastName = document.getElementById("lastName");
 const fullName = document.getElementById("fullName");

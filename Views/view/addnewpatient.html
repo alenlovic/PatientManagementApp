@@ -1,7 +1,98 @@
-﻿<html xmlns="http://www.w3.org/1999/xhtml">
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title></title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stomatološka ordinacija</title>
+    <link rel="stylesheet" href="../css/styles.css" />
 </head>
+
 <body>
+    <div class="form-container">
+        <h1 class="form-title">Unos novog pacijenta u sistem</h1>
+        <div class="form-table">
+            <div class="main-user-info">
+                <div class="user-input-box">
+                    <label>Ime</label>
+                    <input type="text" id="firstname" />
+                </div>
+                <div class="user-input-box">
+                    <label>Prezime</label>
+                    <input type="text" id="lastname" />
+                </div>
+                <div class="user-input-box">
+                    <label>Ime oca</label>
+                    <input type="text" id="fathersname" />
+                </div>
+                <div class="user-input-box">
+                    <label>JMBG</label>
+                    <input type="text" id="jmbg" />
+                </div>
+                <div class="user-input-box">
+                    <label>Mjesto rođenja</label>
+                    <input type="text" id="placeofbirth" />
+                </div>
+                <div class="user-input-box">
+                    <label>Adresa prebivališta</label>
+                    <input type="text" id="postaladdress" />
+                </div>
+                <div class="user-input-box">
+                    <label>Broj telefona</label>
+                    <input type="text" id="phonenumber" />
+                </div>
+                <div class="user-input-box">
+                    <label>Godina rođenja</label>
+                    <input type="text" id="yearofbirth" />
+                </div>
+                <div class="user-input-box">
+                    <label>E-mail</label>
+                    <input type="text" id="email" />
+                </div>
+            </div>
+
+            <div class="health-info">
+                <div class="health-input-box">
+                    <label>Protetski rad</label>
+                    <input type="text" id="dentalprothetics" />
+                </div>
+                <div class="health-input-box">
+                    <label>Preležane bolesti</label>
+                    <input type="text" id="previousdiseases" />
+                </div>
+                <div class="health-input-box">
+                    <label>Hronične bolesti</label>
+                    <input type="text" id="chronicdiseases" />
+                </div>
+                <div class="health-input-box">
+                    <label>Alergije</label>
+                    <input type="text" id="allergies" />
+                </div>
+                <div class="health-input-box">
+                    <label>Penicilin</label>
+                    <input type="text" id="penicilin" />
+                </div>
+                <div class="health-input-box">
+                    <label>Napomena</label>
+                    <textarea class="note-textarea" id="recordnote"></textarea>
+                </div>
+                <div class="health-input-box">
+                    <label>OPG</label>
+                    <label for="file-upload" class="custom-file-upload">Izaberi fotografiju</label>
+                    <input type="file" id="file-upload" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-submit-btn">
+            <button onclick="saveCompetitor()"
+                    class="btnsave register-link"
+                    id="btnsave">
+                Unesi
+            </button>
+            <button class="btncancel" id="btncancel">Poništi</button>
+        </div>
+    </div>
+    <script src="../js/addnewpatient.js"></script>
 </body>
 </html>
