@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PatientManagementApp.Database;
 using PatientManagementApp.Models;
 
@@ -76,12 +77,37 @@ namespace PatientManagementApp.Controllers
         // POST: api/PatientRecord
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<PatientRecordEntity>> PostPatientRecordEntity(PatientRecordEntity patientRecordEntity)
+        public async Task<IActionResult> CreatePatientRecord(string patientRecord, [FromBody] IFormFile? opgImageFile)
         {
+            if (string.IsNullOrEmpty(patientRecord))
+            {
+                return BadRequest("Patient record data is required.");
+            }
+
+            var patientRecordEntity = JsonConvert.DeserializeObject<PatientRecordEntity>(patientRecord);
+
+            if (patientRecordEntity == null)
+            {
+                return BadRequest("Invalid patient record data.");
+            }
+
+            if (opgImageFile != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await opgImageFile.CopyToAsync(memoryStream);
+                    patientRecordEntity.OPG = memoryStream.ToArray();
+                }
+            }
+            else
+            {
+                patientRecordEntity.OPG = null;
+            }
+
             _context.PatientRecords.Add(patientRecordEntity);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPatientRecordEntity", new { id = patientRecordEntity.PatientRecordId }, patientRecordEntity);
+            return Ok(patientRecordEntity);
         }
 
         // DELETE: api/PatientRecord/5

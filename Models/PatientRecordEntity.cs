@@ -14,11 +14,17 @@ namespace PatientManagementApp.Models
         public string ChronicDiseases { get; set; }
         public string Allergies { get; set; }
         public string PenicilinAllergy { get; set; }
-        public string Note { get; set; }
+        public string RecordNote { get; set; }
+        public DateTime CreatedAt { get; set; }
 
-        public byte[] OPG { get; set; }
+        public byte[]? OPG { get; set; }
 
         [NotMapped]
-        public IFormFile OPGImageFile { get; set; }
+        public IFormFile? OPGImageFile { get; set; }
+
+        public PatientRecordEntity()
+        {
+            CreatedAt = DateTime.UtcNow;
+        }
     }
 }

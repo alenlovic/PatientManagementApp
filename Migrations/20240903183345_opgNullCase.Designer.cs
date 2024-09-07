@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PatientManagementApp.Database;
 
@@ -11,9 +12,11 @@ using PatientManagementApp.Database;
 namespace PatientManagementApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240903183345_opgNullCase")]
+    partial class opgNullCase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,9 +36,6 @@ namespace PatientManagementApp.Migrations
                     b.Property<string>("BillingStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("CurrentAmount")
                         .HasColumnType("int");
@@ -68,15 +68,12 @@ namespace PatientManagementApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientAppointmentId"));
 
-                    b.Property<DateTime>("AppointmentDate")
+                    b.Property<DateTime>("Appointment")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("AppointmentNote")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
@@ -96,9 +93,6 @@ namespace PatientManagementApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientId"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -111,9 +105,6 @@ namespace PatientManagementApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsCritical")
-                        .HasColumnType("bit");
-
                     b.Property<long>("JMBG")
                         .HasColumnType("bigint");
 
@@ -121,7 +112,7 @@ namespace PatientManagementApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PatientNote")
+                    b.Property<string>("Note")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -139,6 +130,9 @@ namespace PatientManagementApp.Migrations
 
                     b.Property<DateTime>("YearOfBirth")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("isCritical")
+                        .HasColumnType("bit");
 
                     b.HasKey("PatientId");
 
@@ -161,10 +155,11 @@ namespace PatientManagementApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("DentalProsthetics")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Note")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -179,10 +174,6 @@ namespace PatientManagementApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PreviousDiseases")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RecordNote")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

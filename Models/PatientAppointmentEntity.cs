@@ -8,7 +8,13 @@ namespace PatientManagementApp.Models
         public int PatientAppointmentId { get; set; }
         public int PatientId { get; set; }
         public PatientEntity? Patient { get; set; }
-        public DateTime Appointment { get; set; }
+        public DateTime AppointmentDate { get; set; }
         public string AppointmentNote { get; set; }
+        public DateTime CreatedAt { get; set; }
+
+        public PatientAppointmentEntity()
+        {
+            CreatedAt = DateTime.UtcNow;
+        }
     }
 }

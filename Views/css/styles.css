@@ -321,7 +321,7 @@ h3 {
     }
 
     .form-submit-btn .btnsave {
-        cursor:pointer;
+        cursor: pointer;
     }
 
     .form-submit-btn .btncancel {
@@ -372,3 +372,116 @@ h3 {
     padding: 10px;
     resize: vertical;
 }
+
+/* patient profile page */
+
+
+.patient-profile-container {
+    margin-left: 230px;
+    padding: 20px;
+}
+
+    .patient-profile-container h3 {
+        color: #2c3e50;
+        border-bottom: 2px solid #2c3e50;
+        padding-bottom: 10px;
+    }
+
+.patient-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.additional-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.personal-info, .medical-info {
+    width: 48%;
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+    .personal-info h4, .medical-info h4 {
+        color: #2c3e50;
+        border-bottom: 2px solid #2c3e50;
+        padding-bottom: 10px;
+    }
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.info-label {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.info-value {
+    color: #34495e;
+}
+
+/* Billing Information Section */
+.billing-info, .opg-info {
+    width: 48%;
+    background-color: #ecf0f1;
+    padding: 10px 20px 20px 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+    .billing-info h4 {
+        color: #2c3e50;
+        border-bottom: 2px solid #2c3e50;
+        padding-bottom: 10px;
+    }
+
+    .billing-info .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    .billing-info .info-label {
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .billing-info .info-value {
+        color: #34495e;
+    }
+
+/* OPG Information Section */
+    .opg-info h4 {
+        color: #2c3e50;
+        border-bottom: 2px solid #2c3e50;
+        padding-bottom: 10px;
+    }
+
+    .opg-info .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    .opg-info .info-label {
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .opg-info .opg-image {
+        max-width: 100%;
+        height: auto;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+

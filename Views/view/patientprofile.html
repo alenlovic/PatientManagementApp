@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stomatološka ordinacija</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <h2>FIRDUS-TIRIĆ</h2>
+        </div>
+        <nav class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="dailyschedule.html">Daily Schedule</a>
+            <a href="weeklyschedule.html">Weekly Schedule</a>
+            <a href="patients.html">Patients</a>
+            <a href="billing.html">Billing</a>
+        </nav>
+    </div>
+
+    <div class="patient-profile-container">
+        <h3>Patient Profile</h3>
+        <div class="patient-info">
+            <div class="personal-info">
+                <h4>Personal Information</h4>
+                <div class="info-row">
+                    <span class="info-label">Full Name:</span>
+                    <span class="info-value" id="fullName"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Date of Birth:</span>
+                    <span class="info-value" id="dateOfBirth"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Place of Birth:</span>
+                    <span class="info-value" id="placeOfBirth"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Postal Address:</span>
+                    <span class="info-value" id="postalAddress"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone Number:</span>
+                    <span class="info-value" id="phoneNumber"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">JMBG:</span>
+                    <span class="info-value" id="jmbg"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value" id="email"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Critical:</span>
+                    <span class="info-value" id="isCritical"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Notes:</span>
+                    <span class="info-value" id="notes"></span>
+                </div>
+            </div>
+            <div class="medical-info">
+                <h4>Medical Information</h4>
+                <div class="info-row">
+                    <span class="info-label">Dental Prosthetics:</span>
+                    <span class="info-value" id="dentalProsthetics"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Previous Diseases:</span>
+                    <span class="info-value" id="previousDiseases"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Chronic Diseases:</span>
+                    <span class="info-value" id="chronicDiseases"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Allergies:</span>
+                    <span class="info-value" id="allergies"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Penicilin Allergy:</span>
+                    <span class="info-value" id="penicilinAllergy"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Note:</span>
+                    <span class="info-value" id="recordNote"></span>
+                </div>
+            </div>
+        </div>
+        <div class="additional-info">
+            <div class="billing-info" id="billingInfo">
+                <h4>Billing Information</h4>
+                <div class="info-row">
+                    <span class="info-label">Payment Method:</span>
+                    <span class="info-value" id="paymentMethod"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Current Amount:</span>
+                    <span class="info-value" id="currentAmount"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Date of Last Payment:</span>
+                    <span class="info-value" id="dateOfLastPayment"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Remaining Amount:</span>
+                    <span class="info-value" id="remainingAmount"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Billing Status:</span>
+                    <span class="info-value" id="billingStatus"></span>
+                </div>
+            </div>
+            <div class="opg-info">
+                <h4>OPG Records</h4>
+                <div class="info-row">
+                    <span class="info-label">OPG Image:</span>
+                    <img id="opgImage" src="" alt="OPG Image" class="opg-image" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/patientprofile.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get patient data and populate the profile
+            const patientData = getPatientData(); // Replace with your own function to get patient data
+            populateProfile(patientData);
+
+            // Get billing data and populate the billing info
+            const billingData = getBillingData(); // Replace with your own function to get billing data
+            if (billingData) {
+                populateBillingInfo(billingData);
+            } else {
+                document.getElementById('billingInfo').style.display = 'none';
+            }
+        });
+
+        function populateBillingInfo(billingData) {
+            document.getElementById('paymentMethod').textContent = billingData.paymentMethod;
+            document.getElementById('currentAmount').textContent = billingData.currentAmount;
+            document.getElementById('dateOfLastPayment').textContent = billingData.dateOfLastPayment;
+            document.getElementById('remainingAmount').textContent = billingData.remainingAmount;
+            document.getElementById('billingStatus').textContent = billingData.billingStatus;
+        }
+    </script>
+</body>
+</html>

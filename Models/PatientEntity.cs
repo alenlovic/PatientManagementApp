@@ -16,7 +16,13 @@ namespace PatientManagementApp.Models
         public string PhoneNumber { get; set; }
         public long JMBG { get; set; } 
         public string Email { get; set; }
-        public bool isCritical { get; set; }
-        public string Note { get; set; }
+        public bool IsCritical { get; set; }
+        public string PatientNote { get; set; }
+        public DateTime CreatedAt { get; set; }
+
+        public PatientEntity()
+        {
+            CreatedAt = DateTime.UtcNow;
+        }
     }
 }

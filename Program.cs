@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using PatientManagementApp.Database;
 
 namespace PatientManagementApp
@@ -15,7 +16,13 @@ namespace PatientManagementApp
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PatientManagementApp", Version = "v1" });
+
+                c.OperationFilter<SwaggerFileOperationFilter>(); 
+            });
+
 
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("sqlconnect")));
 
@@ -25,7 +32,11 @@ namespace PatientManagementApp
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("v1/swagger.json", "Patients API V1");
+                });
+
             }
 
             app.UseHttpsRedirection();
@@ -38,6 +49,7 @@ namespace PatientManagementApp
             app.MapControllers();
 
             app.Run();
+
         }
     }
 }

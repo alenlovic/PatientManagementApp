@@ -13,7 +13,12 @@ namespace PatientManagementApp.Models
         public DateTime DateOfLastPayment { get; set; }
         public int RemainingAmount { get; set; }
         public string BillingStatus { get; set; }
+        public DateTime CreatedAt { get; set; }
 
+        public BillingEntity()
+        {
+            CreatedAt = DateTime.UtcNow;
+        }
         public string PatientFirstName
         {
             get
