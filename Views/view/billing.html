@@ -22,6 +22,9 @@
     </div>
 
     <div class="billing-container">
+        <div class="button-wrapper">
+            <button class="add-billing" onclick="openCreateModal()">Add Billing</button>
+        </div>
         <h3>Billing Details</h3>
         <table class="billing-table">
             <thead>
@@ -32,6 +35,7 @@
                     <th>Datum zadnje uplate</th>
                     <th>Preostalo</th>
                     <th>Status dugovanja</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="billingList">
@@ -39,6 +43,74 @@
         </table>
     </div>
 
+    <!-- Edit Modal -->
+    <div id="editModal" class="edit-modal">
+        <div class="edit-modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Edit Billing</h3>
+            <form id="editForm">
+                <input type="hidden" id="editBillingId" name="billingId">
+                <label for="editPatientName">Patient Name</label>
+                <input type="text" id="editPatientName" name="patientName" required>
+
+                <label for="editPaymentMethod">Payment Method</label>
+                <input type="text" id="editPaymentMethod" name="paymentMethod" required>
+
+                <label for="editCurrentAmount">Current Amount</label>
+                <input type="number" id="editCurrentAmount" name="currentAmount" required>
+
+                <label for="editDateOfLastPayment">Date of Last Payment</label>
+                <input type="date" id="editDateOfLastPayment" name="dateOfLastPayment" required>
+
+                <label for="editRemainingAmount">Remaining Amount</label>
+                <input type="number" id="editRemainingAmount" name="remainingAmount" required>
+
+                <label for="editBillingStatus">Billing Status</label>
+                <input type="text" id="editBillingStatus" name="billingStatus" required>
+
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Modal -->
+    <div id="createModal" class="create-modal">
+        <div class="create-modal-content">
+            <span class="close" onclick="closeCreateModal()">&times;</span>
+            <h3>Create Billing</h3>
+            <form id="createForm" class="form-grid">
+                <div class="form-group">
+                    <label for="createPatientName">Patient Name</label>
+                    <input type="text" id="createPatientName" name="patientName" required>
+                </div>
+                <div class="form-group">
+                    <label for="createPaymentMethod">Payment Method</label>
+                    <input type="text" id="createPaymentMethod" name="paymentMethod" required>
+                </div>
+                <div class="form-group">
+                    <label for="createCurrentAmount">Current Amount</label>
+                    <input type="number" id="createCurrentAmount" name="currentAmount" required>
+                </div>
+                <div class="form-group">
+                    <label for="createDateOfLastPayment">Date of Last Payment</label>
+                    <input type="date" id="createDateOfLastPayment" name="dateOfLastPayment" required>
+                </div>
+                <div class="form-group">
+                    <label for="createRemainingAmount">Remaining Amount</label>
+                    <input type="number" id="createRemainingAmount" name="remainingAmount" required>
+                </div>
+                <div class="form-group">
+                    <label for="createBillingStatus">Billing Status</label>
+                    <input type="text" id="createBillingStatus" name="billingStatus" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="submit-btn">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../js/billing.js"></script>
+    <script src="../js/updatebillingpatient.js"></script>
 </body>
 </html>

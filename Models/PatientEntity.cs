@@ -9,6 +9,7 @@ namespace PatientManagementApp.Models
         public string FirstName { get; set; }
         public string FathersName { get; set; }
         public string LastName { get; set; }
+        public string PersonalName { get => FirstName + " " + LastName; }
         public string FullName { get => FirstName + " (" + FathersName +  ") " + LastName; }
         public DateTime YearOfBirth { get; set; }
         public string PlaceOfBirth { get; set; }

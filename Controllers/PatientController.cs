@@ -28,6 +28,27 @@ namespace PatientManagementApp.Controllers
             return await _context.Patients.ToListAsync();
         }
 
+        // GET: api/Patients?name=John
+        [HttpGet("search")]
+        public IActionResult GetPatientsBySearch([FromQuery] string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return BadRequest("Name query parameter is required.");
+            }
+
+            var patients = _context.Patients
+                .Where(p => p.FirstName.Contains(name) || p.LastName.Contains(name))
+                .Select(p => new
+                {
+                    p.PatientId,
+                    p.PersonalName
+                })
+                .ToList();
+
+            return Ok(patients);
+        }
+
         // GET: api/Patient/5
         [HttpGet("{id}")]
         public async Task<ActionResult<PatientEntity>> GetPatientEntity(int id)

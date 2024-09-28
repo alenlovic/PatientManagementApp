@@ -23,6 +23,7 @@
 
     <div class="patients-container">
         <div class="button-wrapper">
+            <button class="add-appointment">Dodaj novi termin</button>
             <button class="add-patient" onclick="window.location.href='addnewpatient.html'">
                 Dodaj novog pacijenta
             </button>
@@ -47,13 +48,35 @@
         </table>
     </div>
 
+    <!-- Modal for creating a new appointment -->
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Create New Appointment</h3>
+            <form id="appointmentForm">
+                <label for="patientPersonalName">Patient Name:</label>
+                <input type="text" id="patientPersonalName" name="patientPersonalName" required>
+                <!-- Remove the static autocomplete-list element -->
+                <div id="autocomplete-list" class="autocomplete-items"></div>
 
-    <script src="../js/patient.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            getAllPatients();
-        });
-    </script>
+                <label for="appointmentDate">Appointment Date:</label>
+                <input type="datetime-local" id="appointmentDate" name="appointmentDate" required>
 
-</body>
-</html>
+                <label for="appointmentNote">Appointment Note:</label>
+                <textarea id="appointmentNote" name="appointmentNote"></textarea>
+
+                <button type="submit">Save Appointment</button>
+            </form>
+            </div>
+        </div>
+
+
+        <script src="../js/patient.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                getAllPatients();
+            });
+        </script>
+
+    </body>
+    </html>

@@ -16,5 +16,13 @@ namespace PatientManagementApp.Models
         {
             CreatedAt = DateTime.UtcNow;
         }
+
+        public string PatientPersonalName
+        {
+            get
+            {
+                return Patient?.PersonalName;
+            }
+        }
     }
 }

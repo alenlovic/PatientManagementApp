@@ -17,11 +17,6 @@ namespace PatientManagementApp.Models
         public string RecordNote { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public byte[]? OPG { get; set; }
-
-        [NotMapped]
-        public IFormFile? OPGImageFile { get; set; }
-
         public PatientRecordEntity()
         {
             CreatedAt = DateTime.UtcNow;

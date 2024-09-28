@@ -75,15 +75,30 @@ namespace PatientManagementApp.Controllers
             return NoContent();
         }
 
-        // POST: api/Billing
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<BillingEntity>> PostBillingEntity(BillingEntity billingEntity)
+        public IActionResult CreateBilling([FromBody] BillingEntity billingEntity)
         {
-            _context.Billing.Add(billingEntity);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction("GetBillingEntity", new { id = billingEntity.BillingId }, billingEntity);
+            // Fetch the patient entity based on PatientId
+            var patient = _context.Patients.Find(billingEntity.PatientId); // Assuming _context is your database context
+
+            if (patient == null)
+            {
+                return NotFound($"Patient with ID {billingEntity.PatientId} not found.");
+            }
+
+            // Assign the patient to the billing entity
+            billingEntity.Patient = patient;
+
+            // Now you can save the billing entity to the database
+            _context.Billing.Add(billingEntity); // Corrected line
+            _context.SaveChanges();
+
+            return Ok(billingEntity);
         }
 
         // DELETE: api/Billing/5
@@ -106,5 +121,7 @@ namespace PatientManagementApp.Controllers
         {
             return _context.Billing.Any(e => e.BillingId == id);
         }
-    }
+
+    }    
+
 }

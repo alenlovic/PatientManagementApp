@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace PatientManagementApp.Models
 {
@@ -18,20 +20,27 @@ namespace PatientManagementApp.Models
         public BillingEntity()
         {
             CreatedAt = DateTime.UtcNow;
+            PaymentMethod = string.Empty;
+            BillingStatus = string.Empty;
         }
+
+        [JsonIgnore]
+        [NotMapped]
         public string PatientFirstName
         {
             get
             {
-                return Patient?.FirstName;
+                return Patient?.FirstName ?? string.Empty;
             }
         }
 
+        [JsonIgnore]
+        [NotMapped]
         public string PatientLastName
         {
             get
             {
-                return Patient?.LastName;
+                return Patient?.LastName ?? string.Empty;
             }
         }
     }

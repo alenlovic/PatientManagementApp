@@ -13,13 +13,15 @@ namespace PatientManagementApp
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PatientManagementApp", Version = "v1" });
-
                 c.OperationFilter<SwaggerFileOperationFilter>(); 
             });
 
@@ -41,10 +43,11 @@ namespace PatientManagementApp
 
             app.UseHttpsRedirection();
 
+            app.UseRouting();
+
             app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

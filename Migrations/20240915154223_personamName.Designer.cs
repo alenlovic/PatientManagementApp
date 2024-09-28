@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PatientManagementApp.Database;
 
@@ -11,9 +12,11 @@ using PatientManagementApp.Database;
 namespace PatientManagementApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240915154223_personamName")]
+    partial class personamName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,30 +148,6 @@ namespace PatientManagementApp.Migrations
                     b.ToTable("Patients");
                 });
 
-            modelBuilder.Entity("PatientManagementApp.Models.PatientFileEntity", b =>
-                {
-                    b.Property<int>("PatientFileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientFileId"));
-
-                    b.Property<byte[]>("OPG")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<int>("PatientRecordId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("PatientFileId");
-
-                    b.HasIndex("PatientRecordId");
-
-                    b.ToTable("PatientFiles");
-                });
-
             modelBuilder.Entity("PatientManagementApp.Models.PatientRecordEntity", b =>
                 {
                     b.Property<int>("PatientRecordId")
@@ -191,6 +170,9 @@ namespace PatientManagementApp.Migrations
                     b.Property<string>("DentalProsthetics")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("OPG")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
@@ -234,17 +216,6 @@ namespace PatientManagementApp.Migrations
                         .IsRequired();
 
                     b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("PatientManagementApp.Models.PatientFileEntity", b =>
-                {
-                    b.HasOne("PatientManagementApp.Models.PatientRecordEntity", "PatientRecord")
-                        .WithMany()
-                        .HasForeignKey("PatientRecordId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PatientRecord");
                 });
 
             modelBuilder.Entity("PatientManagementApp.Models.PatientRecordEntity", b =>
