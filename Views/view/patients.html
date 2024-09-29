@@ -28,6 +28,11 @@
                 Dodaj novog pacijenta
             </button>
         </div>
+        <div class="search-wrapper">
+            <label for="searchBox">Search Patients:</label>
+            <input type="text" id="searchBox" placeholder="Search for patients...">
+            <div id="autocomplete-list" class="autocomplete-items"></div>
+        </div>
         <h3>Patient Details</h3>
         <table class="patients-table" id="patientsTable" role="table">
             <thead>
@@ -56,8 +61,7 @@
             <form id="appointmentForm">
                 <label for="patientPersonalName">Patient Name:</label>
                 <input type="text" id="patientPersonalName" name="patientPersonalName" required>
-                <!-- Remove the static autocomplete-list element -->
-                <div id="autocomplete-list" class="autocomplete-items"></div>
+                <div id="autocomplete-list-appointment" class="autocomplete-appointment"></div>
 
                 <label for="appointmentDate">Appointment Date:</label>
                 <input type="datetime-local" id="appointmentDate" name="appointmentDate" required>
@@ -67,16 +71,11 @@
 
                 <button type="submit">Save Appointment</button>
             </form>
-            </div>
         </div>
+    </div>
 
+    <script src="../js/patient.js"></script>
+    <script src="../js/addnewappointment.js"></script>
 
-        <script src="../js/patient.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                getAllPatients();
-            });
-        </script>
-
-    </body>
+</body>
     </html>

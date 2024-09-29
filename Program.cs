@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using PatientManagementApp.Database;
@@ -12,21 +11,32 @@ namespace PatientManagementApp
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
+                c.OperationFilter<SwaggerFileOperationFilter>();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PatientManagementApp", Version = "v1" });
-                c.OperationFilter<SwaggerFileOperationFilter>(); 
             });
 
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("sqlconnect")));
 
-            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("sqlconnect")));
+            // Add CORS policy
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
 
             var app = builder.Build();
 
@@ -38,21 +48,19 @@ namespace PatientManagementApp
                 {
                     c.SwaggerEndpoint("v1/swagger.json", "Patients API V1");
                 });
-
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors("AllowAllOrigins");
 
             app.UseAuthorization();
 
             app.MapControllers();
 
             app.Run();
-
         }
     }
 }

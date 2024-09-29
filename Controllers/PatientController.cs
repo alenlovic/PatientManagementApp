@@ -37,12 +37,45 @@ namespace PatientManagementApp.Controllers
                 return BadRequest("Name query parameter is required.");
             }
 
+            var trimmedName = name.Trim().ToLower();
+            var patients = _context.Patients
+                .Where(p => p.FirstName.ToLower().Contains(trimmedName) || p.LastName.ToLower().Contains(trimmedName))
+                .Select(p => new
+                {
+                    p.PatientId,
+                    p.PersonalName
+                })
+                .ToList();
+
+            return Ok(patients);
+        }
+
+
+        // GET: api/Patients/name/John
+        [HttpGet("name/{name}")]
+        public IActionResult GetPatientsByName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return BadRequest("Name parameter is required.");
+            }
+
             var patients = _context.Patients
                 .Where(p => p.FirstName.Contains(name) || p.LastName.Contains(name))
                 .Select(p => new
                 {
                     p.PatientId,
-                    p.PersonalName
+                    p.FirstName,
+                    p.LastName,
+                    p.FullName,
+                    p.YearOfBirth,
+                    p.PlaceOfBirth,
+                    p.PostalAddress,
+                    p.PhoneNumber,
+                    p.JMBG,
+                    p.Email,
+                    p.IsCritical,
+                    p.PatientNote
                 })
                 .ToList();
 

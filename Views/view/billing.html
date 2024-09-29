@@ -50,25 +50,25 @@
             <h3>Edit Billing</h3>
             <form id="editForm">
                 <input type="hidden" id="editBillingId" name="billingId">
-                <label for="editPatientName">Patient Name</label>
+                <label for="editPatientName">Ime pacijenta</label>
                 <input type="text" id="editPatientName" name="patientName" required>
 
-                <label for="editPaymentMethod">Payment Method</label>
+                <label for="editPaymentMethod">Metoda plaćanja</label>
                 <input type="text" id="editPaymentMethod" name="paymentMethod" required>
 
-                <label for="editCurrentAmount">Current Amount</label>
+                <label for="editCurrentAmount">Trenutni iznos</label>
                 <input type="number" id="editCurrentAmount" name="currentAmount" required>
 
-                <label for="editDateOfLastPayment">Date of Last Payment</label>
+                <label for="editDateOfLastPayment">Datum zadnjeg plaćanja</label>
                 <input type="date" id="editDateOfLastPayment" name="dateOfLastPayment" required>
 
-                <label for="editRemainingAmount">Remaining Amount</label>
+                <label for="editRemainingAmount">Preostali iznos</label>
                 <input type="number" id="editRemainingAmount" name="remainingAmount" required>
 
-                <label for="editBillingStatus">Billing Status</label>
+                <label for="editBillingStatus">Status plaćanja</label>
                 <input type="text" id="editBillingStatus" name="billingStatus" required>
 
-                <button type="submit">Save</button>
+                <button type="submit">Sačuvaj</button>
             </form>
         </div>
     </div>
@@ -80,31 +80,32 @@
             <h3>Create Billing</h3>
             <form id="createForm" class="form-grid">
                 <div class="form-group">
-                    <label for="createPatientName">Patient Name</label>
+                    <label for="createPatientName">Ime pacijenta</label>
                     <input type="text" id="createPatientName" name="patientName" required>
+                    <div id="autocomplete-list-appointment" class="autocomplete-appointment"></div>
                 </div>
                 <div class="form-group">
-                    <label for="createPaymentMethod">Payment Method</label>
+                    <label for="createPaymentMethod">Metoda plaćanja</label>
                     <input type="text" id="createPaymentMethod" name="paymentMethod" required>
                 </div>
                 <div class="form-group">
-                    <label for="createCurrentAmount">Current Amount</label>
+                    <label for="createCurrentAmount">Trenutni iznos</label>
                     <input type="number" id="createCurrentAmount" name="currentAmount" required>
                 </div>
                 <div class="form-group">
-                    <label for="createDateOfLastPayment">Date of Last Payment</label>
+                    <label for="createDateOfLastPayment">Datum plaćanja</label>
                     <input type="date" id="createDateOfLastPayment" name="dateOfLastPayment" required>
                 </div>
                 <div class="form-group">
-                    <label for="createRemainingAmount">Remaining Amount</label>
+                    <label for="createRemainingAmount">Preostali iznos</label>
                     <input type="number" id="createRemainingAmount" name="remainingAmount" required>
                 </div>
                 <div class="form-group">
-                    <label for="createBillingStatus">Billing Status</label>
+                    <label for="createBillingStatus">Status plaćanja</label>
                     <input type="text" id="createBillingStatus" name="billingStatus" required>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="submit-btn">Create</button>
+                    <button type="submit" class="submit-btn">Kreiraj</button>
                 </div>
             </form>
         </div>

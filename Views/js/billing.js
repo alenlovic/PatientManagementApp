@@ -11,6 +11,7 @@ async function fetchAllBillingData() {
             throw new Error('Network response was not ok');
         }
         const billingData = await response.json();
+        console.log('Fetched billing data:', billingData); // Debugging log
         displayBillingData(billingData);
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
@@ -51,6 +52,48 @@ function displayBillingData(billingData) {
     });
 }
 
+function setupAutocomplete() {
+    const patientInput = document.getElementById('createPatientName');
+    const autocompleteList = document.getElementById('autocomplete-list-appointment');
+
+    if (!patientInput) {
+        console.error('Element with ID "createPatientName" not found.');
+        return;
+    }
+
+    patientInput.addEventListener('input', function () {
+        const query = this.value;
+        if (query.length < 2) {
+            autocompleteList.innerHTML = '';
+            autocompleteList.classList.remove('show');
+            return;
+        }
+
+        fetch(`https://localhost:44376/api/patient/search?name=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                autocompleteList.innerHTML = '';
+                if (data.length > 0) {
+                    autocompleteList.classList.add('show');
+                } else {
+                    autocompleteList.classList.remove('show');
+                }
+                data.forEach(patient => {
+                    const item = document.createElement('div');
+                    item.textContent = patient.personalName;
+                    item.classList.add('autocomplete-item');
+                    item.addEventListener('click', function () {
+                        patientInput.value = patient.personalName;
+                        autocompleteList.innerHTML = '';
+                        autocompleteList.classList.remove('show');
+                    });
+                    autocompleteList.appendChild(item);
+                });
+            })
+            .catch(error => console.error('Error fetching patient names:', error));
+    });
+}
+
 function openCreateModal() {
     createModal.style.display = "block";
 }
@@ -84,6 +127,8 @@ createForm.addEventListener("submit", async (event) => {
             throw new Error('Network response was not ok');
         }
 
+        console.log('New billing created:', newBilling); // Debugging log
+
         closeCreateModal();
         fetchAllBillingData();
     } catch (error) {
@@ -91,4 +136,7 @@ createForm.addEventListener("submit", async (event) => {
     }
 });
 
-fetchAllBillingData();
+document.addEventListener('DOMContentLoaded', () => {
+    fetchAllBillingData();
+    setupAutocomplete();
+});

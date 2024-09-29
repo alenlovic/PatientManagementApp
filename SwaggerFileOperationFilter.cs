@@ -1,41 +1,38 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Linq;
 
-namespace PatientManagementApp
+public class SwaggerFileOperationFilter : IOperationFilter
 {
-    public class SwaggerFileOperationFilter : IOperationFilter
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        public void Apply(OpenApiOperation operation, OperationFilterContext context)
-        {
-            var formFileParams = context.ApiDescription.ParameterDescriptions
-                .Where(p => p.ModelMetadata.ModelType == typeof(IFormFile) || p.ModelMetadata.ModelType == typeof(IFormFile))
-                .ToList();
+        var fileParams = context.MethodInfo.GetParameters()
+            .Where(p => p.ParameterType == typeof(IFormFile))
+            .ToList();
 
-            if (formFileParams.Any())
+        if (fileParams.Any())
+        {
+            operation.RequestBody = new OpenApiRequestBody
             {
-                operation.RequestBody = new OpenApiRequestBody
+                Content = new Dictionary<string, OpenApiMediaType>
                 {
-                    Content = {
-                           ["multipart/form-data"] = new OpenApiMediaType
-                           {
-                               Schema = new OpenApiSchema
-                               {
-                                   Type = "object",
-                                   Properties = formFileParams.ToDictionary(
-                                       p => p.Name,
-                                       p => new OpenApiSchema
-                                       {
-                                           Type = "string",
-                                           Format = "binary",
-                                           Nullable = true // Allow null values  
-                                       }
-                                   )
-                               }
-                           }
-                       }
-                };
-            }
+                    ["multipart/form-data"] = new OpenApiMediaType
+                    {
+                        Schema = new OpenApiSchema
+                        {
+                            Type = "object",
+                            Properties = fileParams
+                                .Where(p => p.Name != null) // Ensure parameter name is not null
+                                .ToDictionary(
+                                    p => p.Name!,
+                                    p => new OpenApiSchema
+                                    {
+                                        Type = "string",
+                                        Format = "binary"
+                                    })
+                        }
+                    }
+                }
+            };
         }
     }
 }
