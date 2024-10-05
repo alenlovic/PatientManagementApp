@@ -1,4 +1,6 @@
-﻿const urlBilling = "https://localhost:44376/api/billing";
+﻿
+
+const urlBilling = "https://localhost:44376/api/billing";
 
 const billingList = document.getElementById("billingList");
 const createModal = document.getElementById("createModal");
@@ -54,6 +56,7 @@ function displayBillingData(billingData) {
 
 function setupAutocomplete() {
     const patientInput = document.getElementById('createPatientName');
+    const patientIdInput = document.getElementById('createPatientId');
     const autocompleteList = document.getElementById('autocomplete-list-appointment');
 
     if (!patientInput) {
@@ -85,6 +88,7 @@ function setupAutocomplete() {
                     item.addEventListener('click', function () {
                         patientInput.value = patient.personalName;
                         autocompleteList.innerHTML = '';
+                        patientIdInput.value = patient.patientId;
                         autocompleteList.classList.remove('show');
                     });
                     autocompleteList.appendChild(item);
@@ -102,17 +106,26 @@ function closeCreateModal() {
     createModal.style.display = "none";
 }
 
+function resetCreateForm() {
+    createForm.reset();
+    const autocompleteList = document.getElementById('autocomplete-list-appointment');
+    autocompleteList.innerHTML = '';
+    autocompleteList.classList.remove('show');
+}
+
 createForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const newBilling = {
-        patientName: createForm.createPatientName.value,
+        patientId: createForm.createPatientId.value,
         paymentMethod: createForm.createPaymentMethod.value,
         currentAmount: createForm.createCurrentAmount.value,
         dateOfLastPayment: createForm.createDateOfLastPayment.value,
         remainingAmount: createForm.createRemainingAmount.value,
         billingStatus: createForm.createBillingStatus.value
     };
+
+    console.log(newBilling);
 
     try {
         const response = await fetch(urlBilling, {
@@ -130,6 +143,7 @@ createForm.addEventListener("submit", async (event) => {
         console.log('New billing created:', newBilling); // Debugging log
 
         closeCreateModal();
+        resetCreateForm();
         fetchAllBillingData();
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);

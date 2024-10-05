@@ -34,7 +34,9 @@ namespace PatientManagementApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<BillingEntity>> GetBillingEntity(int id)
         {
-            var billingEntity = await _context.Billing.FindAsync(id);
+            var billingEntity = await _context.Billing
+                .Include(p => p.Patient)
+                .FirstOrDefaultAsync(b => b.BillingId == id);
 
             if (billingEntity == null)
             {
@@ -84,7 +86,7 @@ namespace PatientManagementApp.Controllers
             }
 
             // Fetch the patient entity based on PatientId
-            var patient = _context.Patients.Find(billingEntity.PatientId); // Assuming _context is your database context
+            var patient = _context.Patients.Find(billingEntity.PatientId);
 
             if (patient == null)
             {
@@ -95,7 +97,7 @@ namespace PatientManagementApp.Controllers
             billingEntity.Patient = patient;
 
             // Now you can save the billing entity to the database
-            _context.Billing.Add(billingEntity); // Corrected line
+            _context.Billing.Add(billingEntity);
             _context.SaveChanges();
 
             return Ok(billingEntity);
