@@ -42,6 +42,22 @@ namespace PatientManagementApp.Controllers
             return patientAppointmentEntity;
         }
 
+        [HttpGet("appointments")]
+        public IActionResult GetAppointmentsByDate([FromQuery] DateTime date)
+        {
+            var appointments = _context.PatientAppointmentEntity
+                .Where(a => a.AppointmentDate.Date == date.Date)
+                .Select(a => new
+                {
+                    a.AppointmentDate,
+                    PatientName = a.Patient.PersonalName,
+                    a.AppointmentNote
+                })
+                .ToList();
+
+            return Ok(appointments);
+        }
+
         // PUT: api/PatientAppointment/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

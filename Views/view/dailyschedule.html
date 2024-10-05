@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stomatološka ordinacija</title>
     <link rel="stylesheet" href="../css/styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script> <!-- Include moment.js -->
 </head>
 <body>
     <div class="sidebar">
@@ -22,7 +23,7 @@
     </div>
 
     <div class="dschedule-container">
-        <h3>Daily Schedule - Patients</h3>
+        <h3>Dnevni raspored - pacijenti</h3>
         <table class="dschedule-table">
             <thead>
                 <tr>
@@ -32,31 +33,11 @@
                 </tr>
             </thead>
             <tbody id="dscheduleList">
-                <tr>
-                    <td>
-                        <span class="time">17:00</span>
-                    </td>
-                    <td>
-                        <span class="patient-name">John Doe</span>
-                    </td>
-                    <td>
-                        <span class="service">Zamjena gumica</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <span class="time">17:30</span>
-                    </td>
-                    <td>
-                        <span class="patient-name">Alice Brown</span>
-                    </td>
-                    <td>
-                        <span class="service">Popravak</span>
-                    </td>
-                </tr>
+                <!-- Appointments will be dynamically inserted here -->
             </tbody>
         </table>
     </div>
 
+    <script src="../js/dailyschedule.js"></script>
 </body>
 </html>

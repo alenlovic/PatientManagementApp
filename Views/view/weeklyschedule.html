@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stomatološka ordinacija</title>
     <link rel="stylesheet" href="../css/styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script> <!-- Include moment.js -->
 </head>
 <body>
     <div class="sidebar">
@@ -22,81 +23,25 @@
     </div>
 
     <div class="wschedule-container">
-        <h3>Weekly Schedule - Patients</h3>
+        <h3>Sedmični raspored - pacijenti</h3>
         <table class="wschedule-table">
             <thead>
                 <tr>
-                    <th>Monday</th>
-                    <th>Tuesday</th>
-                    <th>Wednesday</th>
-                    <th>Thursday</th>
-                    <th>Friday</th>
+                    <th>Ponedjeljak</th>
+                    <th>Utorak</th>
+                    <th>Srijeda</th>
+                    <th>Četvrtak</th>
+                    <th>Petak</th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="wschedule-list" id="wscheduleList">
-                    <td>
-                        <div class="patient-box">
-                            <span class="time">10:00 AM</span>
-                            <span class="patient-name">John Doe</span>
-                            <span class="service">Cleaning</span>
-                        </div>
-                        <div class="patient-box">
-                            <span class="time">12:00 PM</span>
-                            <span class="patient-name">Alice Brown</span>
-                            <span class="service">Consultation</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="patient-box">
-                            <span class="time">11:30 AM</span>
-                            <span class="patient-name">Jane Roe</span>
-                            <span class="service">Filling</span>
-                        </div>
-                        <div class="patient-box">
-                            <span class="time">11:30 AM</span>
-                            <span class="patient-name">Jane Roe</span>
-                            <span class="service">Filling</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="patient-box">
-                            <span class="time">11:30 AM</span>
-                            <span class="patient-name">Jane Roe</span>
-                            <span class="service">Filling</span>
-                        </div>
-                        <div class="patient-box">
-                            <span class="time">11:30 AM</span>
-                            <span class="patient-name">Jane Roe</span>
-                            <span class="service">Filling</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="patient-box">
-                            <span class="time">11:30 AM</span>
-                            <span class="patient-name">Jane Roe</span>
-                            <span class="service">Filling</span>
-                        </div>
-                        <div class="patient-box">
-                            <span class="time">11:30 AM</span>
-                            <span class="patient-name">Jane Roe</span>
-                            <span class="service">Filling</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="patient-box">
-                            <span class="time">11:30 AM</span>
-                            <span class="patient-name">Jane Roe</span>
-                            <span class="service">Filling</span>
-                        </div>
-                        <div class="patient-box">
-                            <span class="time">11:30 AM</span>
-                            <span class="patient-name">Jane Roe</span>
-                            <span class="service">Filling</span>
-                        </div>
-                    </td>
+                    <!-- Appointments will be dynamically inserted here -->
+                </tr>
             </tbody>
         </table>
     </div>
+
+    <script src="../js/weeklyschedule.js"></script>
 </body>
 </html>
