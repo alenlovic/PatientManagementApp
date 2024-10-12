@@ -150,6 +150,30 @@ createForm.addEventListener("submit", async (event) => {
     }
 });
 
+async function deleteBilling(billingId) {
+    const confirmDelete = confirm("Da li ste sigurni da želite izbrisati zapis iz tabele?");
+    if (!confirmDelete) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${urlBilling}/${billingId}`, {
+            method: "DELETE"
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        console.log(`Billing record with ID ${billingId} deleted`); // Debugging log
+
+        fetchAllBillingData();
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     fetchAllBillingData();
     setupAutocomplete();

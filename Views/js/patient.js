@@ -33,7 +33,7 @@ function getAllPatients() {
 }
 
 function setupAutocomplete() {
-    const patientInput = document.getElementById('patientPersonalName');
+    const patientInput = document.getElementById('personalName');
     const autocompleteList = document.getElementById('autocomplete-list-appointment');
 
     patientInput.addEventListener('input', function () {
@@ -68,6 +68,7 @@ function setupAutocomplete() {
             .catch(error => console.error('Error fetching patient names:', error));
     });
 }
+
 function displayAllPatients(patients) {
     const tableBody = document.getElementById("patientsTable").getElementsByTagName('tbody')[0];
     tableBody.innerHTML = "";
@@ -80,17 +81,21 @@ function displayAllPatients(patients) {
 
     patients.forEach(patient => {
         const row = tableBody.insertRow();
+        row.setAttribute('data-id', patient.patientId);
         row.innerHTML = `
-        <td>${patient.fullName}</td>
-        <td>${patient.yearOfBirth}</td>
-        <td>${patient.placeOfBirth}</td>
-        <td>${patient.postalAddress}</td>
-        <td>${patient.phoneNumber}</td>
-        <td>${patient.jmbg}</td>
-        <td>${patient.email}</td>
-        <td>${patient.isCritical}</td>
-        <td>${patient.patientNote}</td>
-    `;
+            <td>${patient.fullName}</td>
+            <td>${patient.yearOfBirth}</td>
+            <td>${patient.placeOfBirth}</td>
+            <td>${patient.postalAddress}</td>
+            <td>${patient.phoneNumber}</td>
+            <td>${patient.jmbg}</td>
+            <td>${patient.email}</td>
+            <td>${patient.isCritical}</td>
+            <td>${patient.patientNote}</td>
+        `;
+        row.addEventListener('click', () => {
+            window.location.href = `patientprofile.html?patientId=${patient.patientId}`;
+        });
     });
 }
 

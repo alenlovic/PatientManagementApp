@@ -28,12 +28,14 @@ window.onclick = function (event) {
 const form = document.getElementById("appointmentForm");
 form.addEventListener("submit", function (event) {
     event.preventDefault();
-    const personalName = document.getElementById("patientPersonalName").value.trim();
+    const personalName = document.getElementById("personalName").value.trim();
     const appointmentDate = document.getElementById("appointmentDate").value;
     const appointmentNote = document.getElementById("appointmentNote").value;
 
+    console.log(`Searching for patient: ${personalName}`); // Log the input patient name
+
     // Fetch the patient details to get the PatientId
-    fetch(`https://localhost:44376/api/patient/search?name=${personalName}`)
+    fetch(`https://localhost:44376/api/patient/search?name=${encodeURIComponent(personalName)}`)
         .then(response => response.json())
         .then(data => {
             console.log('Response data:', data); // Log the response data
@@ -42,9 +44,15 @@ form.addEventListener("submit", function (event) {
                 throw new Error('Patient not found');
             }
 
-            const patient = data[0]; // Assuming the first match is the correct one
+            // Find the patient with a case-insensitive match
+            const patient = data.find(p => p.personalName.toLowerCase() === personalName.toLowerCase());
+
+            if (!patient) {
+                throw new Error('Patient not found');
+            }
+
             const appointment = {
-                PatientId: patient.PatientId,
+                PatientId: patient.patientId,
                 AppointmentDate: appointmentDate,
                 AppointmentNote: appointmentNote,
                 CreatedAt: new Date().toISOString()
@@ -71,5 +79,6 @@ form.addEventListener("submit", function (event) {
         })
         .catch((error) => {
             console.error('Error:', error);
+            alert(error.message); // Display the error message to the user
         });
 });

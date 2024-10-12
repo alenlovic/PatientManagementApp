@@ -880,3 +880,14 @@ h3 {
         .autocomplete-appointment .autocomplete-item:hover {
             background-color: #e9e9e9;
         }
+
+/* Add these styles to the end of your styles.css file */
+
+/* Change cursor to pointer and background to grey on hover for patient rows */
+.patients-table tr {
+    cursor: pointer;
+}
+
+    .patients-table tr:hover {
+        background-color: lightgray;
+    }
