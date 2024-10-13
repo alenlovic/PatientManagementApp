@@ -94,6 +94,13 @@ namespace PatientManagementApp.Controllers
         [HttpPost]
         public async Task<ActionResult<PatientAppointmentEntity>> PostPatientAppointmentEntity(PatientAppointmentEntity patientAppointmentEntity)
         {
+            // Validate if the patient exists
+            var patient = await _context.Patients.FindAsync(patientAppointmentEntity.PatientId);
+            if (patient == null)
+            {
+                return NotFound(new { message = "Patient not found" });
+            }
+
             _context.PatientAppointmentEntity.Add(patientAppointmentEntity);
             await _context.SaveChangesAsync();
 

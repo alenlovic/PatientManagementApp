@@ -36,7 +36,12 @@ form.addEventListener("submit", function (event) {
 
     // Fetch the patient details to get the PatientId
     fetch(`https://localhost:44376/api/patient/search?name=${encodeURIComponent(personalName)}`)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.message); });
+            }
+            return response.json();
+        })
         .then(data => {
             console.log('Response data:', data); // Log the response data
 
@@ -69,7 +74,7 @@ form.addEventListener("submit", function (event) {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                return response.json().then(err => { throw new Error(err.message); });
             }
             return response.json();
         })

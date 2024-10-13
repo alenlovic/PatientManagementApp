@@ -1,8 +1,10 @@
 ﻿const saveButton = document.getElementById("btnsave");
+const cancelButton = document.getElementById("btncancel");
 
 saveButton.addEventListener("click", async function () {
     try {
-        const patientRecordData = {
+        // Create patient data
+        const patientData = {
             firstName: document.getElementById("firstname").value,
             lastName: document.getElementById("lastname").value,
             fathersName: document.getElementById("fathersname").value,
@@ -12,6 +14,30 @@ saveButton.addEventListener("click", async function () {
             phoneNumber: document.getElementById("phonenumber").value,
             yearOfBirth: document.getElementById("yearofbirth").value,
             email: document.getElementById("email").value,
+            isCritical: false, // Assuming default value
+            patientNote: "", // Assuming default value
+        };
+
+        // Upload patient data
+        const patientResponse = await fetch("https://localhost:44376/api/patient", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(patientData)
+        });
+
+        if (!patientResponse.ok) {
+            const errorText = await patientResponse.text();
+            throw new Error(errorText);
+        }
+
+        const patient = await patientResponse.json();
+        console.log("Patient created successfully:", patient);
+
+        // Create patient record data
+        const patientRecordData = {
+            patientId: patient.patientId,
             dentalProsthetics: document.getElementById("dentalprothetics").value,
             previousDiseases: document.getElementById("previousdiseases").value,
             chronicDiseases: document.getElementById("chronicdiseases").value,
@@ -61,4 +87,8 @@ saveButton.addEventListener("click", async function () {
     } catch (error) {
         console.error("Error:", error.message);
     }
+});
+
+cancelButton.addEventListener("click", function () {
+    window.location.href = "patients.html";
 });
