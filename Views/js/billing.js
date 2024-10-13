@@ -1,10 +1,14 @@
-﻿
-
-const urlBilling = "https://localhost:44376/api/billing";
+﻿const urlBilling = "https://localhost:44376/api/billing";
+const urlPatient = "https://localhost:44376/api/patient";
 
 const billingList = document.getElementById("billingList");
 const createModal = document.getElementById("createModal");
 const createForm = document.getElementById("createForm");
+const paginationContainer = document.getElementById("pagination");
+
+let allBillingData = [];
+let currentPage = 1;
+const itemsPerPage = 5;
 
 async function fetchAllBillingData() {
     try {
@@ -13,7 +17,7 @@ async function fetchAllBillingData() {
             throw new Error('Network response was not ok');
         }
         const billingData = await response.json();
-        console.log('Fetched billing data:', billingData); // Debugging log
+        allBillingData = billingData;
         displayBillingData(billingData);
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
@@ -23,8 +27,14 @@ async function fetchAllBillingData() {
 function displayBillingData(billingData) {
     billingList.innerHTML = '';
 
+    if (billingData.length === 0) {
+        const row = billingList.insertRow();
+        row.innerHTML = `<td colspan="7" style="text-align:center;">No billing records found</td>`;
+        return;
+    }
+
     billingData.forEach(billing => {
-        const row = document.createElement('tr');
+        const row = billingList.insertRow();
         row.dataset.billingId = billing.billingId; // Store billingId in data attribute
 
         const billingId = billing.billingId;
@@ -34,8 +44,6 @@ function displayBillingData(billingData) {
         const dateOfLastPayment = billing.dateOfLastPayment ? new Date(billing.dateOfLastPayment).toLocaleDateString() : 'N/A';
         const remainingAmount = billing.remainingAmount || 'N/A';
         const billingStatus = billing.billingStatus || 'N/A';
-
-        console.log(`Billing ID: ${billing.billingId}`); // Debugging log
 
         row.innerHTML = `
             <td>${patientName}</td>
@@ -49,9 +57,50 @@ function displayBillingData(billingData) {
                 <button class="delete-btn" onclick="deleteBilling(${billingId})">Delete</button>
             </td>
         `;
-
-        billingList.appendChild(row);
     });
+
+    displayTableRows();
+}
+
+function displayTableRows() {
+    const rows = billingList.getElementsByTagName('tr');
+    const totalRows = rows.length;
+    const totalPages = Math.ceil(totalRows / itemsPerPage);
+
+    // Hide all rows
+    for (let i = 0; i < totalRows; i++) {
+        rows[i].style.display = 'none';
+    }
+
+    // Show only the rows for the current page
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    for (let i = start; i < end && i < totalRows; i++) {
+        rows[i].style.display = '';
+    }
+
+    // Update page info
+    document.getElementById('pageInfo').innerText = `Stranica ${currentPage} od ${totalPages}`;
+
+    // Disable/Enable buttons
+    document.getElementById('prevPage').disabled = currentPage === 1;
+    document.getElementById('nextPage').disabled = currentPage === totalPages;
+}
+
+function prevPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        displayTableRows();
+    }
+}
+
+function nextPage() {
+    const totalRows = billingList.getElementsByTagName('tr').length;
+    const totalPages = Math.ceil(totalRows / itemsPerPage);
+    if (currentPage < totalPages) {
+        currentPage++;
+        displayTableRows();
+    }
 }
 
 function setupAutocomplete() {
@@ -125,8 +174,6 @@ createForm.addEventListener("submit", async (event) => {
         billingStatus: createForm.createBillingStatus.value
     };
 
-    console.log(newBilling);
-
     try {
         const response = await fetch(urlBilling, {
             method: "POST",
@@ -140,8 +187,6 @@ createForm.addEventListener("submit", async (event) => {
             throw new Error('Network response was not ok');
         }
 
-        console.log('New billing created:', newBilling); // Debugging log
-
         closeCreateModal();
         resetCreateForm();
         fetchAllBillingData();
@@ -151,7 +196,7 @@ createForm.addEventListener("submit", async (event) => {
 });
 
 async function deleteBilling(billingId) {
-    const confirmDelete = confirm("Da li ste sigurni da želite izbrisati zapis iz tabele?");
+    const confirmDelete = confirm("Are you sure you want to delete this record?");
     if (!confirmDelete) {
         return;
     }
@@ -165,16 +210,37 @@ async function deleteBilling(billingId) {
             throw new Error('Network response was not ok');
         }
 
-        console.log(`Billing record with ID ${billingId} deleted`); // Debugging log
-
         fetchAllBillingData();
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
     }
 }
 
-
 document.addEventListener('DOMContentLoaded', () => {
     fetchAllBillingData();
     setupAutocomplete();
+
+    // Autocomplete functionality for search box
+    const searchBox = document.getElementById("searchBox");
+    searchBox.addEventListener("input", function () {
+        const query = this.value.toLowerCase();
+        const filteredBillingData = allBillingData.filter(billing => {
+            const patientName = billing.patient ? `${billing.patient.firstName} ${billing.patient.lastName}`.toLowerCase() : '';
+            return patientName.includes(query);
+        });
+        displayBillingData(filteredBillingData);
+    });
+
+    function closeAllLists(elmnt) {
+        const items = document.getElementsByClassName("autocomplete-items");
+        for (let i = 0; i < items.length; i++) {
+            if (elmnt != items[i] && elmnt != searchBox) {
+                items[i].parentNode.removeChild(items[i]);
+            }
+        }
+    }
+
+    document.addEventListener("click", function (e) {
+        closeAllLists(e.target);
+    });
 });

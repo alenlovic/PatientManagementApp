@@ -26,7 +26,7 @@
 
 .nav-links {
     list-style: none;
-    padding: 30px 10px;
+    padding: 30px 5px;
 }
 
     .nav-links a {
@@ -48,7 +48,7 @@
 .billing-container,
 .dschedule-container {
     width: 85%;
-    height: 400px;
+    height: auto;
     overflow-y: auto;
     overflow-x: auto;
     margin-left: 210px;
@@ -235,6 +235,8 @@ h3 {
     padding-left: 10px;
 }
 
+
+
 .add-patient {
     padding: 10px;
     background-color: midnightblue;
@@ -397,33 +399,33 @@ h3 {
     justify-content: space-between;
 }
 
-    .billing-info .info-row {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 10px;
-    }
+.billing-info .info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
 
-    .billing-info .info-label {
-        font-weight: bold;
-        color: #2c3e50;
-    }
+.billing-info .info-label {
+    font-weight: bold;
+    color: #2c3e50;
+}
 
-    .billing-info .info-value {
-        color: #34495e;
-    }
+.billing-info .info-value {
+    color: #34495e;
+}
 
 /* OPG Information Section */
 
-    .opg-info .info-row {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 10px;
-    }
+.opg-info .info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
 
-    .opg-info .info-label {
-        font-weight: bold;
-        color: #2c3e50;
-    }
+.opg-info .info-label {
+    font-weight: bold;
+    color: #2c3e50;
+}
 
 /* Use CSS Grid to create a four-quadrant layout */
 .patient-info {
@@ -481,7 +483,7 @@ h3 {
     height: 100%; /* Full height */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    justify-content:center;
+    justify-content: center;
     align-items: center;
 }
 
@@ -546,7 +548,7 @@ h3 {
         background-color: #1e90ff;
     }
 
-.add-appointment{
+.add-appointment {
     margin-right: 10px;
 }
 
@@ -569,9 +571,9 @@ h3 {
     color: white;
 }
 
-.edit-btn:hover, .delete-btn:hover {
-    opacity: 0.8;
-}
+    .edit-btn:hover, .delete-btn:hover {
+        opacity: 0.8;
+    }
 
 /* Edit Modal styles */
 .edit-modal {
@@ -584,7 +586,7 @@ h3 {
     height: 100%; /* Full height */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    justify-content:center;
+    justify-content: center;
     align-items: center;
 }
 
@@ -605,12 +607,12 @@ h3 {
     font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
 
 .edit-modal-content h3 {
     color: #2c3e50;
@@ -645,9 +647,9 @@ h3 {
     cursor: pointer;
 }
 
-.edit-modal-content button:hover {
-    background-color: #1e90ff;
-}
+    .edit-modal-content button:hover {
+        background-color: #1e90ff;
+    }
 
 
 /* Add Billing Button */
@@ -664,12 +666,6 @@ h3 {
         background-color: dodgerblue;
         border: solid 1px black;
     }
-
-/* Button Wrapper */
-.button-wrapper {
-    display: flex;
-    justify-content: flex-end;
-}
 
 /* Create Modal */
 .create-modal {
@@ -826,4 +822,32 @@ h3 {
 
     .patients-table tr:hover {
         background-color: lightgray;
+    }
+
+/* paginacija */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+    .pagination button {
+        padding: 10px;
+        margin: 0 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: dodgerblue;
+        color: white;
+    }
+
+        .pagination button:disabled {
+            background-color: lightgray;
+            cursor: not-allowed;
+        }
+
+    .pagination span {
+        margin: 0 10px;
     }

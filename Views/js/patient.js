@@ -1,5 +1,8 @@
 ﻿const urlPatient = "https://localhost:44376/api/patient";
 
+let currentPage = 1;
+const rowsPerPage = 7;
+
 const firstName = document.getElementById("firstName");
 const fathersName = document.getElementById("fathersName");
 const lastName = document.getElementById("lastName");
@@ -97,6 +100,51 @@ function displayAllPatients(patients) {
             window.location.href = `patientprofile.html?patientId=${patient.patientId}`;
         });
     });
+
+    displayTableRows();
+}
+
+function displayTableRows() {
+    const table = document.getElementById('patientsTable').getElementsByTagName('tbody')[0];
+    const rows = table.getElementsByTagName('tr');
+    const totalRows = rows.length;
+    const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+    // Hide all rows
+    for (let i = 0; i < totalRows; i++) {
+        rows[i].style.display = 'none';
+    }
+
+    // Show only the rows for the current page
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    for (let i = start; i < end && i < totalRows; i++) {
+        rows[i].style.display = '';
+    }
+
+    // Update page info
+    document.getElementById('pageInfo').innerText = `Stranica ${currentPage} od ${totalPages}`;
+
+    // Disable/Enable buttons
+    document.getElementById('prevPage').disabled = currentPage === 1;
+    document.getElementById('nextPage').disabled = currentPage === totalPages;
+}
+
+function prevPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        displayTableRows();
+    }
+}
+
+function nextPage() {
+    const table = document.getElementById('patientsTable').getElementsByTagName('tbody')[0];
+    const totalRows = table.getElementsByTagName('tr').length;
+    const totalPages = Math.ceil(totalRows / rowsPerPage);
+    if (currentPage < totalPages) {
+        currentPage++;
+        displayTableRows();
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

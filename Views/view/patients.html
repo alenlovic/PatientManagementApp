@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stomatološka ordinacija</title>
     <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="icon" href="../favicon/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div class="sidebar">
@@ -13,11 +14,11 @@
             <h2>FIRDUS-TIRIĆ</h2>
         </div>
         <nav class="nav-links">
-            <a href="../index.html">Home</a>
-            <a href="dailyschedule.html">Daily Schedule</a>
-            <a href="weeklyschedule.html">Weekly Schedule</a>
-            <a href="patients.html">Patients</a>
-            <a href="billing.html">Billing</a>
+            <a href="../index.html">Početna</a>
+            <a href="dailyschedule.html">Dnevni raspored</a>
+            <a href="weeklyschedule.html">Sedmični raspored</a>
+            <a href="patients.html">Pacijenti</a>
+            <a href="billing.html">Plaćanja</a>
         </nav>
     </div>
 
@@ -28,12 +29,12 @@
                 Dodaj novog pacijenta
             </button>
         </div>
+        <h3>Pacijenti</h3>
         <div class="search-wrapper">
-            <label for="searchBox">Search Patients:</label>
-            <input type="text" id="searchBox" placeholder="Search for patients...">
+            <label for="searchBox">Pretraži pacijenta:</label>
+            <input type="text" id="searchBox" placeholder="Unesi ime pacijenta...">
             <div id="autocomplete-list" class="autocomplete-items"></div>
         </div>
-        <h3>Patient Details</h3>
         <table class="patients-table" id="patientsTable" role="table">
             <thead>
                 <tr>
@@ -51,6 +52,11 @@
             <tbody>
             </tbody>
         </table>
+        <div class="pagination">
+            <button id="prevPage" onclick="prevPage()">Previous</button>
+            <span id="pageInfo"></span>
+            <button id="nextPage" onclick="nextPage()">Next</button>
+        </div>
     </div>
 
     <!-- Modal for creating a new appointment -->
