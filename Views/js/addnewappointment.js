@@ -34,8 +34,11 @@ form.addEventListener("submit", function (event) {
 
     console.log(`Searching for patient: ${personalName}`); // Log the input patient name
 
+    const apiUrl = `https://localhost:44376/api/patient/search?name=${encodeURIComponent(personalName)}`;
+    console.log(`API URL: ${apiUrl}`); // Log the API URL
+
     // Fetch the patient details to get the PatientId
-    fetch(`https://localhost:44376/api/patient/search?name=${encodeURIComponent(personalName)}`)
+    fetch(apiUrl)
         .then(response => {
             if (!response.ok) {
                 return response.json().then(err => { throw new Error(err.message); });
@@ -87,3 +90,4 @@ form.addEventListener("submit", function (event) {
             alert(error.message); // Display the error message to the user
         });
 });
+

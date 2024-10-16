@@ -39,16 +39,19 @@ namespace PatientManagementApp.Controllers
 
             var trimmedName = name.Trim().ToLower();
             var patients = _context.Patients
-                .Where(p => p.FirstName.ToLower().Contains(trimmedName) || p.LastName.ToLower().Contains(trimmedName))
+                .Where(p => p.FirstName.ToLower().Contains(trimmedName) ||
+                            p.LastName.ToLower().Contains(trimmedName) ||
+                            (p.FirstName + " " + p.LastName).ToLower().Contains(trimmedName))
                 .Select(p => new
                 {
                     p.PatientId,
-                    p.PersonalName
+                    PersonalName = p.FirstName + " " + p.LastName
                 })
                 .ToList();
 
             return Ok(patients);
         }
+
 
 
         // GET: api/Patients/name/John

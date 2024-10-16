@@ -5,15 +5,15 @@ saveButton.addEventListener("click", async function () {
     try {
         // Create patient data
         const patientData = {
-            firstName: document.getElementById("firstname").value,
-            lastName: document.getElementById("lastname").value,
-            fathersName: document.getElementById("fathersname").value,
-            jmbg: document.getElementById("jmbg").value,
-            placeOfBirth: document.getElementById("placeofbirth").value,
-            postalAddress: document.getElementById("postaladdress").value,
-            phoneNumber: document.getElementById("phonenumber").value,
-            yearOfBirth: document.getElementById("yearofbirth").value,
-            email: document.getElementById("email").value,
+            firstName: document.getElementById("firstname").value.trim(),
+            lastName: document.getElementById("lastname").value.trim(),
+            fathersName: document.getElementById("fathersname").value.trim(),
+            jmbg: document.getElementById("jmbg").value.trim(),
+            placeOfBirth: document.getElementById("placeofbirth").value.trim(),
+            postalAddress: document.getElementById("postaladdress").value.trim(),
+            phoneNumber: document.getElementById("phonenumber").value.trim(),
+            yearOfBirth: new Date(document.getElementById("yearofbirth").value).toISOString(), // Convert to ISO string
+            email: document.getElementById("email").value.trim(),
             isCritical: false, // Assuming default value
             patientNote: "", // Assuming default value
         };
@@ -38,12 +38,12 @@ saveButton.addEventListener("click", async function () {
         // Create patient record data
         const patientRecordData = {
             patientId: patient.patientId,
-            dentalProsthetics: document.getElementById("dentalprothetics").value,
-            previousDiseases: document.getElementById("previousdiseases").value,
-            chronicDiseases: document.getElementById("chronicdiseases").value,
-            allergies: document.getElementById("allergies").value,
-            penicilinAllergy: document.getElementById("penicilin").value,
-            recordNote: document.getElementById("recordnote").value,
+            dentalProsthetics: document.getElementById("dentalprothetics").value.trim(),
+            previousDiseases: document.getElementById("previousdiseases").value.trim(),
+            chronicDiseases: document.getElementById("chronicdiseases").value.trim(),
+            allergies: document.getElementById("allergies").value.trim(),
+            penicilinAllergy: document.getElementById("penicilin").value.trim(),
+            recordNote: document.getElementById("recordnote").value.trim(),
         };
 
         const opgFile = document.getElementById("file-upload").files[0];
@@ -86,6 +86,7 @@ saveButton.addEventListener("click", async function () {
 
     } catch (error) {
         console.error("Error:", error.message);
+        alert(error.message); // Display the error message to the user
     }
 });
 
