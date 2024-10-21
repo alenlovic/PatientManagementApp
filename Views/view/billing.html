@@ -7,6 +7,7 @@
     <title>Stomatološka ordinacija</title>
     <link rel="stylesheet" href="../css/styles.css" />
     <link rel="icon" href="../favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="sidebar">
@@ -24,12 +25,12 @@
 
     <div class="billing-container">
         <div class="button-wrapper">
-            <button class="add-billing" onclick="openCreateModal()">Add Billing</button>
+            <button class="add-billing" onclick="openCreateModal()">Dodaj plaćanje</button>
         </div>
         <h3>Plaćanja</h3>
         <div class="search-wrapper">
-            <label for="searchBox">Pretraži pacijenta:</label>
-            <input type="text" id="searchBox" placeholder="Unesi ime pacijenta...">
+            <label for="searchBox">Pretraga pacijenta:</label>
+            <input type="text" id="searchBox" placeholder="Unesite ime pacijenta...">
             <div id="autocomplete-list" class="autocomplete-items"></div>
         </div>
         <table class="billing-table">
@@ -37,20 +38,19 @@
                 <tr>
                     <th>Pacijent</th>
                     <th>Način plaćanja</th>
-                    <th>Uplaćeno</th>
+                    <th>Iznos za platiti</th>
                     <th>Datum zadnje uplate</th>
-                    <th>Preostalo</th>
-                    <th>Status dugovanja</th>
-                    <th>Actions</th>
+                    <th>Preostali iznos</th>
+                    <th>Uredi/izbriši</th>
                 </tr>
             </thead>
             <tbody id="billingList">
             </tbody>
         </table>
         <div class="pagination">
-            <button id="prevPage" onclick="prevPage()">Previous</button>
+            <button id="prevPage" onclick="prevPage()">Prethodna</button>
             <span id="pageInfo"></span>
-            <button id="nextPage" onclick="nextPage()">Next</button>
+            <button id="nextPage" onclick="nextPage()">Sljedeća</button>
         </div>
     </div>
 
@@ -58,17 +58,17 @@
     <div id="editModal" class="edit-modal">
         <div class="edit-modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h3>Edit Billing</h3>
+            <h3>Uredi plaćanje</h3>
             <form id="editForm">
                 <input type="hidden" id="editBillingId" name="editBillingId">
                 <input type="hidden" id="editPatientId" name="editPatientId">
                 <label for="editPatientName">Ime pacijenta</label>
                 <input type="text" id="editPatientName" name="patientName" required>
 
-                <label for="editPaymentMethod">Metoda plaćanja</label>
+                <label for="editPaymentMethod">Način plaćanja</label>
                 <input type="text" id="editPaymentMethod" name="paymentMethod" required>
 
-                <label for="editCurrentAmount">Trenutni iznos</label>
+                <label for="editCurrentAmount">Iznos za platiti</label>
                 <input type="number" id="editCurrentAmount" name="currentAmount" required>
 
                 <label for="editDateOfLastPayment">Datum zadnjeg plaćanja</label>
@@ -89,7 +89,7 @@
     <div id="createModal" class="create-modal">
         <div class="create-modal-content">
             <span class="close" onclick="closeCreateModal()">&times;</span>
-            <h3>Create Billing</h3>
+            <h3>Dodaj plaćanje</h3>
             <form id="createForm" class="form-grid">
                 <div class="form-group">
                     <label for="createPatientName">Ime pacijenta</label>
@@ -98,25 +98,25 @@
                 </div>
                 <input type="hidden" id="createPatientId" name="createPatientId">
                 <div class="form-group">
-                    <label for="createPaymentMethod">Metoda plaćanja</label>
-                    <input type="text" id="createPaymentMethod" name="paymentMethod" required>
+                    <label for="createCurrentAmount">Iznos za platiti</label>
+                    <input type="number" id="createCurrentAmount" name="currentAmount" required>
                 </div>
                 <div class="form-group">
-                    <label for="createCurrentAmount">Trenutni iznos</label>
-                    <input type="number" id="createCurrentAmount" name="currentAmount" required>
+                    <label for="createPaymentMethod">Način plaćanja</label>
+                    <input type="text" id="createPaymentMethod" name="paymentMethod" required>
                 </div>
                 <div class="form-group">
                     <label for="createDateOfLastPayment">Datum plaćanja</label>
                     <input type="date" id="createDateOfLastPayment" name="dateOfLastPayment" required>
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                     <label for="createRemainingAmount">Preostali iznos</label>
                     <input type="number" id="createRemainingAmount" name="remainingAmount" required>
-                </div>
-                <div class="form-group">
+                </div>-->
+                <!--<div class="form-group">
                     <label for="createBillingStatus">Status plaćanja</label>
                     <input type="text" id="createBillingStatus" name="billingStatus" required>
-                </div>
+                </div>-->
                 <div class="form-group">
                     <button type="submit" class="submit-btn">Kreiraj</button>
                 </div>

@@ -51,10 +51,9 @@ function displayBillingData(billingData) {
             <td>${currentAmount}</td>
             <td>${dateOfLastPayment}</td>
             <td>${remainingAmount}</td>
-            <td>${billingStatus}</td>
             <td>
-                <button class="edit-btn" onclick="editBilling(${billingId})">Edit</button>
-                <button class="delete-btn" onclick="deleteBilling(${billingId})">Delete</button>
+                <button class="edit-btn" onclick="editBilling('${billingId}')"><i class="fas fa-pen"></i></button>
+                <button class="delete-btn" onclick="deleteBilling('${billingId}')"><i class="fas fa-trash"></i></button>
             </td>
         `;
     });

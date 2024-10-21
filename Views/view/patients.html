@@ -31,31 +31,30 @@
         </div>
         <h3>Pacijenti</h3>
         <div class="search-wrapper">
-            <label for="searchBox">Pretraži pacijenta:</label>
-            <input type="text" id="searchBox" placeholder="Unesi ime pacijenta...">
+            <label for="searchBox">Pretraga pacijenta:</label>
+            <input type="text" id="searchBox" placeholder="Unesite ime pacijenta...">
             <div id="autocomplete-list" class="autocomplete-items"></div>
         </div>
         <table class="patients-table" id="patientsTable" role="table">
             <thead>
                 <tr>
-                    <th scope="col">Full Name</th>
-                    <th scope="col">Date of Birth</th>
-                    <th scope="col">Place of Birth</th>
-                    <th scope="col">Postal Address</th>
-                    <th scope="col">Phone Number</th>
+                    <th scope="col">Ime (ime oca) prezime</th>
+                    <th scope="col">Godina rođenja</th>
+                    <th scope="col">Mjesto rođenja</th>
+                    <th scope="col">Adresa stanovanja</th>
+                    <th scope="col">Broj telefona</th>
                     <th scope="col">JMBG</th>
                     <th scope="col">Email</th>
                     <th scope="col">Critical</th>
-                    <th scope="col">Notes</th>
                 </tr>
             </thead>
             <tbody>
             </tbody>
         </table>
         <div class="pagination">
-            <button id="prevPage" onclick="prevPage()">Previous</button>
+            <button id="prevPage" onclick="prevPage()">Prethodna</button>
             <span id="pageInfo"></span>
-            <button id="nextPage" onclick="nextPage()">Next</button>
+            <button id="nextPage" onclick="nextPage()">Sljedeća</button>
         </div>
     </div>
 

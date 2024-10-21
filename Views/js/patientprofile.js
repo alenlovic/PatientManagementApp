@@ -69,7 +69,7 @@ function populateAllPatientsInfo(patients) {
     // Add the header
     const headerDiv = document.createElement('div');
     headerDiv.classList.add('header-container');
-    headerDiv.innerHTML = `<h3>Patient Profile</h3>`;
+    headerDiv.innerHTML = `<h3>Informacije o pacijentu</h3>`;
     patientProfileContainer.appendChild(headerDiv);
 
     patients.forEach(patient => {
@@ -81,25 +81,25 @@ function populateAllPatientsInfo(patients) {
 
         patientDiv.innerHTML = `
             <div class="personal-info">
-                <h4>Personal Information</h4>
+                <h4>Lične informacije</h4>
                 <div class="info-row">
-                    <span class="info-label">Full Name:</span>
+                    <span class="info-label">Ime (ime oca) prezime:</span>
                     <span class="info-value">${patient.fullName}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Date of Birth:</span>
+                    <span class="info-label">Godina rođenja:</span>
                     <span class="info-value">${new Date(patient.yearOfBirth).toLocaleDateString()}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Place of Birth:</span>
+                    <span class="info-label">Mjesto rođenja:</span>
                     <span class="info-value">${patient.placeOfBirth}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Postal Address:</span>
+                    <span class="info-label">Adresa stanovanja:</span>
                     <span class="info-value">${patient.postalAddress}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Phone Number:</span>
+                    <span class="info-label">Broj telefona:</span>
                     <span class="info-value">${patient.phoneNumber}</span>
                 </div>
                 <div class="info-row">
@@ -115,64 +115,64 @@ function populateAllPatientsInfo(patients) {
                     <span class="info-value">${patient.isCritical ? 'Yes' : 'No'}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Notes:</span>
+                    <span class="info-label">Napomena:</span>
                     <span class="info-value">${patient.patientNote}</span>
                 </div>
             </div>
             <div class="medical-info">
-                <h4>Medical Information</h4>
+                <h4>Medicinski karton</h4>
                 <div class="info-row">
-                    <span class="info-label">Dental Prosthetics:</span>
+                    <span class="info-label">Protetski rad:</span>
                     <span class="info-value">${patient.dentalProsthetics || 'N/A'}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Previous Diseases:</span>
+                    <span class="info-label">Preležane bolesti:</span>
                     <span class="info-value">${patient.previousDiseases || 'N/A'}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Chronic Diseases:</span>
+                    <span class="info-label">Hronične bolesti:</span>
                     <span class="info-value">${patient.chronicDiseases || 'N/A'}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Allergies:</span>
+                    <span class="info-label">Alergije:</span>
                     <span class="info-value">${patient.allergies || 'N/A'}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Penicilin Allergy:</span>
+                    <span class="info-label">Penicilin:</span>
                     <span class="info-value">${patient.penicilinAllergy || 'N/A'}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Note:</span>
+                    <span class="info-label">Napomena:</span>
                     <span class="info-value">${patient.recordNote || 'N/A'}</span>
                 </div>
             </div>
             <div class="billing-info">
-                <h4>Billing Information</h4>
+                <h4>Detalji o plaćanju</h4>
                 <div class="info-row">
-                    <span class="info-label">Payment Method:</span>
+                    <span class="info-label">Metoda plaćanja:</span>
                     <span class="info-value">${patient.paymentMethod || 'N/A'}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Current Amount:</span>
+                    <span class="info-label">Uplaćeno:</span>
                     <span class="info-value">${patient.currentAmount || 'N/A'}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Date of Last Payment:</span>
+                    <span class="info-label">Datum zadnje uplate:</span>
                     <span class="info-value">${new Date(patient.dateOfLastPayment).toLocaleDateString() || 'N/A'}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Remaining Amount:</span>
+                    <span class="info-label">Ostalo za isplatiti:</span>
                     <span class="info-value">${patient.remainingAmount || 'N/A'}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Billing Status:</span>
+                    <span class="info-label">Status dugovanja:</span>
                     <span class="info-value">${patient.billingStatus || 'N/A'}</span>
                 </div>
             </div>
             <div class="opg-info">
-                <h4>OPG Records</h4>
+                <h4>OPG snimci</h4>
                 <div class="info-row">
-                    <span class="info-label">OPG Image:</span>
+                    <span class="info-label">Snimak:</span>
                     ${patient.opg ? `<img src="data:image/png;base64,${patient.opg}" alt="OPG Image" class="opg-image" />` : 'No OPG Image'}
                 </div>
             </div>

@@ -14,7 +14,7 @@ const phoneNumber = document.getElementById("phoneNumber");
 const jmbg = document.getElementById("jmbg");
 const email = document.getElementById("email");
 const isCritical = document.getElementById("isCritical");
-const note = document.getElementById("note");
+/*const note = document.getElementById("note");*/
 
 let allPatients = [];
 
@@ -94,7 +94,6 @@ function displayAllPatients(patients) {
             <td>${patient.jmbg}</td>
             <td>${patient.email}</td>
             <td>${patient.isCritical}</td>
-            <td>${patient.patientNote}</td>
         `;
         row.addEventListener('click', () => {
             window.location.href = `patientprofile.html?patientId=${patient.patientId}`;
