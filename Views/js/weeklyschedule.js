@@ -59,9 +59,10 @@
                     const formattedDate = appointmentDate.format('DD.MM.YYYY HH:mm');
                     const patientBox = document.createElement("div");
                     patientBox.className = "patient-box";
+                    const nameStyle = appointment.isCritical ? 'style="color: red;"' : '';
                     patientBox.innerHTML = `
                         <span class="appointment-date">${formattedDate}</span>
-                        <span class="patient-name">${appointment.patientName || 'undefined'}</span>
+                        <span class="patient-name" ${nameStyle}>${appointment.patientName || 'undefined'}</span>
                         <span class="service">${appointment.appointmentNote || 'undefined'}</span>
                     `;
                     dayCell.appendChild(patientBox);

@@ -35,7 +35,8 @@
                     row.appendChild(timeCell);
 
                     const nameCell = document.createElement("td");
-                    nameCell.innerHTML = `<span class="patient-name">${appointment.patientName || 'undefined'}</span>`;
+                    const nameStyle = appointment.isCritical ? 'style="color: red;"' : '';
+                    nameCell.innerHTML = `<span class="patient-name" ${nameStyle}>${appointment.patientName || 'undefined'}</span>`;
                     row.appendChild(nameCell);
 
                     const serviceCell = document.createElement("td");

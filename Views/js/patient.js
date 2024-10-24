@@ -85,8 +85,9 @@ function displayAllPatients(patients) {
     patients.forEach(patient => {
         const row = tableBody.insertRow();
         row.setAttribute('data-id', patient.patientId);
+        const nameStyle = patient.isCritical ? 'style="color: red;"' : '';
         row.innerHTML = `
-            <td>${patient.fullName}</td>
+            <td ${nameStyle}>${patient.fullName}</td>
             <td>${patient.yearOfBirth}</td>
             <td>${patient.placeOfBirth}</td>
             <td>${patient.postalAddress}</td>
