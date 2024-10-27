@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using PatientManagementApp.Database;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Reflection;
 
 namespace PatientManagementApp
 {
@@ -20,8 +22,14 @@ namespace PatientManagementApp
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.OperationFilter<SwaggerFileOperationFilter>();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PatientManagementApp", Version = "v1" });
+
+                c.OperationFilter<SwaggerFileOperationFilter>();
+
+                c.CustomOperationIds(apiDesc =>
+                {
+                    return apiDesc.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : null;
+                });
             });
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -43,7 +51,10 @@ namespace PatientManagementApp
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
+                app.UseSwagger(c =>
+                {
+                    c.SerializeAsV2 = true;
+                });
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("v1/swagger.json", "Patients API V1");
@@ -57,6 +68,8 @@ namespace PatientManagementApp
             app.UseCors("AllowAllOrigins");
 
             app.UseAuthorization();
+
+            app.UseStaticFiles();
 
             app.MapControllers();
 

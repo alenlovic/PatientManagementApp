@@ -1,5 +1,23 @@
 ﻿const saveButton = document.getElementById("btnsave");
 const cancelButton = document.getElementById("btncancel");
+const fileUpload = document.getElementById("file-upload");
+const fileInfo = document.getElementById("file-info");
+const fileName = document.getElementById("file-name");
+const removeFileButton = document.getElementById("remove-file");
+
+fileUpload.addEventListener("change", function () {
+    const file = fileUpload.files[0];
+    if (file) {
+        fileName.textContent = file.name;
+        fileInfo.style.display = "block";
+    }
+});
+
+removeFileButton.addEventListener("click", function () {
+    fileUpload.value = "";
+    fileName.textContent = "";
+    fileInfo.style.display = "none";
+});
 
 saveButton.addEventListener("click", async function () {
     try {
@@ -12,13 +30,12 @@ saveButton.addEventListener("click", async function () {
             placeOfBirth: document.getElementById("placeofbirth").value.trim(),
             postalAddress: document.getElementById("postaladdress").value.trim(),
             phoneNumber: document.getElementById("phonenumber").value.trim(),
-            yearOfBirth: new Date(document.getElementById("yearofbirth").value).toISOString(), // Convert to ISO string
+            yearOfBirth: new Date(document.getElementById("yearofbirth").value).toISOString(), 
             email: document.getElementById("email").value.trim(),
             isCritical: false, // Assuming default value
             patientNote: "", // Assuming default value
         };
 
-        // Upload patient data
         const patientResponse = await fetch("https://localhost:44376/api/patient", {
             method: "POST",
             headers: {
@@ -36,25 +53,26 @@ saveButton.addEventListener("click", async function () {
         console.log("Patient created successfully:", patient);
 
         // Create patient record data
-        const patientRecordData = {
-            patientId: patient.patientId,
-            dentalProsthetics: document.getElementById("dentalprothetics").value.trim(),
-            previousDiseases: document.getElementById("previousdiseases").value.trim(),
-            chronicDiseases: document.getElementById("chronicdiseases").value.trim(),
-            allergies: document.getElementById("allergies").value.trim(),
-            penicilinAllergy: document.getElementById("penicilin").value.trim(),
-            recordNote: document.getElementById("recordnote").value.trim(),
-        };
+        const formData = new FormData();
+        formData.append("PatientId", document.getElementById("patientId").value.trim());
+        formData.append("DentalProsthetics", document.getElementById("dentalprothetics").value.trim());
+        formData.append("PreviousDiseases", document.getElementById("previousdiseases").value.trim());
+        formData.append("ChronicDiseases", document.getElementById("chronicdiseases").value.trim());
+        formData.append("Allergies", document.getElementById("allergies").value.trim());
+        formData.append("PenicilinAllergy", document.getElementById("penicilin").value.trim());
+        formData.append("RecordNote", document.getElementById("recordnote").value.trim());
 
-        const opgFile = document.getElementById("file-upload").files[0];
+        const opgFile = fileUpload.files[0];
+        if (opgFile) { // Provera da li je OPG slika prisutna
+            console.log("OPG file selected:", opgFile.name);
+            formData.append("opgImageFile", opgFile);
+        } else {
+            console.log("No OPG file selected");
+        }
 
-        // Upload patient record data
         const patientRecordResponse = await fetch("https://localhost:44376/api/patientrecord", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(patientRecordData)
+            body: formData
         });
 
         if (!patientRecordResponse.ok) {

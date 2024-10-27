@@ -168,9 +168,7 @@ createForm.addEventListener("submit", async (event) => {
         patientId: createForm.createPatientId.value,
         paymentMethod: createForm.createPaymentMethod.value,
         currentAmount: createForm.createCurrentAmount.value,
-        dateOfLastPayment: createForm.createDateOfLastPayment.value,
-        remainingAmount: createForm.createRemainingAmount.value,
-        billingStatus: createForm.createBillingStatus.value
+        dateOfLastPayment: createForm.createDateOfLastPayment.value
     };
 
     try {

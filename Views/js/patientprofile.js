@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (patientId) {
         fetchPatientData(patientId);
+        setupDeleteButton(patientId); 
     } else {
         console.error('No patientId found in URL parameters');
     }
@@ -46,7 +47,7 @@ async function fetchPatientData(patientId) {
         console.log('Combined Data:', combinedData);
 
         // Render the combined data
-        populatePatientInfo(combinedData);
+        populatePatientInfo(combinedData, patientId);
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -58,7 +59,7 @@ function combineData(patient, billing, record) {
     return { ...patient, ...patientBilling, ...patientRecord };
 }
 
-function populatePatientInfo(patient) {
+function populatePatientInfo(patient, patientId) {
     const patientProfileContainer = document.querySelector('.patient-profile-container');
     if (!patientProfileContainer) {
         console.error('Patient profile container not found');
@@ -69,7 +70,10 @@ function populatePatientInfo(patient) {
     // Add the header
     const headerDiv = document.createElement('div');
     headerDiv.classList.add('header-container');
-    headerDiv.innerHTML = `<h3>Informacije o pacijentu</h3>`;
+    headerDiv.innerHTML = `
+        <h3>Informacije o pacijentu</h3>
+        <i id="deletePatientButton" class="fas fa-trash-alt delete-icon" title="Obriši pacijenta"></i>
+    `;
     patientProfileContainer.appendChild(headerDiv);
 
     const patientDiv = document.createElement('div');
@@ -172,11 +176,43 @@ function populatePatientInfo(patient) {
         <div class="opg-info">
             <h4>OPG snimci</h4>
             <div class="info-row">
-                <span class="info-label">Snimak:</span>
-                ${patient.opg ? `<img src="data:image/png;base64,${patient.opg}" alt="OPG Image" class="opg-image" />` : 'No OPG Image'}
+                <span class="info-label">OPG Slika:</span>
+                <span class="info-value"><img src="https://localhost:44376/api/patientrecord/${patient.patientRecordId}/opg" alt="OPG Image" style="max-width: 100%;"></span>
             </div>
         </div>
     `;
 
     patientProfileContainer.appendChild(patientDiv);
+
+    // Set up the delete button
+    setupDeleteButton(patientId);
 }
+
+function setupDeleteButton(patientId) {
+    const deleteButton = document.getElementById('deletePatientButton');
+    if (deleteButton) {
+        deleteButton.addEventListener('click', () => {
+            if (confirm('Da li ste sigurni da želite obrisati ovog pacijenta?')) {
+                deletePatient(patientId);
+            }
+        });
+    }
+}
+
+async function deletePatient(patientId) {
+    try {
+        const response = await fetch(`${urlPatient}/${patientId}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        window.location.href = 'patients.html';
+    } catch (error) {
+        console.error('Error deleting patient:', error);
+        alert('Došlo je do greške prilikom brisanja pacijenta.');
+    }
+}
+

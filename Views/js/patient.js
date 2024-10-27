@@ -35,6 +35,21 @@ function getAllPatients() {
         });
 }
 
+function deletePatient(patientId) {
+    fetch(`${urlPatient}/${patientId}`, {
+        method: 'DELETE'
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            // Remove the patient from the list and re-display
+            allPatients = allPatients.filter(patient => patient.patientId !== patientId);
+            displayAllPatients(allPatients);
+        })
+        .catch(error => console.error('There has been a problem with your delete operation:', error));
+}
+
 function setupAutocomplete() {
     const patientInput = document.getElementById('personalName');
     const autocompleteList = document.getElementById('autocomplete-list-appointment');
@@ -94,7 +109,9 @@ function displayAllPatients(patients) {
             <td>${patient.phoneNumber}</td>
             <td>${patient.jmbg}</td>
             <td>${patient.email}</td>
-            <td>${patient.isCritical}</td>
+            <td>
+                <button class="delete-btn" onclick="deletePatient('${patient.patientId}')"><i class="fas fa-trash"></i></button>
+            </td>
         `;
         row.addEventListener('click', () => {
             window.location.href = `patientprofile.html?patientId=${patient.patientId}`;

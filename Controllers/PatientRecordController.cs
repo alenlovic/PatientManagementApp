@@ -43,6 +43,20 @@ namespace PatientManagementApp.Controllers
             return patientRecordEntity;
         }
 
+        //GET: api/PatientRecord/{id}/opg
+        [HttpGet("opg/{patientRecordId}")]
+        [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK, "image/jpeg")]
+        public async Task<IActionResult> GetOpgImageFile(int id)
+        {
+            var opgFile = await _context.PatientFiles.FirstOrDefaultAsync(pf => pf.PatientRecordId == id);
+            if(opgFile == null || opgFile.OPG == null)
+            {
+                return NotFound("OPG image not found.");
+            }
+
+            return File(opgFile.OPG, "image/jpg");
+        } 
+
         // PUT: api/PatientRecord/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -75,13 +89,29 @@ namespace PatientManagementApp.Controllers
         }
 
         // POST: api/PatientRecord
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<IActionResult> CreatePatientRecord([FromBody] PatientRecordEntity patientRecord)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreatePatientRecord([FromBody] PatientRecordEntity patientRecord, IFormFile? opgImageFile)
         {
             if (patientRecord == null)
             {
                 return BadRequest("Patient record data is null.");
+            }
+
+            if (opgImageFile != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await opgImageFile.CopyToAsync(memoryStream);
+                    var patientFile = new PatientFileEntity
+                    {
+                        PatientRecordId = patientRecord.PatientRecordId,
+                        OPG = memoryStream.ToArray()
+                    };
+
+                    _context.PatientFiles.Add(patientFile);
+                    await _context.SaveChangesAsync();
+                }
             }
 
             try
@@ -99,7 +129,7 @@ namespace PatientManagementApp.Controllers
 
         [HttpPost("{id}/upload")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UploadOpgImageFile(int id, [FromForm] IFormFile opgImageFile)
+        public async Task<IActionResult> UploadOpgImageFile(int id, IFormFile? file)
         {
             var patientRecord = await _context.PatientRecords.FindAsync(id);
             if (patientRecord == null)
@@ -107,7 +137,7 @@ namespace PatientManagementApp.Controllers
                 return NotFound("Patient record not found.");
             }
 
-            if (opgImageFile == null)
+            if (file == null)
             {
                 return BadRequest("No file uploaded.");
             }
@@ -116,7 +146,7 @@ namespace PatientManagementApp.Controllers
             {
                 using (var memoryStream = new MemoryStream())
                 {
-                    await opgImageFile.CopyToAsync(memoryStream);
+                    await file.CopyToAsync(memoryStream);
                     var patientFile = new PatientFileEntity
                     {
                         PatientRecordId = id,
@@ -131,10 +161,10 @@ namespace PatientManagementApp.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (ex) here for debugging purposes
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
         // DELETE: api/PatientRecord/5
         [HttpDelete("{id}")]
