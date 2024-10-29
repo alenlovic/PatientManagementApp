@@ -1,0 +1,44 @@
+﻿/* General table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    background-color: dodgerblue;
+    color: white;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Specific table styles */
+.patients-table th, .patients-table td {
+    width: 11%;
+}
+
+.billing-table th, .billing-table td {
+    width: 16%;
+}
+
+.dschedule-table th, .dschedule-table td {
+    width: 33%;
+}
+
+.wschedule-table th, .wschedule-table td {
+    width: 20%;
+}

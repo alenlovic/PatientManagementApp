@@ -12,14 +12,13 @@
 <body>
     <div class="sidebar">
         <nav class="nav-links">
-            <a href="index.html" class="nav-item"><i class="fas fa-home"></i> Početna</a>
-            <a href="view/dailyschedule.html" class="nav-item"><i class="fas fa-calendar-day"></i> Dnevni raspored</a>
-            <a href="view/weeklyschedule.html" class="nav-item"><i class="fas fa-calendar-week"></i> Sedmični raspored</a>
-            <a href="view/patients.html" class="nav-item active"><i class="fas fa-user"></i> Pacijenti</a>
-            <a href="view/billing.html" class="nav-item"><i class="fas fa-dollar-sign"></i> Plaćanja</a>
+            <!--<a href="../index.html" class="nav-item"><i class="fas fa-home"></i> Početna</a>-->
+            <a href="dailyschedule.html" class="nav-item"><i class="fas fa-calendar-day"></i> Dnevni raspored</a>
+            <a href="weeklyschedule.html" class="nav-item"><i class="fas fa-calendar-week"></i> Sedmični raspored</a>
+            <a href="patients.html" class="nav-item active"><i class="fas fa-user"></i> Pacijenti</a>
+            <a href="billing.html" class="nav-item"><i class="fas fa-dollar-sign"></i> Plaćanja</a>
         </nav>
     </div>
-
     <div class="main-content">
         <div class="patients-container">
             <div class="button-wrapper">
@@ -35,7 +34,7 @@
                 <div id="autocomplete-list" class="autocomplete-items"></div>
             </div>
             <div class="table-wrapper">
-                <table class="patients-table" id="patientsTable" role="table">
+                <table class="patients-table" id="patientsTable">
                     <thead>
                         <tr>
                             <th scope="col">Ime (ime oca) prezime</th>
@@ -45,7 +44,6 @@
                             <th scope="col">Broj telefona</th>
                             <th scope="col">JMBG</th>
                             <th scope="col">Email</th>
-                            <th scope="col">Uredi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -64,19 +62,19 @@
     <div id="appointmentModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h3>Create New Appointment</h3>
+            <h3>Kreiraj novi termin</h3>
             <form id="appointmentForm">
-                <label for="personalName">Patient Name:</label>
+                <label for="personalName">Ime pacijenta:</label>
                 <input type="text" id="personalName" name="personalName" required>
                 <div id="autocomplete-list-appointment" class="autocomplete-appointment"></div>
 
-                <label for="appointmentDate">Appointment Date:</label>
+                <label for="appointmentDate">Datum:</label>
                 <input type="datetime-local" id="appointmentDate" name="appointmentDate" required>
 
-                <label for="appointmentNote">Appointment Note:</label>
+                <label for="appointmentNote">Napomena:</label>
                 <textarea id="appointmentNote" name="appointmentNote"></textarea>
 
-                <button type="submit">Save Appointment</button>
+                <button type="submit">Sačuvaj</button>
             </form>
         </div>
     </div>
@@ -85,4 +83,4 @@
     <script src="../js/addnewappointment.js"></script>
 
 </body>
-    </html>
+</html>

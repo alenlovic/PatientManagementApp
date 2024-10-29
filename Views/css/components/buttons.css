@@ -1,0 +1,21 @@
+﻿/* Button styles */
+.button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-left: 10px;
+}
+
+.add-patient, .add-appointment {
+    padding: 10px;
+    background-color: midnightblue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    .add-patient:hover, .add-appointment:hover {
+        background-color: dodgerblue;
+        border: solid 1px black;
+    }

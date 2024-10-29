@@ -1,0 +1,60 @@
+﻿/* Form container */
+.form-container {
+    margin: 0 auto;
+    padding: 20px;
+    width: 50%;
+}
+
+.form-title {
+    font-size: 26px;
+    font-weight: 600;
+    text-align: left;
+    padding-bottom: 6px;
+    color: var(--primary-color);
+    border-bottom: solid 1px var(--primary-color);
+    width: 80%;
+}
+
+.form-table {
+    display: flex;
+    width: 90%;
+    margin-top: 20px;
+}
+
+.main-user-info, .health-info {
+    display: flex;
+    flex-wrap: wrap;
+    width: 48%;
+}
+
+.user-input-box, .health-input-box {
+    width: 80%;
+    padding-bottom: 5px;
+}
+
+    .user-input-box label, .health-input-box label {
+        width: 90%;
+        color: var(--primary-color);
+        font-size: 18px;
+        font-weight: 400;
+        margin: 5px 0;
+    }
+
+    .user-input-box input, .health-input-box input {
+        height: 30px;
+        width: 100%;
+        border-radius: 7px;
+        outline: none;
+        border: 1px solid var(--secondary-color);
+        padding: 0 10px;
+    }
+
+.form-submit-btn {
+    margin-top: 10px;
+}
+
+    .form-submit-btn .btnsave {
+        display: inline-block;
+        width: 40%;
+        margin-top: 10px;
+    }

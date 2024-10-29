@@ -83,6 +83,8 @@ function populatePatientInfo(patient, patientId) {
     console.log('Rendering patient:', patient);
     const nameStyle = patient.isCritical ? 'style="color: red;"' : '';
 
+    const birthYear = new Date(patient.yearOfBirth).getFullYear();
+
     patientDiv.innerHTML = `
         <div class="personal-info">
             <h4>Lične informacije</h4>
@@ -92,7 +94,7 @@ function populatePatientInfo(patient, patientId) {
             </div>
             <div class="info-row">
                 <span class="info-label">Godina rođenja:</span>
-                <span class="info-value">${new Date(patient.yearOfBirth).toLocaleDateString()}</span>
+                <span class="info-value">${birthYear}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Mjesto rođenja:</span>

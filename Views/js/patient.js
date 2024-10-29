@@ -101,17 +101,17 @@ function displayAllPatients(patients) {
         const row = tableBody.insertRow();
         row.setAttribute('data-id', patient.patientId);
         const nameStyle = patient.isCritical ? 'style="color: red;"' : '';
+
+        const birthYear = new Date(patient.yearOfBirth).getFullYear();
+
         row.innerHTML = `
             <td ${nameStyle}>${patient.fullName}</td>
-            <td>${patient.yearOfBirth}</td>
+            <td>${birthYear}</td>
             <td>${patient.placeOfBirth}</td>
             <td>${patient.postalAddress}</td>
             <td>${patient.phoneNumber}</td>
             <td>${patient.jmbg}</td>
             <td>${patient.email}</td>
-            <td>
-                <button class="delete-btn" onclick="deletePatient('${patient.patientId}')"><i class="fas fa-trash"></i></button>
-            </td>
         `;
         row.addEventListener('click', () => {
             window.location.href = `patientprofile.html?patientId=${patient.patientId}`;

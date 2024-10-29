@@ -1,0 +1,7 @@
+﻿/* Reset specific styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+    padding: 10px;
+}

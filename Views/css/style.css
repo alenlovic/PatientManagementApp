@@ -1,0 +1,14 @@
+﻿/* Main Stylesheet */
+@import url('common/reset.css');
+@import url('common/variables.css');
+@import url('layout/header.css');
+@import url('layout/footer.css');
+@import url('layout/sidebar.css');
+@import url('pages/home.css');
+@import url('pages/patients.css');
+@import url('pages/billing.css');
+@import url('pages/schedule.css');
+@import url('components/buttons.css');
+@import url('components/forms.css');
+@import url('components/modals.css');
+@import url('components/tables.css');
