@@ -24,12 +24,12 @@
                     const row = document.createElement("tr");
 
                     const timeCell = document.createElement("td");
-                    const appointmentDate = moment(appointment.appointmentDate);
-                    if (!appointmentDate.isValid()) {
-                        console.error('Invalid date format:', appointment.AppointmentDate);
+                    const appointmentDate = new Date(appointment.appointmentDate);
+                    if (isNaN(appointmentDate)) {
+                        console.error('Invalid date format:', appointment.appointmentDate);
                         timeCell.textContent = 'Invalid Date';
                     } else {
-                        const formattedDate = appointmentDate.format('DD.MM.YYYY HH:mm');
+                        const formattedDate = appointmentDate.toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
                         timeCell.innerHTML = `<span class="time">${formattedDate}</span>`;
                     }
                     row.appendChild(timeCell);

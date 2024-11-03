@@ -50,7 +50,7 @@ namespace PatientManagementApp.Controllers
                 .Select(a => new
                 {
                     a.AppointmentDate,
-                    PatientName = a.Patient.PersonalName,
+                    PatientName = a.Patient != null ? a.Patient.PersonalName : "Unknown",
                     a.AppointmentNote
                 })
                 .ToList();
