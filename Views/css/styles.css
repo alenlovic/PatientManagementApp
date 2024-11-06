@@ -49,6 +49,14 @@
         color: #fff;
     }
 
+hr {
+    border: none;
+    height: 1px;
+    background-color: black;
+    margin: 20px 0;
+    border-radius: 5px;
+}
+
 body.index-body, html.index-body {
     height: 100%;
     margin: 0;
@@ -182,6 +190,26 @@ h3 {
     border-collapse: collapse;
     margin-bottom: 20px;
 }
+
+    .billing-table td {
+        position: relative;
+    }
+
+    .billing-table .edit-btn,
+    .billing-table .delete-btn {
+        display: inline-block;
+        margin-right: 5px; /* Adjust the margin as needed */
+        font-size: 1.2em;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+
+        .billing-table .edit-btn i,
+        .billing-table .delete-btn i {
+            font-size: 16px; /* Adjust the icon size as needed */
+        }
 
     .billing-table thead th {
         background-color: #1abc9c;
@@ -583,8 +611,11 @@ h3 {
 }
 
 .edit-btn {
-    color: #007bff; /* Blue color for edit */
+    color: #007bff; /* Plava boja za uređivanje */
+    top: 10px; /* Udaljenost od vrha */
+    right: 10px; /* Udaljenost od desne strane */
 }
+
 
 .delete-btn {
     color: #dc3545; /* Red color for delete */
@@ -863,3 +894,25 @@ h3 {
     .pagination span {
         margin: 0 10px;
     }
+
+
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.personal-info-patient {
+    position: relative; /* Relativno pozicioniranje kontejnera */
+    background-color: #ecf0f1;
+    padding: 0px 20px 20px 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.edit-icon {
+    cursor: pointer;
+    position: absolute; /* Apsolutno pozicioniranje */
+    top: 20px; /* Udaljenost od vrha */
+    right: 10px; /* Udaljenost od desne strane */
+}

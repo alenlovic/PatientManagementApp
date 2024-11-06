@@ -8,11 +8,114 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (patientId) {
         fetchPatientData(patientId);
-        setupDeleteButton(patientId); 
     } else {
         console.error('No patientId found in URL parameters');
     }
+
+    // Get the modal
+    var modal = document.getElementById("editModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on <span> (x), close the modal
+    if (span) {
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Get the modal
+    var medicalModal = document.getElementById("editMedicalModal");
+
+    // Get the <span> element that closes the modal
+    var medicalSpan = medicalModal.getElementsByClassName("close")[0];
+
+    // When the user clicks on <span> (x), close the modal
+    if (medicalSpan) {
+        medicalSpan.onclick = function () {
+            medicalModal.style.display = "none";
+        }
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == medicalModal) {
+            medicalModal.style.display = "none";
+        }
+    }
 });
+
+function setupEditButton(patientId, patient) {
+    const editButton = document.getElementById('editPatientButton');
+    if (editButton) {
+        editButton.addEventListener('click', () => {
+            openEditPopup(patientId, patient);
+        });
+    }
+
+    const editMedicalButton = document.getElementById('editMedicalButton');
+    if (editMedicalButton) {
+        editMedicalButton.addEventListener('click', () => {
+            openEditMedicalPopup(patient);
+        });
+    }
+}
+
+function openEditPopup(patientId, patient) {
+    const modal = document.getElementById("editModal");
+    const form = document.getElementById("editPatientForm");
+
+    // Populate the form with patient data
+    form.fullName.value = patient.fullName;
+    form.yearOfBirth.value = new Date(patient.yearOfBirth).getFullYear();
+    form.placeOfBirth.value = patient.placeOfBirth;
+    form.postalAddress.value = patient.postalAddress;
+    form.phoneNumber.value = patient.phoneNumber;
+    form.jmbg.value = patient.jmbg;
+    form.email.value = patient.email;
+    form.patientNote.value = patient.patientNote;
+
+    // Show the modal
+    modal.style.display = "flex";
+}
+
+async function savePatientData() {
+    const form = document.getElementById('editPatientForm');
+    const formData = new FormData(form);
+    const patientData = {};
+    formData.forEach((value, key) => {
+        patientData[key] = value;
+    });
+
+    try {
+        const response = await fetch(`${urlPatient}/${patientData.patientId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(patientData)
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        // Refresh the patient data
+        fetchPatientData(patientData.patientId);
+    } catch (error) {
+        console.error('Error saving patient data:', error);
+        alert('Došlo je do greške prilikom čuvanja podataka.');
+    }
+}
+
 
 async function fetchPatientData(patientId) {
     try {
@@ -59,7 +162,7 @@ function combineData(patient, billing, record) {
     return { ...patient, ...patientBilling, ...patientRecord };
 }
 
-function populatePatientInfo(patient, patientId) {
+function populatePatientInfo(combinedData, patientId) {
     const patientProfileContainer = document.querySelector('.patient-profile-container');
     if (!patientProfileContainer) {
         console.error('Patient profile container not found');
@@ -80,17 +183,19 @@ function populatePatientInfo(patient, patientId) {
     patientDiv.classList.add('patient-info');
 
     // Log patient data to verify
-    console.log('Rendering patient:', patient);
-    const nameStyle = patient.isCritical ? 'style="color: red;"' : '';
+    console.log('Rendering patient:', combinedData);
+    const nameStyle = combinedData.isCritical ? 'style="color: red;"' : '';
 
-    const birthYear = new Date(patient.yearOfBirth).getFullYear();
+    const birthYear = new Date(combinedData.yearOfBirth).getFullYear();
 
     patientDiv.innerHTML = `
-        <div class="personal-info">
+        <div class="personal-info-patient">
             <h4>Lične informacije</h4>
+            <hr>
+            <i id="editPatientButton" class="fas fa-edit edit-icon" title="Uredi informacije"></i>
             <div class="info-row">
                 <span class="info-label">Ime (ime oca) prezime:</span>
-                <span class="info-value" ${nameStyle}>${patient.fullName}</span>
+                <span class="info-value" ${nameStyle}>${combinedData.fullName}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Godina rođenja:</span>
@@ -98,123 +203,168 @@ function populatePatientInfo(patient, patientId) {
             </div>
             <div class="info-row">
                 <span class="info-label">Mjesto rođenja:</span>
-                <span class="info-value">${patient.placeOfBirth}</span>
+                <span class="info-value">${combinedData.placeOfBirth}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Adresa stanovanja:</span>
-                <span class="info-value">${patient.postalAddress}</span>
+                <span class="info-value">${combinedData.postalAddress}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Broj telefona:</span>
-                <span class="info-value">${patient.phoneNumber}</span>
+                <span class="info-value">${combinedData.phoneNumber}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">JMBG:</span>
-                <span class="info-value">${patient.jmbg}</span>
+                <span class="info-value">${combinedData.jmbg}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Email:</span>
-                <span class="info-value">${patient.email}</span>
+                <span class="info-value">${combinedData.email}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Critical:</span>
-                <span class="info-value">${patient.isCritical ? 'Yes' : 'No'}</span>
+                <span class="info-value">${combinedData.isCritical ? 'Yes' : 'No'}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Napomena:</span>
-                <span class="info-value">${patient.patientNote}</span>
+                <span class="info-value">${combinedData.patientNote}</span>
             </div>
         </div>
-        <div class="medical-info">
+        <div class="personal-info-patient">
             <h4>Medicinski karton</h4>
+            <hr>
+            <i id="editMedicalButton" class="fas fa-edit edit-icon" title="Uredi medicinski karton"></i>
             <div class="info-row">
                 <span class="info-label">Protetski rad:</span>
-                <span class="info-value">${patient.dentalProsthetics || 'N/A'}</span>
+                <span class="info-value">${combinedData.dentalProsthetics || 'N/A'}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Preležane bolesti:</span>
-                <span class="info-value">${patient.previousDiseases || 'N/A'}</span>
+                <span class="info-value">${combinedData.previousDiseases || 'N/A'}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Hronične bolesti:</span>
-                <span class="info-value">${patient.chronicDiseases || 'N/A'}</span>
+                <span class="info-value">${combinedData.chronicDiseases || 'N/A'}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Alergije:</span>
-                <span class="info-value">${patient.allergies || 'N/A'}</span>
+                <span class="info-value">${combinedData.allergies || 'N/A'}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Penicilin:</span>
-                <span class="info-value">${patient.penicilinAllergy || 'N/A'}</span>
+                <span class="info-value">${combinedData.penicilinAllergy || 'N/A'}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Napomena:</span>
-                <span class="info-value">${patient.recordNote || 'N/A'}</span>
+                <span class="info-value">${combinedData.recordNote || 'N/A'}</span>
             </div>
         </div>
         <div class="billing-info">
             <h4>Detalji o plaćanju</h4>
             <div class="info-row">
                 <span class="info-label">Metoda plaćanja:</span>
-                <span class="info-value">${patient.paymentMethod || 'N/A'}</span>
+                <span class="info-value">${combinedData.paymentMethod || 'N/A'}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Uplaćeno:</span>
-                <span class="info-value">${patient.currentAmount || 'N/A'}</span>
+                <span class="info-value">${combinedData.currentAmount || 'N/A'}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Datum zadnje uplate:</span>
-                <span class="info-value">${new Date(patient.dateOfLastPayment).toLocaleDateString() || 'N/A'}</span>
+                <span class="info-value">${new Date(combinedData.dateOfLastPayment).toLocaleDateString() || 'N/A'}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Ostalo za isplatiti:</span>
-                <span class="info-value">${patient.remainingAmount || 'N/A'}</span>
+                <span class="info-value">${combinedData.remainingAmount || 'N/A'}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Status dugovanja:</span>
-                <span class="info-value">${patient.billingStatus || 'N/A'}</span>
+                <span class="info-value">${combinedData.billingStatus || 'N/A'}</span>
             </div>
         </div>
         <div class="opg-info">
             <h4>OPG snimci</h4>
             <div class="info-row">
                 <span class="info-label">OPG Slika:</span>
-                <span class="info-value"><img src="https://localhost:44376/api/patientrecord/${patient.patientRecordId}/opg" alt="OPG Image" style="max-width: 100%;"></span>
+                <span class="info-value"><img src="" alt="OPG Image" style="max-width: 100%;"></span>
             </div>
         </div>
     `;
 
     patientProfileContainer.appendChild(patientDiv);
 
-    // Set up the delete button
     setupDeleteButton(patientId);
+    setupEditButton(patientId, combinedData); // Ensure this is called with the correct data
 }
+
 
 function setupDeleteButton(patientId) {
     const deleteButton = document.getElementById('deletePatientButton');
     if (deleteButton) {
-        deleteButton.addEventListener('click', () => {
-            if (confirm('Da li ste sigurni da želite obrisati ovog pacijenta?')) {
-                deletePatient(patientId);
+        deleteButton.addEventListener('click', async () => {
+            const confirmation = confirm('Are you sure you want to delete this patient?');
+            if (confirmation) {
+                try {
+                    const response = await fetch(`${urlPatient}/${patientId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    alert('Patient deleted successfully.');
+                    window.location.href = '/patients'; // Redirect to the patients list page
+                } catch (error) {
+                    console.error('Error deleting patient:', error);
+                    alert('An error occurred while deleting the patient.');
+                }
             }
         });
     }
 }
 
-async function deletePatient(patientId) {
+function openEditMedicalPopup(patient) {
+    const modal = document.getElementById("editMedicalModal");
+    const form = document.getElementById("editMedicalForm");
+
+    // Populate the form with medical record data
+    form.dentalProsthetics.value = patient.dentalProsthetics || '';
+    form.previousDiseases.value = patient.previousDiseases || '';
+    form.chronicDiseases.value = patient.chronicDiseases || '';
+    form.allergies.value = patient.allergies || '';
+    form.penicilinAllergy.value = patient.penicilinAllergy || '';
+    form.recordNote.value = patient.recordNote || '';
+
+    // Show the modal
+    modal.style.display = "flex";
+}
+
+async function saveMedicalData() {
+    const form = document.getElementById('editMedicalForm');
+    const formData = new FormData(form);
+    const medicalData = {};
+    formData.forEach((value, key) => {
+        medicalData[key] = value;
+    });
+
     try {
-        const response = await fetch(`${urlPatient}/${patientId}`, {
-            method: 'DELETE'
+        const response = await fetch(`${urlRecord}/${medicalData.patientId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(medicalData)
         });
 
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
 
-        window.location.href = 'patients.html';
+        // Refresh the patient data
+        fetchPatientData(medicalData.patientId);
     } catch (error) {
-        console.error('Error deleting patient:', error);
-        alert('Došlo je do greške prilikom brisanja pacijenta.');
+        console.error('Error saving medical data:', error);
+        alert('Došlo je do greške prilikom čuvanja medicinskih podataka.');
     }
 }
-
