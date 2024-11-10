@@ -220,7 +220,7 @@ function populatePatientInfo(combinedData, patientId) {
             </div>
             <div class="info-row">
                 <span class="info-label">Critical:</span>
-                <span class="info-value">${combinedData.isCritical ? 'Yes' : 'No'}</span>
+                <input type="checkbox" id="isCriticalCheckbox" ${combinedData.isCritical ? 'checked' : ''}>
             </div>
             <div class="info-row">
                 <span class="info-label">Napomena:</span>
@@ -301,6 +301,37 @@ function populatePatientInfo(combinedData, patientId) {
     setupDeleteButton(patientId);
     setupEditButton(patientId, combinedData); // Ensure this is called with the correct data
     setupRtgUpload(patientId);
+
+    // Add event listener for the critical checkbox
+    const criticalCheckbox = document.getElementById('isCriticalCheckbox');
+    if (criticalCheckbox) {
+        criticalCheckbox.addEventListener('change', async () => {
+            try {
+                const isCritical = criticalCheckbox.checked;
+                const urlParams = new URLSearchParams(window.location.search);
+                const patientId = urlParams.get('patientId');
+
+                const response = await fetch(`${urlPatient}/${patientId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify([{ op: 'replace', path: '/isCritical', value: isCritical }])
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                fetchPatientData(patientId);
+            } catch (error) {
+                console.error('Error updating critical status:', error);
+                alert('Došlo je do greške prilikom ažuriranja statusa.');
+            }
+        });
+    }
+
+
 }
 
 function setupDeleteButton(patientId) {

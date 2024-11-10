@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PatientManagementApp.Database;
@@ -161,5 +162,33 @@ namespace PatientManagementApp.Controllers
         {
             return _context.Patients.Any(e => e.PatientId == id);
         }
+
+        //PATCH: api/Patient/id
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdatePatientCriticalStatus(int id, [FromBody] JsonPatchDocument<PatientEntity> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                return BadRequest();
+            }
+
+            var patient = await _context.Patients.FindAsync(id);
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            patchDoc.ApplyTo(patient, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
     }
 }
