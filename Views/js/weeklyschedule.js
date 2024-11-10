@@ -10,6 +10,25 @@
             startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
         }
         return startOfWeek;
+
+    }
+
+    // Function to mark patient as present
+    function markAsPresent(patientBox) {
+        patientBox.style.backgroundColor = "green";
+        savePresence(patientId);
+    }
+
+    function savePresence(patientId) {
+        let presentPatients = JSON.parse(localStorage.getItem('presentPatients')) || [];
+        if (!presentPatients.includes(patientId)) {
+            presentPatients.push(patientId);
+        }
+        localStorage.setItem('presentPatients', JSON.stringify(presentPatients));
+    }
+
+    function loadPresence() {
+        return JSON.parse(localStorage.getItem('presentPatients')) || [];
     }
 
     // Function to fetch appointments for a specific date
@@ -51,6 +70,7 @@
             const wscheduleList = document.getElementById("wscheduleList");
             wscheduleList.innerHTML = ""; // Clear existing rows
 
+            const presentPatients = loadPresence();
             const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
             results.forEach((result, index) => {
                 const dayCell = document.createElement("td");
@@ -64,8 +84,15 @@
                         <span class="appointment-date">${formattedDate}</span>
                         <span class="patient-name" ${nameStyle}>${appointment.patientName || 'undefined'}</span>
                         <span class="service">${appointment.appointmentNote || 'undefined'}</span>
+                        <button class="mark-present-btn">Mark as Present</button>
                     `;
+                    if (presentPatients.includes(appointment.patientId)) {
+                        patientBox.style.backgroundColor = "green";
+                    }
                     dayCell.appendChild(patientBox);
+
+                    const markPresentBtn = patientBox.querySelector(".mark-present-btn");
+                    markPresentBtn.addEventListener("click", () => markAsPresent(patientBox));
                 });
                 wscheduleList.appendChild(dayCell);
             });

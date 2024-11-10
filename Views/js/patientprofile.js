@@ -12,46 +12,28 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('No patientId found in URL parameters');
     }
 
-    // Get the modal
-    var modal = document.getElementById("editModal");
+    setupModal('editModal');
+    setupModal('editMedicalModal');
+    setupRtgUpload(patientId);
+});
 
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
+function setupModal(modalId) {
+    const modal = document.getElementById(modalId);
+    const span = modal.getElementsByClassName('close')[0];
 
-    // When the user clicks on <span> (x), close the modal
     if (span) {
         span.onclick = function () {
-            modal.style.display = "none";
+            modal.style.display = 'none';
         }
     }
 
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
+    window.addEventListener('click', function (event) {
         if (event.target == modal) {
-            modal.style.display = "none";
+            modal.style.display = 'none';
         }
-    }
 
-    // Get the modal
-    var medicalModal = document.getElementById("editMedicalModal");
-
-    // Get the <span> element that closes the modal
-    var medicalSpan = medicalModal.getElementsByClassName("close")[0];
-
-    // When the user clicks on <span> (x), close the modal
-    if (medicalSpan) {
-        medicalSpan.onclick = function () {
-            medicalModal.style.display = "none";
-        }
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-        if (event.target == medicalModal) {
-            medicalModal.style.display = "none";
-        }
-    }
-});
+    });
+}
 
 function setupEditButton(patientId, patient) {
     const editButton = document.getElementById('editPatientButton');
@@ -67,14 +49,18 @@ function setupEditButton(patientId, patient) {
             openEditMedicalPopup(patient);
         });
     }
+
 }
 
 function openEditPopup(patientId, patient) {
     const modal = document.getElementById("editModal");
     const form = document.getElementById("editPatientForm");
 
-    // Populate the form with patient data
     form.fullName.value = patient.fullName;
+    form.fullName.readOnly = true; // Make the field read-only
+    form.fullName.style.backgroundColor = "#e9ecef"; // Gray out the field
+    form.fullName.style.pointerEvents = "none"; // Make it unavailable for clicking
+
     form.yearOfBirth.value = new Date(patient.yearOfBirth).getFullYear();
     form.placeOfBirth.value = patient.placeOfBirth;
     form.postalAddress.value = patient.postalAddress;
@@ -83,7 +69,7 @@ function openEditPopup(patientId, patient) {
     form.email.value = patient.email;
     form.patientNote.value = patient.patientNote;
 
-    // Show the modal
+    form.fullName.display = true;
     modal.style.display = "flex";
 }
 
@@ -94,6 +80,22 @@ async function savePatientData() {
     formData.forEach((value, key) => {
         patientData[key] = value;
     });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const patientId = urlParams.get('patientId');
+    patientData.patientId = patientId
+
+    // Extract firstName, lastName, and fathersName from fullName
+    const fullName = form.fullName.value;
+    const fullNameParts = fullName.split(' ');
+    patientData.firstName = fullNameParts[0];
+    patientData.lastName = fullNameParts[fullNameParts.length - 1];
+    patientData.fathersName = fullNameParts.slice(1, -1).join(' ');
+
+    if (patientData.yearOfBirth) {
+        const year = parseInt(patientData.yearOfBirth, 10);
+        patientData.yearOfBirth = new Date(Date.UTC(year, 0, 1)).toISOString();
+    }
 
     try {
         const response = await fetch(`${urlPatient}/${patientData.patientId}`, {
@@ -115,7 +117,6 @@ async function savePatientData() {
         alert('Došlo je do greške prilikom čuvanja podataka.');
     }
 }
-
 
 async function fetchPatientData(patientId) {
     try {
@@ -145,11 +146,9 @@ async function fetchPatientData(patientId) {
         console.log('Billing Data:', billing);
         console.log('Record Data:', record);
 
-        // Combine data for the specific patient
         const combinedData = combineData(patient, billing, record);
         console.log('Combined Data:', combinedData);
 
-        // Render the combined data
         populatePatientInfo(combinedData, patientId);
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -170,7 +169,6 @@ function populatePatientInfo(combinedData, patientId) {
     }
     patientProfileContainer.innerHTML = ''; // Clear any existing content
 
-    // Add the header
     const headerDiv = document.createElement('div');
     headerDiv.classList.add('header-container');
     headerDiv.innerHTML = `
@@ -182,7 +180,6 @@ function populatePatientInfo(combinedData, patientId) {
     const patientDiv = document.createElement('div');
     patientDiv.classList.add('patient-info');
 
-    // Log patient data to verify
     console.log('Rendering patient:', combinedData);
     const nameStyle = combinedData.isCritical ? 'style="color: red;"' : '';
 
@@ -259,8 +256,9 @@ function populatePatientInfo(combinedData, patientId) {
                 <span class="info-value">${combinedData.recordNote || 'N/A'}</span>
             </div>
         </div>
-        <div class="billing-info">
+        <div class="personal-info-patient">
             <h4>Detalji o plaćanju</h4>
+            <hr>
             <div class="info-row">
                 <span class="info-label">Metoda plaćanja:</span>
                 <span class="info-value">${combinedData.paymentMethod || 'N/A'}</span>
@@ -282,12 +280,19 @@ function populatePatientInfo(combinedData, patientId) {
                 <span class="info-value">${combinedData.billingStatus || 'N/A'}</span>
             </div>
         </div>
-        <div class="opg-info">
-            <h4>OPG snimci</h4>
-            <div class="info-row">
-                <span class="info-label">OPG Slika:</span>
-                <span class="info-value"><img src="" alt="OPG Image" style="max-width: 100%;"></span>
+        <div class="personal-info-patient rtg-upload">
+            <div class="rtg-header">
+            <h4>RTG snimci</h4>
+            <i id="uploadRtgButton" class="fas fa-plus upload-icon" title="Upload RTG snimak"></i>
             </div>
+            <hr>
+            <div class="info-row">
+            <span class="info-label">RTG Slika:</span>
+            <span class="info-value"><img id="rtgImage" src="" alt="RTG Image" style="max-width: 100%;"></span>
+            </div>
+            <form id="rtgUploadForm" enctype="multipart/form-data" style="display: none;">
+            <input type="file" id="rtgFileInput" name="file" accept="image/*">
+            </form>
         </div>
     `;
 
@@ -295,14 +300,14 @@ function populatePatientInfo(combinedData, patientId) {
 
     setupDeleteButton(patientId);
     setupEditButton(patientId, combinedData); // Ensure this is called with the correct data
+    setupRtgUpload(patientId);
 }
-
 
 function setupDeleteButton(patientId) {
     const deleteButton = document.getElementById('deletePatientButton');
     if (deleteButton) {
         deleteButton.addEventListener('click', async () => {
-            const confirmation = confirm('Are you sure you want to delete this patient?');
+            const confirmation = confirm('Da li ste sigurni da želite izbrisati pacijenta?');
             if (confirmation) {
                 try {
                     const response = await fetch(`${urlPatient}/${patientId}`, {
@@ -313,8 +318,7 @@ function setupDeleteButton(patientId) {
                         throw new Error('Network response was not ok');
                     }
 
-                    alert('Patient deleted successfully.');
-                    window.location.href = '/patients'; // Redirect to the patients list page
+                    window.location.href = 'view/patients.html'
                 } catch (error) {
                     console.error('Error deleting patient:', error);
                     alert('An error occurred while deleting the patient.');
@@ -348,8 +352,14 @@ async function saveMedicalData() {
         medicalData[key] = value;
     });
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const patientId = urlParams.get('patientId');
+    medicalData.patientId = patientId;
+
+    console.log('Medical Data to be sent:', medicalData);
+
     try {
-        const response = await fetch(`${urlRecord}/${medicalData.patientId}`, {
+        const response = await fetch(`${urlRecord}/${patientId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -368,3 +378,52 @@ async function saveMedicalData() {
         alert('Došlo je do greške prilikom čuvanja medicinskih podataka.');
     }
 }
+
+function setupRtgUpload(patientId) {
+    const uploadButton = document.getElementById('uploadRtgButton');
+    const fileInput = document.getElementById('rtgFileInput');
+
+    if (uploadButton && fileInput) {
+        uploadButton.addEventListener('click', () => {
+            try {
+                fileInput.click();
+            } catch (error) {
+                console.error('Error opening file input:', error);
+            }
+        });
+
+        fileInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('patientId', patientId);
+
+                try {
+                    const response = await fetch(`${urlPatient}/uploadRtg`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const result = await response.json();
+                    const rtgImage = document.getElementById('rtgImage');
+                    if (rtgImage) {
+                        rtgImage.src = result.imageUrl;
+                    }
+                    alert('RTG snimak uspješno uploadovan.');
+                } catch (error) {
+                    console.error('Error uploading RTG image:', error);
+                    alert('Došlo je do greške prilikom uploadovanja RTG snimka.');
+                }
+            }
+        });
+    } else {
+        console.error('Upload button or file input not found');
+    }
+}
+
+

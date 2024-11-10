@@ -150,14 +150,16 @@ namespace PatientManagementApp.Controllers
                     var patientFile = new PatientFileEntity
                     {
                         PatientRecordId = id,
-                        OPG = memoryStream.ToArray()
+                        OPG = memoryStream.ToArray(),
+                        UploadedAt = DateTime.UtcNow
                     };
 
                     _context.PatientFiles.Add(patientFile);
                     await _context.SaveChangesAsync();
                 }
 
-                return Ok(new { message = "File uploaded successfully" });
+                var imageUrl = Url.Action("GetOpgImageFile", new { id });
+                return Ok(new { message = "File uploaded successfully", imageUrl });
             }
             catch (Exception ex)
             {

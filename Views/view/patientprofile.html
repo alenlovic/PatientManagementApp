@@ -30,6 +30,7 @@
             <span class="close">&times;</span>
             <h3>Uredi informacije o pacijentu</h3>
             <form id="editPatientForm">
+                <input type="hidden" name="patientId">
                 <label for="fullName">Ime (ime oca) prezime:</label>
                 <input type="text" id="fullName" name="fullName" required>
                 <label for="yearOfBirth">Godina rođenja:</label>
@@ -57,6 +58,7 @@
             <span class="close">&times;</span>
             <h3>Uredi medicinski karton</h3>
             <form id="editMedicalForm">
+                <input type="hidden" name="patientId">
                 <label for="dentalProsthetics">Protetski rad:</label>
                 <input type="text" id="dentalProsthetics" name="dentalProsthetics">
                 <label for="previousDiseases">Preležane bolesti:</label>
