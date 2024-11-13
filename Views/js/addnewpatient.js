@@ -32,8 +32,7 @@ saveButton.addEventListener("click", async function () {
             phoneNumber: document.getElementById("phonenumber").value.trim(),
             yearOfBirth: new Date(document.getElementById("yearofbirth").value).toISOString(), 
             email: document.getElementById("email").value.trim(),
-            isCritical: false, // Assuming default value
-            patientNote: "", // Assuming default value
+            isCritical: false
         };
 
         const patientResponse = await fetch("https://localhost:44376/api/patient", {

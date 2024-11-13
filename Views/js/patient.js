@@ -14,7 +14,6 @@ const phoneNumber = document.getElementById("phoneNumber");
 const jmbg = document.getElementById("jmbg");
 const email = document.getElementById("email");
 const isCritical = document.getElementById("isCritical");
-/*const note = document.getElementById("note");*/
 
 let allPatients = [];
 

@@ -1,40 +1,66 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
-    // Function to calculate the start date for the current week (Monday)
     function getStartOfWeek() {
         const today = new Date();
         const dayOfWeek = today.getDay();
         const startOfWeek = new Date(today);
 
-        // Adjust to the previous Monday if today is not Monday
         if (dayOfWeek !== 1) {
             startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
         }
         return startOfWeek;
-
     }
 
-    // Function to mark patient as present
-    function markAsPresent(patientBox) {
-        patientBox.style.backgroundColor = "green";
+    function getCurrentWeekIdentifier() {
+        const startOfWeek = getStartOfWeek();
+        const year = startOfWeek.getFullYear();
+        const weekNumber = Math.ceil((((startOfWeek - new Date(startOfWeek.getFullYear(), 0, 1)) / 86400000) + startOfWeek.getDay() + 1) / 7);
+        return `${year}-W${weekNumber}`;
+    }
+
+    function markAsPresent(patientBox, patientId) {
+        if (!patientId) {
+            console.error("Invalid patientId:", patientId);
+            return;
+        }
+        console.log(`Marking patient ${patientId} as present`);
+        patientBox.style.backgroundColor = "lightgreen";
         savePresence(patientId);
     }
 
     function savePresence(patientId) {
-        let presentPatients = JSON.parse(localStorage.getItem('presentPatients')) || [];
+        if (!patientId) {
+            console.error("Invalid patientId:", patientId);
+            return;
+        }
+        const weekIdentifier = getCurrentWeekIdentifier();
+        let presentPatients = [];
+        try {
+            presentPatients = JSON.parse(localStorage.getItem(weekIdentifier)) || [];
+        } catch (e) {
+            console.error("Error parsing localStorage data:", e);
+        }
         if (!presentPatients.includes(patientId)) {
             presentPatients.push(patientId);
         }
-        localStorage.setItem('presentPatients', JSON.stringify(presentPatients));
+        localStorage.setItem(weekIdentifier, JSON.stringify(presentPatients));
+        console.log(`Saved presence for patient ${patientId} in week ${weekIdentifier}`);
     }
 
     function loadPresence() {
-        return JSON.parse(localStorage.getItem('presentPatients')) || [];
+        const weekIdentifier = getCurrentWeekIdentifier();
+        let presentPatients = [];
+        try {
+            presentPatients = JSON.parse(localStorage.getItem(weekIdentifier)) || [];
+        } catch (e) {
+            console.error("Error parsing localStorage data:", e);
+        }
+        console.log(`Loaded presence for week ${weekIdentifier}:`, presentPatients);
+        return presentPatients;
     }
 
-    // Function to fetch appointments for a specific date
     function fetchAppointmentsForDate(date) {
         const formattedDate = date.toISOString().split('T')[0];
-        console.log(`Fetching appointments for ${formattedDate}`); // Log the date being fetched
+        console.log(`Fetching appointments for ${formattedDate}`);
 
         return fetch(`https://localhost:44376/api/patientappointment/appointments?date=${formattedDate}`)
             .then(response => {
@@ -44,7 +70,7 @@
                 return response.json();
             })
             .then(data => {
-                console.log(`Fetched data for ${formattedDate}:`, data); // Log the fetched data
+                console.log(`Fetched data for ${formattedDate}:`, data);
                 return { date: formattedDate, appointments: data };
             })
             .catch(error => {
@@ -53,11 +79,8 @@
             });
     }
 
-    // Function to fetch and display appointments for the current week
     function fetchAndDisplayAppointments() {
         const startOfWeek = getStartOfWeek();
-
-        // Fetch appointments for each day from Monday to Friday
         const fetchPromises = [];
         for (let i = 0; i < 5; i++) {
             const date = new Date(startOfWeek);
@@ -65,10 +88,9 @@
             fetchPromises.push(fetchAppointmentsForDate(date));
         }
 
-        // Process all fetched data
         Promise.all(fetchPromises).then(results => {
             const wscheduleList = document.getElementById("wscheduleList");
-            wscheduleList.innerHTML = ""; // Clear existing rows
+            wscheduleList.innerHTML = "";
 
             const presentPatients = loadPresence();
             const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -82,9 +104,11 @@
                     const nameStyle = appointment.isCritical ? 'style="color: red;"' : '';
                     patientBox.innerHTML = `
                         <span class="appointment-date">${formattedDate}</span>
-                        <span class="patient-name" ${nameStyle}>${appointment.patientName || 'undefined'}</span>
-                        <span class="service">${appointment.appointmentNote || 'undefined'}</span>
-                        <button class="mark-present-btn">Mark as Present</button>
+                        <span class="patient-name" ${nameStyle}>${appointment.patientName || 'N/A'}</span>
+                        <span class="service">${appointment.appointmentNote || 'N/A'}</span>
+                        <button class="mark-present-btn" data-patient-id="${appointment.patientId}">
+                            <i class="fas fa-check"></i>
+                        </button>
                     `;
                     if (presentPatients.includes(appointment.patientId)) {
                         patientBox.style.backgroundColor = "green";
@@ -92,17 +116,18 @@
                     dayCell.appendChild(patientBox);
 
                     const markPresentBtn = patientBox.querySelector(".mark-present-btn");
-                    markPresentBtn.addEventListener("click", () => markAsPresent(patientBox));
+                    markPresentBtn.addEventListener("click", () => {
+                        const patientId = markPresentBtn.getAttribute("data-patient-id");
+                        markAsPresent(patientBox, patientId);
+                    });
                 });
                 wscheduleList.appendChild(dayCell);
             });
         });
     }
 
-    // Initial fetch and display of appointments
     fetchAndDisplayAppointments();
 
-    // Set up a timer to refresh data every Monday at 00:00
     const now = new Date();
     const nextMonday = new Date(now);
     nextMonday.setDate(now.getDate() + ((1 + 7 - now.getDay()) % 7));
@@ -111,6 +136,6 @@
     const timeUntilNextMonday = nextMonday - now;
     setTimeout(() => {
         fetchAndDisplayAppointments();
-        setInterval(fetchAndDisplayAppointments, 7 * 24 * 60 * 60 * 1000); // Refresh every week
+        setInterval(fetchAndDisplayAppointments, 7 * 24 * 60 * 60 * 1000);
     }, timeUntilNextMonday);
 });

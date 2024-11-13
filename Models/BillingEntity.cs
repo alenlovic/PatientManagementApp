@@ -11,10 +11,13 @@ namespace PatientManagementApp.Models
         public int PatientId { get; set; }
         public PatientEntity? Patient { get; set; }
         public string PaymentMethod { get; set; }
-        public int CurrentAmount { get; set; }
+        public int PayedAmount { get; set; }
+        public int ServiceCost { get; set; }
         public DateTime DateOfLastPayment { get; set; }
         public int RemainingAmount { get; set; }
         public string BillingStatus { get; set; }
+        public string BillingNote { get; set; }
+        public string ServiceName { get; set; }
         public DateTime CreatedAt { get; set; }
 
         public BillingEntity()

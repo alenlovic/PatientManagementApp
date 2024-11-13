@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PatientManagementApp.Database;
 
@@ -11,9 +12,11 @@ using PatientManagementApp.Database;
 namespace PatientManagementApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241113194625_billingedit")]
+    partial class billingedit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,9 +50,6 @@ namespace PatientManagementApp.Migrations
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PayedAmount")
-                        .HasColumnType("int");
-
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -57,12 +57,15 @@ namespace PatientManagementApp.Migrations
                     b.Property<int>("RemainingAmount")
                         .HasColumnType("int");
 
-                    b.Property<int>("ServiceCost")
-                        .HasColumnType("int");
-
                     b.Property<string>("ServiceName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("payedAmount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("serviceCost")
+                        .HasColumnType("int");
 
                     b.HasKey("BillingId");
 

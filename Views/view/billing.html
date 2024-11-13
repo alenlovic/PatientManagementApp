@@ -34,10 +34,13 @@
             <thead>
                 <tr>
                     <th>Pacijent</th>
+                    <th>Naziv usluge</th>
+                    <th>Cijena usluge</th>
                     <th>Način plaćanja</th>
-                    <th>Iznos za platiti</th>
+                    <th>Uplaćeno</th>
                     <th>Datum zadnje uplate</th>
                     <th>Preostali iznos</th>
+                    <th>Detalji</th>
                     <th>Uredi/izbriši</th>
                 </tr>
             </thead>
@@ -74,8 +77,11 @@
                 <label for="editRemainingAmount">Preostali iznos</label>
                 <input type="number" id="editRemainingAmount" name="remainingAmount" required>
 
-                <label for="editBillingStatus">Status plaćanja</label>
-                <input type="text" id="editBillingStatus" name="billingStatus" required>
+                <label for="editBillingNote">Detalji</label>
+                <input type="text" id="editBillingNote" name="billingNote" required>
+
+                <!--<label for="editBillingStatus">Status plaćanja</label>
+                <input type="text" id="editBillingStatus" name="billingStatus" required>-->
 
                 <button type="submit">Sačuvaj</button>
             </form>
@@ -95,25 +101,33 @@
                 </div>
                 <input type="hidden" id="createPatientId" name="createPatientId">
                 <div class="form-group">
-                    <label for="createCurrentAmount">Iznos za platiti</label>
-                    <input type="number" id="createCurrentAmount" name="currentAmount" required>
+                    <label for="createServiceName">Naziv usluge</label>
+                    <input type="text" id="createServiceName" name="serviceName" required>
+                </div>
+                <div class="form-group">
+                    <label for="createServiceCost">Cijena usluge</label>
+                    <input type="number" id="createServiceCost" name="serviceCost" required>
                 </div>
                 <div class="form-group">
                     <label for="createPaymentMethod">Način plaćanja</label>
                     <input type="text" id="createPaymentMethod" name="paymentMethod" required>
                 </div>
                 <div class="form-group">
+                    <label for="createPayedAmount">Uplaćeno</label>
+                    <input type="number" id="createPayedAmount" name="payedAmount" required>
+                </div>
+                <div class="form-group">
                     <label for="createDateOfLastPayment">Datum plaćanja</label>
                     <input type="date" id="createDateOfLastPayment" name="dateOfLastPayment" required>
                 </div>
-                <!--<div class="form-group">
+                <div class="form-group">
                     <label for="createRemainingAmount">Preostali iznos</label>
                     <input type="number" id="createRemainingAmount" name="remainingAmount" required>
-                </div>-->
-                <!--<div class="form-group">
-                    <label for="createBillingStatus">Status plaćanja</label>
-                    <input type="text" id="createBillingStatus" name="billingStatus" required>
-                </div>-->
+                </div>
+                <div class="form-group">
+                    <label for="createBillingNote">Detalji</label>
+                    <input type="text" id="createBillingNote" name="billingNote" required>
+                </div>
                 <div class="form-group">
                     <button type="submit" class="submit-btn">Kreiraj</button>
                 </div>

@@ -219,7 +219,7 @@ function populatePatientInfo(combinedData, patientId) {
                 <span class="info-value">${combinedData.email}</span>
             </div>
             <div class="info-row">
-                <span class="info-label">Critical:</span>
+                <span class="info-label">SC:</span>
                 <input type="checkbox" id="isCriticalCheckbox" ${combinedData.isCritical ? 'checked' : ''}>
             </div>
             <div class="info-row">
@@ -349,7 +349,7 @@ function setupDeleteButton(patientId) {
                         throw new Error('Network response was not ok');
                     }
 
-                    window.location.href = 'view/patients.html'
+                    window.location.href = '../view/patients.html'
                 } catch (error) {
                     console.error('Error deleting patient:', error);
                     alert('An error occurred while deleting the patient.');

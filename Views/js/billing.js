@@ -39,18 +39,23 @@ function displayBillingData(billingData) {
 
         const billingId = billing.billingId;
         const patientName = billing.patient ? `${billing.patient.firstName} ${billing.patient.lastName}` : 'N/A';
+        const serviceName = billing.serviceName || 'N/A';
+        const serviceCost = billing.serviceCost || 'N/A';
         const paymentMethod = billing.paymentMethod || 'N/A';
-        const currentAmount = billing.currentAmount || 'N/A';
+        const payedAmount = billing.payedAmount || 'N/A';
         const dateOfLastPayment = billing.dateOfLastPayment ? new Date(billing.dateOfLastPayment).toLocaleDateString() : 'N/A';
         const remainingAmount = billing.remainingAmount || 'N/A';
-        const billingStatus = billing.billingStatus || 'N/A';
+        const billingNote = billing.billingNote || 'N/A';
 
         row.innerHTML = `
             <td>${patientName}</td>
+            <td>${serviceName}</td>
+            <td>${serviceCost}</td>
             <td>${paymentMethod}</td>
-            <td>${currentAmount}</td>
+            <td>${payedAmount}</td>
             <td>${dateOfLastPayment}</td>
             <td>${remainingAmount}</td>
+            <td>${billingNote}</td>
             <td>
                 <button class="edit-btn" onclick="editBilling('${billingId}')"><i class="fas fa-pen"></i></button>
                 <button class="delete-btn" onclick="deleteBilling('${billingId}')"><i class="fas fa-trash"></i></button>
@@ -166,9 +171,13 @@ createForm.addEventListener("submit", async (event) => {
 
     const newBilling = {
         patientId: createForm.createPatientId.value,
+        serviceName: createForm.createServiceName.value,
+        serviceCost: createForm.createServiceCost.value,
         paymentMethod: createForm.createPaymentMethod.value,
-        currentAmount: createForm.createCurrentAmount.value,
-        dateOfLastPayment: createForm.createDateOfLastPayment.value
+        payedAmount: createForm.createPayedAmount.value,
+        dateOfLastPayment: createForm.createDateOfLastPayment.value,
+        remainingAmount: createForm.createRemainingAmount.value,
+        billingNote: createForm.createBillingNote.value
     };
 
     try {
