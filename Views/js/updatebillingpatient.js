@@ -4,7 +4,7 @@ const editForm = document.getElementById("editForm");
 let currentEditId = null;
 
 async function editBilling(billingId) {
-    console.log(`Editing Billing ID: ${billingId}`); 
+    console.log(`Editing Billing ID: ${billingId}`);
     currentEditId = billingId;
     try {
         console.log(billingId);
@@ -14,20 +14,34 @@ async function editBilling(billingId) {
         }
         const billing = await response.json();
 
-        document.getElementById("editBillingId").value = billingId;
-        document.getElementById("editPatientId").value = billing.patient ? billing.patient.patientId : '';
-        document.getElementById("editPatientName").value = billing.patient ? billing.patient.personalName : 'N/A';
-        document.getElementById("editPaymentMethod").value = billing.paymentMethod || '';
-        document.getElementById("editCurrentAmount").value = billing.currentAmount || '';
-        document.getElementById("editDateOfLastPayment").value = billing.dateOfLastPayment ? new Date(billing.dateOfLastPayment).toISOString().split('T')[0] : '';
-        document.getElementById("editRemainingAmount").value = billing.remainingAmount || '';
-        document.getElementById("editBillingStatus").value = billing.billingStatus || '';
+        const editBillingId = document.getElementById("editBillingId");
+        const editPatientId = document.getElementById("editPatientId");
+        const editPatientName = document.getElementById("editPatientName");
+        const editPaymentMethod = document.getElementById("editPaymentMethod");
+        const editCurrentAmount = document.getElementById("editCurrentAmount");
+        const editDateOfLastPayment = document.getElementById("editDateOfLastPayment");
+        const editRemainingAmount = document.getElementById("editRemainingAmount");
+        const editBillingNote = document.getElementById("editBillingNote");
 
-        editModal.style.display = "flex";
+        if (editBillingId && editPatientId && editPatientName && editPaymentMethod && editCurrentAmount && editDateOfLastPayment && editRemainingAmount && editBillingNote) {
+            editBillingId.value = billingId;
+            editPatientId.value = billing.patient ? billing.patient.patientId : '';
+            editPatientName.value = billing.patient ? billing.patient.personalName : 'N/A';
+            editPaymentMethod.value = billing.paymentMethod || '';
+            editCurrentAmount.value = billing.currentAmount || '';
+            editDateOfLastPayment.value = billing.dateOfLastPayment ? new Date(billing.dateOfLastPayment).toISOString().split('T')[0] : '';
+            editRemainingAmount.value = billing.remainingAmount || '';
+            editBillingNote.value = billing.billingNote || '';
+
+            editModal.style.display = "flex";
+        } else {
+            console.error('One or more elements are not found in the DOM.');
+        }
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
     }
 }
+
 
 editForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -39,7 +53,8 @@ editForm.addEventListener("submit", async (event) => {
         remainingAmount: document.getElementById("editRemainingAmount").value,
         billingStatus: document.getElementById("editBillingStatus").value,
         dateOfLastPayment: document.getElementById("editDateOfLastPayment").value,
-        paymentMethod: document.getElementById("editPaymentMethod").value
+        paymentMethod: document.getElementById("editPaymentMethod").value,
+        billingNote: document.getElementById("editBillingNote").value
     };
 
     console.log("Updated Billing Data:", updatedBilling);

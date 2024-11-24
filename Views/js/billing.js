@@ -39,13 +39,13 @@ function displayBillingData(billingData) {
 
         const billingId = billing.billingId;
         const patientName = billing.patient ? `${billing.patient.firstName} ${billing.patient.lastName}` : 'N/A';
-        const serviceName = billing.serviceName || 'N/A';
-        const serviceCost = billing.serviceCost || 'N/A';
-        const paymentMethod = billing.paymentMethod || 'N/A';
-        const payedAmount = billing.payedAmount || 'N/A';
+        const serviceName = billing.serviceName || '';
+        const serviceCost = billing.serviceCost || '';
+        const paymentMethod = billing.paymentMethod || '';
+        const payedAmount = billing.payedAmount || '0';
         const dateOfLastPayment = billing.dateOfLastPayment ? new Date(billing.dateOfLastPayment).toLocaleDateString() : 'N/A';
-        const remainingAmount = billing.remainingAmount || 'N/A';
-        const billingNote = billing.billingNote || 'N/A';
+        const remainingAmount = billing.remainingAmount || '0';
+        const billingNote = billing.billingNote || '';
 
         row.innerHTML = `
             <td>${patientName}</td>

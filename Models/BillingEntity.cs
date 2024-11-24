@@ -16,7 +16,7 @@ namespace PatientManagementApp.Models
         public DateTime DateOfLastPayment { get; set; }
         public int RemainingAmount { get; set; }
         public string BillingStatus { get; set; }
-        public string BillingNote { get; set; }
+        public string? BillingNote { get; set; }
         public string ServiceName { get; set; }
         public DateTime CreatedAt { get; set; }
 
