@@ -36,11 +36,11 @@
 
                     const nameCell = document.createElement("td");
                     const nameStyle = appointment.isCritical ? 'style="color: red;"' : '';
-                    nameCell.innerHTML = `<span class="patient-name" ${nameStyle}>${appointment.patientName || 'undefined'}</span>`;
+                    nameCell.innerHTML = `<span class="patient-name" ${nameStyle}>${appointment.patientPersonalName || 'Nije pronađeno ime pacijenta'}</span>`;
                     row.appendChild(nameCell);
 
                     const serviceCell = document.createElement("td");
-                    serviceCell.innerHTML = `<span class="service">${appointment.appointmentNote || 'undefined'}</span>`;
+                    serviceCell.innerHTML = `<span class="service">${appointment.appointmentNote || ''}</span>`;
                     row.appendChild(serviceCell);
 
                     dscheduleList.appendChild(row);

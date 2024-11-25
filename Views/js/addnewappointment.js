@@ -32,6 +32,11 @@ form.addEventListener("submit", function (event) {
     const appointmentDate = document.getElementById("appointmentDate").value;
     const appointmentNote = document.getElementById("appointmentNote").value;
 
+    if (!personalName || !appointmentDate) {
+        alert('Personal name and appointment date are required.');
+        return;
+    }
+
     console.log(`Searching for patient: ${personalName}`); // Log the input patient name
 
     const apiUrl = `https://localhost:44376/api/patient/search?name=${encodeURIComponent(personalName)}`;
@@ -61,13 +66,13 @@ form.addEventListener("submit", function (event) {
 
             const appointment = {
                 PatientId: patient.patientId,
-                AppointmentDate: appointmentDate,
+                AppointmentDate: new Date(appointmentDate).toISOString(),
                 AppointmentNote: appointmentNote,
                 CreatedAt: new Date().toISOString()
             };
 
             // Send the appointment data to the server
-            return fetch('https://localhost:44376/api/patientappointment', {
+            return fetch('https://localhost:44376/api/patientappointment/appointments', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -90,4 +95,3 @@ form.addEventListener("submit", function (event) {
             alert(error.message); // Display the error message to the user
         });
 });
-

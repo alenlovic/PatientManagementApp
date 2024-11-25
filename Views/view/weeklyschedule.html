@@ -42,6 +42,22 @@
         </table>
     </div>
 
+    <!-- Edit Appointment Popup -->
+    <div id="editModal" class="edit-modal">
+        <div class="edit-modal-content">
+            <span class="close" onclick="document.getElementById('editPopup').style.display='none'">&times;</span>
+            <h2>Edit Appointment</h2>
+            <label for="editPatientName">Patient Name</label>
+            <input type="text" id="editPatientName" disabled>
+            <label for="editAppointmentDate">Appointment Date</label>
+            <input type="datetime-local" id="editAppointmentDate">
+            <label for="editAppointmentNote">Appointment Note</label>
+            <input type="text" id="editAppointmentNote">
+            <input type="hidden" id="editAppointmentId">
+            <button id="saveEditBtn">Save</button>
+        </div>
+    </div>
+
     <script src="../js/weeklyschedule.js"></script>
 </body>
 </html>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PatientManagementApp.Database;
 using PatientManagementApp.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PatientManagementApp.Controllers
 {
@@ -21,42 +22,67 @@ namespace PatientManagementApp.Controllers
             _context = context;
         }
 
-        // GET: api/PatientAppointment
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PatientAppointmentEntity>>> GetPatientAppointmentEntity()
+        // GET: api/PatientAppointment/appointments
+        [HttpGet("appointments")]
+        public async Task<IActionResult> GetAppointments([FromQuery] DateTime? date)
         {
-            return await _context.PatientAppointmentEntity.ToListAsync();
+            if (date == null)
+            {
+                return BadRequest(new { message = "Date parameter is required." });
+            }
+
+            var appointments = await _context.PatientAppointmentEntity
+                .Include(a => a.Patient)
+                .Where(a => a.AppointmentDate.Date == date.Value.Date)
+                .ToListAsync();
+
+            return Ok(appointments);
         }
 
-        // GET: api/PatientAppointment/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PatientAppointmentEntity>> GetPatientAppointmentEntity(int id)
+        // GET: api/PatientAppointment/appointments/5
+        [HttpGet("appointments/{id}")]
+        public async Task<ActionResult<PatientAppointmentEntity>> GetAppointmentById(int id)
         {
-            var patientAppointmentEntity = await _context.PatientAppointmentEntity.FindAsync(id);
+            var appointment = await _context.PatientAppointmentEntity
+                .Include(a => a.Patient) 
+                .FirstOrDefaultAsync(a => a.PatientAppointmentId == id);
 
-            if (patientAppointmentEntity == null)
+            if (appointment == null)
             {
                 return NotFound();
             }
 
-            return patientAppointmentEntity;
+            return Ok(appointment);
         }
 
-        [HttpGet("appointments")]
-        public IActionResult GetAppointmentsByDate([FromQuery] DateTime date)
-        {
-            var appointments = _context.PatientAppointmentEntity
-                .Where(a => a.AppointmentDate.Date == date.Date)
-                .Select(a => new
-                {
-                    a.AppointmentDate,
-                    PatientName = a.Patient != null ? a.Patient.PersonalName : "Unknown",
-                    a.AppointmentNote
-                })
-                .ToList();
+        //[HttpGet("appointmentsbydate")]
+        //public IActionResult GetAppointmentsByDate([FromQuery] DateTime? date)
+        //{
+        //    if (date == null)
+        //    {
+        //        return BadRequest(new { message = "Date parameter is required." });
+        //    }
 
-            return Ok(appointments);
-        }
+        //    try
+        //    {
+        //        var appointments = _context.PatientAppointmentEntity
+        //            .Include(a => a.Patient)
+        //            .Where(a => a.AppointmentDate.Date == date.Value.Date)
+        //            .Select(a => new
+        //            {
+        //                a.AppointmentDate,
+        //                PatientPersonalName = a.Patient != null ? a.Patient.PersonalName : "Unknown",
+        //                a.AppointmentNote
+        //            })
+        //            .ToList();
+
+        //        return Ok(appointments);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while retrieving appointments.", details = ex.Message });
+        //    }
+        //}
 
         // PUT: api/PatientAppointment/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -89,26 +115,44 @@ namespace PatientManagementApp.Controllers
             return NoContent();
         }
 
-        // POST: api/PatientAppointment
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        // POST: api/PatientAppointment/appointments
+        [HttpPost("appointments")]
         public async Task<ActionResult<PatientAppointmentEntity>> PostPatientAppointmentEntity(PatientAppointmentEntity patientAppointmentEntity)
         {
-            // Validate if the patient exists
             var patient = await _context.Patients.FindAsync(patientAppointmentEntity.PatientId);
             if (patient == null)
             {
                 return NotFound(new { message = "Patient not found" });
             }
 
-            _context.PatientAppointmentEntity.Add(patientAppointmentEntity);
-            await _context.SaveChangesAsync();
+            // Ensure the appointment date is correctly handled
+            patientAppointmentEntity.AppointmentDate = patientAppointmentEntity.AppointmentDate.Date;
 
-            return CreatedAtAction("GetPatientAppointmentEntity", new { id = patientAppointmentEntity.PatientAppointmentId }, patientAppointmentEntity);
+            try
+            {
+                // Check if an appointment already exists for the same patient on the same date
+                var existingAppointment = await _context.PatientAppointmentEntity
+                    .FirstOrDefaultAsync(a => a.PatientId == patientAppointmentEntity.PatientId && a.AppointmentDate == patientAppointmentEntity.AppointmentDate);
+
+                if (existingAppointment != null)
+                {
+                    return Conflict(new { message = "An appointment already exists for this patient on the specified date." });
+                }
+
+                _context.PatientAppointmentEntity.Add(patientAppointmentEntity);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetAppointmentById), new { id = patientAppointmentEntity.PatientAppointmentId }, patientAppointmentEntity);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while creating the appointment.", details = ex.Message });
+            }
         }
 
+
         // DELETE: api/PatientAppointment/5
-        [HttpDelete("{id}")]
+        [HttpDelete("appointments/{id}")]
         public async Task<IActionResult> DeletePatientAppointmentEntity(int id)
         {
             var patientAppointmentEntity = await _context.PatientAppointmentEntity.FindAsync(id);

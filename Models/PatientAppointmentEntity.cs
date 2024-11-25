@@ -19,8 +19,6 @@ namespace PatientManagementApp.Models
             CreatedAt = DateTime.UtcNow;
         }
 
-        [JsonIgnore]
-        [NotMapped]
         public string PatientPersonalName
         {
             get

@@ -343,13 +343,12 @@ h3 {
     }
 
 .form-submit-btn {
-    margin-top: 10px;
+    margin-top: 0px;
 }
 
     .form-submit-btn .btnsave {
         display: inline-block;
         width: 40%;
-        margin-top: 10px;
         font-size: 20px;
         padding: 10px;
         border: none;
@@ -363,7 +362,7 @@ h3 {
     .form-submit-btn .btncancel {
         display: inline-block;
         width: 40%;
-        margin-top: 40px;
+        margin-top: 30px;
         font-size: 20px;
         padding: 10px;
         border: none;
@@ -1021,4 +1020,59 @@ input[readonly] {
 
     .mark-present-btn i {
         font-size: 16px;
+    }
+
+/* Popup styling weeklyschedule*/
+.popup {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.popup-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 500px; /* Maximum width */
+    border-radius: 10px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+/* Edit and delete buttons */
+.edit-btn, .delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    margin-right: 5px;
+}
+
+    .edit-btn i, .delete-btn i {
+        font-size: 16px;
+    }
+
+    .edit-btn:hover i, .delete-btn:hover i {
+        color: #1abc9c; /* Change color on hover */
     }

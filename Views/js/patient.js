@@ -167,6 +167,12 @@ document.addEventListener('DOMContentLoaded', () => {
     getAllPatients();
     setupAutocomplete();
 
+    const addAppointmentBtn = document.getElementById('addAppointmentBtn');
+    addAppointmentBtn.addEventListener('click', () => {
+        const modal = document.getElementById('appointmentModal');
+        modal.style.display = 'block';
+    });
+
     // Autocomplete functionality
     const searchBox = document.getElementById("searchBox");
     searchBox.addEventListener("input", function () {

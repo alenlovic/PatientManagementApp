@@ -202,7 +202,7 @@ createForm.addEventListener("submit", async (event) => {
 });
 
 async function deleteBilling(billingId) {
-    const confirmDelete = confirm("Are you sure you want to delete this record?");
+    const confirmDelete = confirm("Da li ste sigurni da želite izbrisati ovaj zapis?");
     if (!confirmDelete) {
         return;
     }

@@ -28,7 +28,7 @@ namespace PatientManagementApp.Models
         public long JMBG { get; set; } 
         public string Email { get; set; }
         public bool IsCritical { get; set; }
-        public string PatientNote { get; set; }
+        public string? PatientNote { get; set; }
         public DateTime CreatedAt { get; set; }
 
         public PatientEntity()
