@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PatientManagementApp.Database;
 
@@ -11,9 +12,11 @@ using PatientManagementApp.Database;
 namespace PatientManagementApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241130164112_patientfileentity_patientid")]
+    partial class patientfileentity_patientid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,10 +165,7 @@ namespace PatientManagementApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientFileId"));
 
-                    b.Property<Guid>("FileName")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("FileOriginalName")
+                    b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -176,9 +176,6 @@ namespace PatientManagementApp.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("PatientFileId");
-
-                    b.HasIndex("FileName")
-                        .IsUnique();
 
                     b.HasIndex("PatientId");
 

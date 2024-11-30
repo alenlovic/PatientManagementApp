@@ -7,9 +7,10 @@ namespace PatientManagementApp.Models
     {
         [Key]
         public int PatientFileId { get; set; }
-        public int PatientRecordId { get; set; }
-        public PatientRecordEntity? PatientRecord { get; set; }
-        public byte[]? OPG { get; set; }
+        public int PatientId { get; set; }
+        public PatientEntity? Patient { get; set; }
+        public Guid FileName { get; set; }
+        public string FileOriginalName { get; set; }
         public DateTime UploadedAt { get; set; }
 
         public PatientFileEntity()

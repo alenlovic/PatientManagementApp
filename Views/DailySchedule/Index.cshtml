@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Dnevni raspored";
+}
+
+    <div class="dschedule-container">
+        <h3>@ViewData["Title"] - pacijenti</h3>
+        <table class="dschedule-table">
+            <thead>
+                <tr>
+                    <th>Termin</th>
+                    <th>Ime i prezime</th>
+                    <th>Usluga</th>
+                </tr>
+            </thead>
+            <tbody id="dscheduleList">
+                <!-- Appointments will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+@section Scripts {
+    <script src="~/js/dailyschedule.js"></script>
+}

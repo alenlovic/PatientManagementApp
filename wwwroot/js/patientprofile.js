@@ -2,9 +2,13 @@
 const urlBilling = 'https://localhost:44376/api/billing';
 const urlRecord = `https://localhost:44376/api/patientrecord`;
 
+function getPatientId() {
+    const editPatientForm = document.getElementById('editPatientForm');
+    return editPatientForm.dataset.patientid;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const patientId = urlParams.get('patientId');
+    const patientId = getPatientId();
 
     if (patientId) {
         fetchPatientData(patientId);
@@ -56,6 +60,11 @@ function openEditPopup(patientId, patient) {
     const modal = document.getElementById("editModal");
     const form = document.getElementById("editPatientForm");
 
+    if (!form) {
+        console.error('Form not found');
+        return;
+    }
+
     form.fullName.value = patient.fullName;
     form.fullName.readOnly = true; // Make the field read-only
     form.fullName.style.backgroundColor = "#e9ecef"; // Gray out the field
@@ -73,6 +82,12 @@ function openEditPopup(patientId, patient) {
     modal.style.display = "flex";
 }
 
+
+function closeEditPopup() {
+    const modal = document.getElementById("editModal");
+    modal.style.display = "none";
+}
+
 async function savePatientData() {
     const form = document.getElementById('editPatientForm');
     const formData = new FormData(form);
@@ -81,16 +96,14 @@ async function savePatientData() {
         patientData[key] = value;
     });
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const patientId = urlParams.get('patientId');
-    patientData.patientId = patientId
+    patientData.patientId = getPatientId();
 
     // Extract firstName, lastName, and fathersName from fullName
-    const fullName = form.fullName.value;
-    const fullNameParts = fullName.split(' ');
-    patientData.firstName = fullNameParts[0];
-    patientData.lastName = fullNameParts[fullNameParts.length - 1];
-    patientData.fathersName = fullNameParts.slice(1, -1).join(' ');
+    //const fullName = form.fullName.value;
+    //const fullNameParts = fullName.split(' ');
+    //patientData.firstName = fullNameParts[0];
+    //patientData.lastName = fullNameParts[fullNameParts.length - 1];
+    //patientData.fathersName = fullNameParts.slice(1, -1).join(' ');
 
     if (patientData.yearOfBirth) {
         const year = parseInt(patientData.yearOfBirth, 10);
@@ -112,6 +125,7 @@ async function savePatientData() {
 
         // Refresh the patient data
         fetchPatientData(patientData.patientId);
+        closeEditPopup();
     } catch (error) {
         console.error('Error saving patient data:', error);
         alert('Došlo je do greške prilikom čuvanja podataka.');
@@ -121,7 +135,7 @@ async function savePatientData() {
 async function fetchPatientData(patientId) {
     try {
         const billingUrl = `${urlBilling}?patientId=${patientId}`;
-        const recordUrl = `${urlRecord}?patientId=${patientId}`;
+        const recordUrl = `${urlRecord}/ByPatientId/${patientId}`;
 
         console.log('Fetching Billing Data from:', billingUrl);
         console.log('Fetching Record Data from:', recordUrl);
@@ -132,7 +146,7 @@ async function fetchPatientData(patientId) {
             fetch(recordUrl)
         ]);
 
-        if (!patientResponse.ok || !billingResponse.ok || !recordResponse.ok) {
+        if (!patientResponse.ok || !billingResponse.ok) {
             throw new Error('Network response was not ok');
         }
 
@@ -146,6 +160,10 @@ async function fetchPatientData(patientId) {
         console.log('Billing Data:', billing);
         console.log('Record Data:', record);
 
+        if (record.length === 0) {
+            console.warn('No record data found for patient:', patientId);
+        }
+
         const combinedData = combineData(patient, billing, record);
         console.log('Combined Data:', combinedData);
 
@@ -155,11 +173,14 @@ async function fetchPatientData(patientId) {
     }
 }
 
+
 function combineData(patient, billing, record) {
+    console.log('Combining data:', { patient, billing, record });
     const patientBilling = billing.length > 0 ? billing[0] : {};
-    const patientRecord = record.length > 0 ? record[0] : {};
+    const patientRecord = record;
     return { ...patient, ...patientBilling, ...patientRecord };
 }
+
 
 function populatePatientInfo(combinedData, patientId) {
     const patientProfileContainer = document.querySelector('.patient-profile-container');
@@ -256,45 +277,45 @@ function populatePatientInfo(combinedData, patientId) {
                 <span class="info-value">${combinedData.recordNote || 'N/A'}</span>
             </div>
         </div>
-        <div class="personal-info-patient">
+    `;
+
+    if (combinedData.remainingAmount && combinedData.remainingAmount > 0) {
+        const paymentDiv = document.createElement('div');
+        paymentDiv.classList.add('personal-info-patient');
+        paymentDiv.innerHTML = `
             <h4>Detalji o plaćanju</h4>
             <hr>
             <div class="info-row">
-                <span class="info-label">Metoda plaćanja:</span>
+                <span class="info-label">Naziv usluge:</span>
+                <span class="info-value">${combinedData.serviceName || 'N/A'}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Cijena usluge:</span>
+                <span class="info-value">${combinedData.serviceCost || 'N/A'}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Način plaćanja:</span>
                 <span class="info-value">${combinedData.paymentMethod || 'N/A'}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Uplaćeno:</span>
-                <span class="info-value">${combinedData.currentAmount || 'N/A'}</span>
+                <span class="info-value">${combinedData.payedAmount || 'N/A'}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Datum zadnje uplate:</span>
                 <span class="info-value">${new Date(combinedData.dateOfLastPayment).toLocaleDateString() || 'N/A'}</span>
             </div>
             <div class="info-row">
-                <span class="info-label">Ostalo za isplatiti:</span>
+                <span class="info-label">Preostali iznos:</span>
                 <span class="info-value">${combinedData.remainingAmount || 'N/A'}</span>
             </div>
             <div class="info-row">
-                <span class="info-label">Status dugovanja:</span>
-                <span class="info-value">${combinedData.billingStatus || 'N/A'}</span>
+                <span class="info-label">Detalji:</span>
+                <span class="info-value">${combinedData.billingNote || 'N/A'}</span>
             </div>
-        </div>
-        <div class="personal-info-patient rtg-upload">
-            <div class="rtg-header">
-            <h4>RTG snimci</h4>
-            <i id="uploadRtgButton" class="fas fa-plus upload-icon" title="Upload RTG snimak"></i>
-            </div>
-            <hr>
-            <div class="info-row">
-            <span class="info-label">RTG Slika:</span>
-            <span class="info-value"><img id="rtgImage" src="" alt="RTG Image" style="max-width: 100%;"></span>
-            </div>
-            <form id="rtgUploadForm" enctype="multipart/form-data" style="display: none;">
-            <input type="file" id="rtgFileInput" name="file" accept="image/*">
-            </form>
-        </div>
-    `;
+        `;
+        patientDiv.appendChild(paymentDiv);
+    }
 
     patientProfileContainer.appendChild(patientDiv);
 
@@ -308,8 +329,7 @@ function populatePatientInfo(combinedData, patientId) {
         criticalCheckbox.addEventListener('change', async () => {
             try {
                 const isCritical = criticalCheckbox.checked;
-                const urlParams = new URLSearchParams(window.location.search);
-                const patientId = urlParams.get('patientId');
+                const patientId = getPatientId();
 
                 const response = await fetch(`${urlPatient}/${patientId}`, {
                     method: 'PATCH',
@@ -330,8 +350,6 @@ function populatePatientInfo(combinedData, patientId) {
             }
         });
     }
-
-
 }
 
 function setupDeleteButton(patientId) {
@@ -349,7 +367,7 @@ function setupDeleteButton(patientId) {
                         throw new Error('Network response was not ok');
                     }
 
-                    window.location.href = '../view/patients.html'
+                    window.location.href = '/Patients';
                 } catch (error) {
                     console.error('Error deleting patient:', error);
                     alert('An error occurred while deleting the patient.');
@@ -375,6 +393,12 @@ function openEditMedicalPopup(patient) {
     modal.style.display = "flex";
 }
 
+function closeEditMedicalPopup(patient) {
+    const modal = document.getElementById("editMedicalModal");
+    // Show the modal
+    modal.style.display = "none";
+}
+
 async function saveMedicalData() {
     const form = document.getElementById('editMedicalForm');
     const formData = new FormData(form);
@@ -383,14 +407,12 @@ async function saveMedicalData() {
         medicalData[key] = value;
     });
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const patientId = urlParams.get('patientId');
-    medicalData.patientId = patientId;
+    medicalData.patientId = getPatientId();
 
     console.log('Medical Data to be sent:', medicalData);
 
     try {
-        const response = await fetch(`${urlRecord}/${patientId}`, {
+        const response = await fetch(`${urlRecord}/${medicalData.patientId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -404,6 +426,7 @@ async function saveMedicalData() {
 
         // Refresh the patient data
         fetchPatientData(medicalData.patientId);
+        closeEditMedicalPopup();
     } catch (error) {
         console.error('Error saving medical data:', error);
         alert('Došlo je do greške prilikom čuvanja medicinskih podataka.');
@@ -426,6 +449,13 @@ function setupRtgUpload(patientId) {
         fileInput.addEventListener('change', async (event) => {
             const file = event.target.files[0];
             if (file) {
+                // Check file size (example: limit to 5MB)
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                if (file.size > maxSize) {
+                    alert('File size exceeds the 5MB limit.');
+                    return;
+                }
+
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('patientId', patientId);
@@ -437,18 +467,19 @@ function setupRtgUpload(patientId) {
                     });
 
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        const errorText = await response.text();
+                        throw new Error(`Network response was not ok: ${errorText}`);
                     }
 
                     const result = await response.json();
                     const rtgImage = document.getElementById('rtgImage');
                     if (rtgImage) {
-                        rtgImage.src = result.imageUrl;
+                        rtgImage.src = `data:image/jpeg;base64,${result.imageBase64}`;
                     }
-                    alert('RTG snimak uspješno uploadovan.');
+                    alert('RTG image uploaded successfully.');
                 } catch (error) {
                     console.error('Error uploading RTG image:', error);
-                    alert('Došlo je do greške prilikom uploadovanja RTG snimka.');
+                    alert(`Error uploading RTG image: ${error.message}`);
                 }
             }
         });
@@ -456,5 +487,3 @@ function setupRtgUpload(patientId) {
         console.error('Upload button or file input not found');
     }
 }
-
-

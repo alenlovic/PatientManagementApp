@@ -13,7 +13,7 @@ namespace PatientManagementApp
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllers().AddNewtonsoftJson(options =>
+            builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
@@ -59,9 +59,10 @@ namespace PatientManagementApp
                 {
                     c.SwaggerEndpoint("v1/swagger.json", "Patients API V1");
                 });
+
+                app.UseHttpsRedirection();
             }
 
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -72,6 +73,10 @@ namespace PatientManagementApp
             app.UseStaticFiles();
 
             app.MapControllers();
+
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

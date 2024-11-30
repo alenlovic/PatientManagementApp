@@ -4,21 +4,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using PatientManagementApp.Database;
+using PatientManagementApp.DTO.Requests;
 using PatientManagementApp.Models;
 
-namespace PatientManagementApp.Controllers
+namespace PatientManagementApp.ApiControllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class PatientFileController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public PatientFileController(ApplicationDbContext context)
+        public PatientFileController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         // GET: api/PatientFile
@@ -29,17 +34,32 @@ namespace PatientManagementApp.Controllers
         }
 
         // GET: api/PatientFile/5
-        [HttpGet("download/{id}")]
+        [HttpGet("preview/{fileName:guid}")]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK, "image/jpeg")]
-        public async Task<ActionResult<PatientFileEntity>> DownloadFile(int id)
+        public async Task<ActionResult<PatientFileEntity>> DownloadFile(Guid fileName, bool download = false)
         {
-            var patientFile = await _context.PatientFiles.FindAsync(id);
-            if (patientFile == null || patientFile.OPG == null)
+            var patientFile = await _context.PatientFiles.FirstOrDefaultAsync(x => x.FileName == fileName);
+            if (patientFile == null)
             {
                 return NotFound();
             }
 
-            return File(patientFile.OPG, "application/octet-stream", $"RTG_{id}.jpg");
+            var filePath = Path.Combine(_environment.WebRootPath, "PatientFiles", patientFile.FileName.ToString());
+            if (!System.IO.File.Exists(filePath))
+                return NotFound();
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+
+            if (download)
+            {
+                return File(memory, "image/jpeg", patientFile.FileOriginalName);
+            }
+            return File(memory, "image/jpeg");
         }
 
         // PUT: api/PatientFile/5
@@ -77,27 +97,43 @@ namespace PatientManagementApp.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("uploadRtg")]
         [Consumes("multipart/form-data")]
-        public async Task<ActionResult<PatientFileEntity>> UploadRtg([FromBody] int PatientRecordId, IFormFile? file)
+        public async Task<ActionResult<PatientFileEntity>> UploadRtg([FromForm] UploadRTGRequest request)
         {
-            if (file == null || file.Length == 0)
+            if (request.File == null || request.File.Length == 0)
             {
                 return BadRequest("No file uploaded.");
             }
 
-            using var memoryStream = new MemoryStream();
-            await file.CopyToAsync(memoryStream);
+            // Save the fileBytes to the database associated with the patientId
+            var patient = await _context.Patients.FindAsync(request.PatientId);
+            if (patient == null)
+            {
+                return NotFound("Patient not found.");
+            }
 
             var patientFile = new PatientFileEntity
             {
-                PatientRecordId = PatientRecordId,
-                OPG = memoryStream.ToArray(),
-                UploadedAt = DateTime.UtcNow
+                PatientId = request.PatientId,
+                FileName = Guid.NewGuid(),
+                FileOriginalName = request.File.FileName,
+                UploadedAt = DateTime.Now
             };
-
             _context.PatientFiles.Add(patientFile);
+
             await _context.SaveChangesAsync();
 
-            return Ok(new { imageUrl = $"/api/PatientFile/{patientFile.PatientFileId}" });
+            var filePath = Path.Combine(_environment.WebRootPath, "PatientFiles", patientFile.FileName.ToString());
+            if (System.IO.File.Exists(filePath))
+            {
+                return StatusCode(500);
+            }
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await request.File.CopyToAsync(fileStream);
+            }
+
+            return Ok(patientFile);
         }
 
         // DELETE: api/PatientFile/5

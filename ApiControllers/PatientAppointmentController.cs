@@ -7,9 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PatientManagementApp.Database;
 using PatientManagementApp.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace PatientManagementApp.Controllers
+namespace PatientManagementApp.ApiControllers
 {
     [Route("api/[controller]")]
     [ApiController]

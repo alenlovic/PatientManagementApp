@@ -113,7 +113,7 @@ function displayAllPatients(patients) {
             <td>${patient.email}</td>
         `;
         row.addEventListener('click', () => {
-            window.location.href = `patientprofile.html?patientId=${patient.patientId}`;
+            window.location.href = `/Patients/Profile/${patient.patientId}`;
         });
     });
 

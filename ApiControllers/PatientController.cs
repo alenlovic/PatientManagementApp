@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PatientManagementApp.Database;
+using PatientManagementApp.DTO.Requests;
 using PatientManagementApp.Models;
 
-namespace PatientManagementApp.Controllers
+namespace PatientManagementApp.ApiControllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -103,14 +104,27 @@ namespace PatientManagementApp.Controllers
         // PUT: api/Patient/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPatientEntity(int id, PatientEntity patientEntity)
+        public async Task<IActionResult> PutPatientEntity(int id, PatientUpdateRequest patientEntity)
         {
             if (id != patientEntity.PatientId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(patientEntity).State = EntityState.Modified;
+            var patient = _context.Patients.Find(id);
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            patient.YearOfBirth = patientEntity.YearOfBirth;
+            patient.PlaceOfBirth = patientEntity.PlaceOfBirth;
+            patient.PostalAddress = patientEntity.PostalAddress;
+            patient.PhoneNumber = patientEntity.PhoneNumber;
+            patient.JMBG = patientEntity.JMBG;
+            patient.Email = patientEntity.Email;
+            patient.IsCritical = patientEntity.IsCritical;
+            patient.PatientNote = patientEntity.PatientNote;
 
             try
             {

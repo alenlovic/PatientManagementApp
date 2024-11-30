@@ -2,7 +2,7 @@
 
 namespace PatientManagementApp.Controllers
 {
-    public class BillingController : Controller
+    public class DailyScheduleController : Controller
     {
         public IActionResult Index()
         {

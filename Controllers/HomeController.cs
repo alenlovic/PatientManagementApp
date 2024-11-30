@@ -2,11 +2,11 @@
 
 namespace PatientManagementApp.Controllers
 {
-    public class BillingController : Controller
+    public class HomeController : Controller
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction(nameof(DailyScheduleController.Index), "DailySchedule");
         }
     }
 }

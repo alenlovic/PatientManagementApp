@@ -53,26 +53,22 @@ saveButton.addEventListener("click", async function () {
         console.log("Patient created successfully:", patient);
 
         // Create patient record data
-        const formData = new FormData();
-        formData.append("PatientId", document.getElementById("patientId").value.trim());
-        formData.append("DentalProsthetics", document.getElementById("dentalprothetics").value.trim());
-        formData.append("PreviousDiseases", document.getElementById("previousdiseases").value.trim());
-        formData.append("ChronicDiseases", document.getElementById("chronicdiseases").value.trim());
-        formData.append("Allergies", document.getElementById("allergies").value.trim());
-        formData.append("PenicilinAllergy", document.getElementById("penicilin").value.trim());
-        formData.append("RecordNote", document.getElementById("recordnote").value.trim());
-
-        const opgFile = fileUpload.files[0];
-        if (opgFile) { // Provera da li je OPG slika prisutna
-            console.log("OPG file selected:", opgFile.name);
-            formData.append("opgImageFile", opgFile);
-        } else {
-            console.log("No OPG file selected");
-        }
+        const patientRecordData = {
+            PatientId: patient.patientId,
+            DentalProsthetics: document.getElementById("dentalprothetics").value.trim(),
+            PreviousDiseases: document.getElementById("previousdiseases").value.trim(),
+            ChronicDiseases: document.getElementById("chronicdiseases").value.trim(),
+            Allergies: document.getElementById("allergies").value.trim(),
+            PenicilinAllergy: document.getElementById("penicilin").value.trim(),
+            RecordNote: document.getElementById("recordnote").value.trim()
+        };
 
         const patientRecordResponse = await fetch("https://localhost:44376/api/patientrecord", {
             method: "POST",
-            body: formData
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(patientRecordData)
         });
 
         if (!patientRecordResponse.ok) {
@@ -84,11 +80,14 @@ saveButton.addEventListener("click", async function () {
         console.log("Patient record created successfully:", patientRecord);
 
         // Upload OPG file if it exists
+        const opgFile = fileUpload.files[0];
         if (opgFile) {
+            console.log("OPG file selected:", opgFile.name);
             const formData = new FormData();
-            formData.append("opgImageFile", opgFile);
+            formData.append("file", opgFile);
+            formData.append("patientId", patient.patientId);
 
-            const fileUploadResponse = await fetch(`https://localhost:44376/api/patientrecord/${patientRecord.patientRecordId}/upload`, {
+            const fileUploadResponse = await fetch(`https://localhost:44376/api/patientfile/uploadRtg`, {
                 method: "POST",
                 body: formData
             });
@@ -101,6 +100,9 @@ saveButton.addEventListener("click", async function () {
             const fileUploadResult = await fileUploadResponse.json();
             console.log("File uploaded successfully:", fileUploadResult);
         }
+        else {
+            console.log("No OPG file selected");
+        }
 
     } catch (error) {
         console.error("Error:", error.message);
@@ -109,5 +111,5 @@ saveButton.addEventListener("click", async function () {
 });
 
 cancelButton.addEventListener("click", function () {
-    window.location.href = "patients.html";
+    window.location.href = "/Patients";
 });
