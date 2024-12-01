@@ -55,7 +55,6 @@ function setupEditButton(patientId, patient) {
             openEditMedicalPopup(patient);
         });
     }
-
 }
 
 function openEditPopup(patientId, patient) {
@@ -181,6 +180,25 @@ async function fetchPatientData(patientId) {
     }
 }
 
+async function deletePatientFile(fileId, patientId) {
+    try {
+        console.log(`Attempting to delete file with ID: ${fileId}`);
+        const response = await fetch(`https://localhost:44376/api/patientfile/${fileId}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        // Refresh the patient files
+        displayPatientFiles(patientId);
+    } catch (error) {
+        console.error('Error deleting patient file:', error);
+        alert('Došlo je do greške prilikom brisanja fajla.');
+    }
+}
+
 async function displayPatientFiles(patientId) {
     const filesContainer = document.getElementById('patient-files-container');
     if (!filesContainer) {
@@ -207,11 +225,42 @@ async function displayPatientFiles(patientId) {
 
             // Prikaz originalnog imena fajla
             if (file.fileOriginalName) {
-                const fileNameElement = document.createElement('p');
+                const fileNameElement = document.createElement('div');
                 fileNameElement.textContent = `${file.fileOriginalName}`;
                 fileElement.appendChild(fileNameElement);
             }
 
+            // Action icons container
+            const actionsContainer = document.createElement('div');
+            actionsContainer.classList.add('file-actions');
+
+            // Preview icon
+            const previewIcon = document.createElement('i');
+            previewIcon.classList.add('fas', 'fa-eye', 'action-icon');
+            previewIcon.title = 'Preview';
+            actionsContainer.appendChild(previewIcon);
+
+            // Download icon
+            const downloadIcon = document.createElement('a');
+            downloadIcon.href = `data:image/jpeg;base64,${file.imageBase64}`;
+            downloadIcon.download = file.fileOriginalName;
+            downloadIcon.classList.add('fas', 'fa-download', 'action-icon');
+            downloadIcon.title = 'Download';
+            actionsContainer.appendChild(downloadIcon);
+
+            // Delete icon
+            const deleteIcon = document.createElement('i');
+            deleteIcon.classList.add('fas', 'fa-trash', 'action-icon');
+            deleteIcon.title = 'Delete';
+            deleteIcon.addEventListener('click', () => {
+                const confirmation = confirm('Da li ste sigurni da želite izbrisati ovaj fajl?');
+                if (confirmation) {
+                    deletePatientFile(file.fileId, patientId);
+                }
+            });
+            actionsContainer.appendChild(deleteIcon);
+
+            fileElement.appendChild(actionsContainer);
             filesContainer.appendChild(fileElement);
         });
     } catch (error) {
@@ -369,7 +418,8 @@ function populatePatientInfo(combinedData, patientId) {
         filesDiv.innerHTML = `
         <h4>RTG snimci</h4>
         <hr>
-        <i id="" class="fas fa-plus add-icon" title="Dodaj RTG snimak"></i>
+        <i id="uploadRtgButton" class="fas fa-plus add-icon" title="Dodaj RTG snimak"></i>
+        <input type="file" id="rtgFileInput" style="display: none;" accept="image/*">
         <div class="info-row" id="patient-files-container">
             <img id="rtgImage" src="" alt="RTG snimak" style="display: none; max-width: 100%;">
         </div>
@@ -539,7 +589,6 @@ function setupRtgUpload(patientId) {
                         rtgImage.src = `data:image/jpeg;base64,${result.imageBase64}`;
                         rtgImage.style.display = 'block';
                     }
-                    alert('RTG image uploaded successfully.');
                 } catch (error) {
                     console.error('Error uploading RTG image', error);
                 }

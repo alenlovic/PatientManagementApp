@@ -137,10 +137,10 @@ namespace PatientManagementApp.ApiControllers
         }
 
         // DELETE: api/PatientFile/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePatientFileEntity(int id)
+        [HttpDelete("{fileId}")]
+        public async Task<IActionResult> DeletePatientFileEntity(Guid fileId)
         {
-            var patientFileEntity = await _context.PatientFiles.FindAsync(id);
+            var patientFileEntity = await _context.PatientFiles.FindAsync(fileId);
             if (patientFileEntity == null)
             {
                 return NotFound();

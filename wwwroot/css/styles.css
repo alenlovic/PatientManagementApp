@@ -914,6 +914,13 @@ h3 {
     right: 20px; /* Udaljenost od desne strane */
 }
 
+.add-icon {
+    cursor: pointer;
+    position: absolute; /* Apsolutno pozicioniranje */
+    top: 20px; /* Udaljenost od vrha */
+    right: 20px; /* Udaljenost od desne strane */
+}
+
 .rtg-header {
     display: flex;
     justify-content: space-between;
@@ -1075,4 +1082,19 @@ input[readonly] {
 
     .edit-btn:hover i, .delete-btn:hover i {
         color: #1abc9c; /* Change color on hover */
+    }
+
+.file-actions {
+    display: flex;
+    gap: 10px; /* Space between action icons */
+}
+
+.action-icon {
+    cursor: pointer;
+    font-size: 1.2em;
+    color: #2c3e50;
+}
+
+    .action-icon:hover {
+        color: #1abc9c;
     }
