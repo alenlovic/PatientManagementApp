@@ -104,6 +104,7 @@ saveButton.addEventListener("click", async function () {
             console.log("No OPG file selected");
         }
 
+        window.location.href = `/Patients/Profile/${patient.patientId}`;
     } catch (error) {
         console.error("Error:", error.message);
         alert(error.message); // Display the error message to the user

@@ -293,7 +293,7 @@ h3 {
 
 .form-container {
     margin: 0 auto;
-    padding: 20px;
+    padding: 0px 20px;
     width: 50%;
 }
 
@@ -310,7 +310,7 @@ h3 {
 .form-table {
     display: flex;
     width: 90%;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .main-user-info,
@@ -328,13 +328,13 @@ h3 {
     .user-input-box label, .health-input-box label {
         width: 90%;
         color: midnightblue;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 400;
         margin: 5px 0;
     }
 
     .user-input-box input, .health-input-box input {
-        height: 30px;
+        height: 27px;
         width: 100%;
         border-radius: 7px;
         outline: none;

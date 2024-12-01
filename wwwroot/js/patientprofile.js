@@ -1,6 +1,7 @@
 ﻿const urlPatient = 'https://localhost:44376/api/patient';
 const urlBilling = 'https://localhost:44376/api/billing';
 const urlRecord = `https://localhost:44376/api/patientrecord`;
+const urlFiles = `https://localhost:44376/api/patientfile`;
 
 function getPatientId() {
     const editPatientForm = document.getElementById('editPatientForm');
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (patientId) {
         fetchPatientData(patientId);
+        displayPatientFiles(patientId);
     } else {
         console.error('No patientId found in URL parameters');
     }
@@ -136,49 +138,93 @@ async function fetchPatientData(patientId) {
     try {
         const billingUrl = `${urlBilling}?patientId=${patientId}`;
         const recordUrl = `${urlRecord}/ByPatientId/${patientId}`;
+        const fileUrl = `${urlFiles}?patientId=${patientId}`
 
         console.log('Fetching Billing Data from:', billingUrl);
         console.log('Fetching Record Data from:', recordUrl);
+        console.log('Fetching files from:', fileUrl)
 
-        const [patientResponse, billingResponse, recordResponse] = await Promise.all([
+        const [patientResponse, billingResponse, recordResponse, filesResponse] = await Promise.all([
             fetch(`${urlPatient}/${patientId}`),
             fetch(billingUrl),
-            fetch(recordUrl)
+            fetch(recordUrl),
+            fetch(fileUrl)
         ]);
 
         if (!patientResponse.ok || !billingResponse.ok) {
             throw new Error('Network response was not ok');
         }
 
-        const [patient, billing, record] = await Promise.all([
+        const [patient, billing, record, files] = await Promise.all([
             patientResponse.json(),
             billingResponse.json(),
-            recordResponse.json()
+            recordResponse.json(),
+            filesResponse.json()
         ]);
 
         console.log('Patient Data:', patient);
         console.log('Billing Data:', billing);
         console.log('Record Data:', record);
+        console.log('Files data:', files)
 
         if (record.length === 0) {
             console.warn('No record data found for patient:', patientId);
         }
 
-        const combinedData = combineData(patient, billing, record);
+        const combinedData = combineData(patient, billing, record, files);
         console.log('Combined Data:', combinedData);
 
         populatePatientInfo(combinedData, patientId);
+        displayPatientFiles(files);
     } catch (error) {
         console.error('Error fetching data:', error);
     }
 }
 
+async function displayPatientFiles(patientId) {
+    const filesContainer = document.getElementById('patient-files-container');
+    if (!filesContainer) {
+        console.error('Files container not found');
+        return;
+    }
 
-function combineData(patient, billing, record) {
-    console.log('Combining data:', { patient, billing, record });
+    try {
+        const response = await fetch(`https://localhost:44376/api/patientfile?patientId=${patientId}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const files = await response.json();
+        console.log('Fetched files:', files);
+
+        filesContainer.innerHTML = ''; // Očisti prethodni sadržaj
+
+        files.forEach(file => {
+            console.log('Individual file object:', file); // Log strukture fajla
+
+            // Div za svaki fajl
+            const fileElement = document.createElement('div');
+            fileElement.classList.add('file-item');
+
+            // Prikaz originalnog imena fajla
+            if (file.fileOriginalName) {
+                const fileNameElement = document.createElement('p');
+                fileNameElement.textContent = `${file.fileOriginalName}`;
+                fileElement.appendChild(fileNameElement);
+            }
+
+            filesContainer.appendChild(fileElement);
+        });
+    } catch (error) {
+        console.error('Došlo je do greške prilikom dohvatanja fajlova:', error);
+    }
+}
+
+function combineData(patient, billing, record, files) {
+    console.log('Combining data:', { patient, billing, record, files });
     const patientBilling = billing.length > 0 ? billing[0] : {};
     const patientRecord = record;
-    return { ...patient, ...patientBilling, ...patientRecord };
+    const patientFiles = files.length > 0 ? files[0] : {};
+    return { ...patient, ...patientBilling, ...patientRecord, ...patientFiles };
 }
 
 
@@ -279,7 +325,7 @@ function populatePatientInfo(combinedData, patientId) {
         </div>
     `;
 
-    if (combinedData.remainingAmount && combinedData.remainingAmount > 0) {
+    if (combinedData.serviceCost > 0) {
         const paymentDiv = document.createElement('div');
         paymentDiv.classList.add('personal-info-patient');
         paymentDiv.innerHTML = `
@@ -317,10 +363,26 @@ function populatePatientInfo(combinedData, patientId) {
         patientDiv.appendChild(paymentDiv);
     }
 
+    if (combinedData.fileName) {
+        const filesDiv = document.createElement('div');
+        filesDiv.classList.add('personal-info-patient');
+        filesDiv.innerHTML = `
+        <h4>RTG snimci</h4>
+        <hr>
+        <i id="" class="fas fa-plus add-icon" title="Dodaj RTG snimak"></i>
+        <div class="info-row" id="patient-files-container">
+            <img id="rtgImage" src="" alt="RTG snimak" style="display: none; max-width: 100%;">
+        </div>
+            
+        </div>
+    `;
+        patientDiv.appendChild(filesDiv);
+    }
+
     patientProfileContainer.appendChild(patientDiv);
 
     setupDeleteButton(patientId);
-    setupEditButton(patientId, combinedData); // Ensure this is called with the correct data
+    setupEditButton(patientId, combinedData);
     setupRtgUpload(patientId);
 
     // Add event listener for the critical checkbox
@@ -461,7 +523,7 @@ function setupRtgUpload(patientId) {
                 formData.append('patientId', patientId);
 
                 try {
-                    const response = await fetch(`${urlPatient}/uploadRtg`, {
+                    const response = await fetch(`https://localhost:44376/api/patientfile/uploadRtg`, {
                         method: 'POST',
                         body: formData
                     });
@@ -475,15 +537,13 @@ function setupRtgUpload(patientId) {
                     const rtgImage = document.getElementById('rtgImage');
                     if (rtgImage) {
                         rtgImage.src = `data:image/jpeg;base64,${result.imageBase64}`;
+                        rtgImage.style.display = 'block';
                     }
                     alert('RTG image uploaded successfully.');
                 } catch (error) {
-                    console.error('Error uploading RTG image:', error);
-                    alert(`Error uploading RTG image: ${error.message}`);
+                    console.error('Error uploading RTG image', error);
                 }
             }
         });
-    } else {
-        console.error('Upload button or file input not found');
     }
 }

@@ -29,7 +29,7 @@ function displayBillingData(billingData) {
 
     if (billingData.length === 0) {
         const row = billingList.insertRow();
-        row.innerHTML = `<td colspan="7" style="text-align:center;">No billing records found</td>`;
+        row.innerHTML = `<td colspan="9" style="text-align:center;">Trenutno nema podataka o plaćanjima</td>`;
         return;
     }
 

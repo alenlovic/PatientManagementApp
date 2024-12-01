@@ -92,7 +92,7 @@ function displayAllPatients(patients) {
 
     if (patients.length === 0) {
         const row = tableBody.insertRow();
-        row.innerHTML = `<td colspan="12" style="text-align:center;">No patients found</td>`;
+        row.innerHTML = `<td colspan="12" style="text-align:center;">Trenutno nema pacijenata u bazi</td>`;
         return;
     }
 
