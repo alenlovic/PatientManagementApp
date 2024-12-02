@@ -32,6 +32,8 @@ form.addEventListener("submit", function (event) {
     const appointmentDate = document.getElementById("appointmentDate").value;
     const appointmentNote = document.getElementById("appointmentNote").value;
 
+    const dateObj = new Date(appointmentDate);
+    
     if (!personalName || !appointmentDate) {
         alert('Personal name and appointment date are required.');
         return;
@@ -66,10 +68,12 @@ form.addEventListener("submit", function (event) {
 
             const appointment = {
                 PatientId: patient.patientId,
-                AppointmentDate: new Date(appointmentDate).toISOString(),
+                AppointmentDate: new Date(dateObj.getTime() - (dateObj.getTimezoneOffset() * 60000)).toISOString(),  // Slanje u lokalnom vremenu
                 AppointmentNote: appointmentNote,
                 CreatedAt: new Date().toISOString()
             };
+
+            console.log('Appointment data being sent:', appointment);
 
             // Send the appointment data to the server
             return fetch('https://localhost:44376/api/patientappointment/appointments', {

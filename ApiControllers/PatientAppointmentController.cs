@@ -124,9 +124,6 @@ namespace PatientManagementApp.ApiControllers
                 return NotFound(new { message = "Patient not found" });
             }
 
-            // Ensure the appointment date is correctly handled
-            patientAppointmentEntity.AppointmentDate = patientAppointmentEntity.AppointmentDate.Date;
-
             try
             {
                 // Check if an appointment already exists for the same patient on the same date
@@ -137,6 +134,9 @@ namespace PatientManagementApp.ApiControllers
                 {
                     return Conflict(new { message = "An appointment already exists for this patient on the specified date." });
                 }
+
+                patientAppointmentEntity.AppointmentDate = new DateTimeOffset(patientAppointmentEntity.AppointmentDate.DateTime, TimeSpan.FromHours(1));
+
 
                 _context.PatientAppointmentEntity.Add(patientAppointmentEntity);
                 await _context.SaveChangesAsync();

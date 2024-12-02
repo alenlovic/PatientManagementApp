@@ -10,9 +10,9 @@ namespace PatientManagementApp.Models
         public int PatientAppointmentId { get; set; }
         public int PatientId { get; set; }
         public PatientEntity? Patient { get; set; }
-        public DateTime AppointmentDate { get; set; }
+        public DateTimeOffset AppointmentDate { get; set; }
         public string AppointmentNote { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
 
         public PatientAppointmentEntity()
         {

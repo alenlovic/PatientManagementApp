@@ -236,13 +236,21 @@ function openEditPopup(patientAppointmentId) {
         })
         .then(data => {
             // Populate the edit form with the fetched data
-            document.getElementById('editPersonalName').value = data.patient.personalName;
-            document.getElementById('editAppointmentDate').value = new Date(data.appointmentDate).toISOString().slice(0, 16);
-            document.getElementById('editAppointmentNote').value = data.appointmentNote;
+            const editPatientName = document.getElementById('editPatientName');
+            const editAppointmentDate = document.getElementById('editAppointmentDate');
+            const editAppointmentNote = document.getElementById('editAppointmentNote');
 
-            // Open the edit popup
-            const editModal = document.getElementById('editAppointmentModal');
-            editModal.style.display = 'block';
+            if (editPatientName && editAppointmentDate && editAppointmentNote) {
+                editPatientName.value = data.patient.personalName;
+                editAppointmentDate.value = new Date(data.appointmentDate).toISOString().slice(0, 16);
+                editAppointmentNote.value = data.appointmentNote;
+
+                // Open the edit popup
+                const editModal = document.getElementById('editAppointmentModal');
+                editModal.style.display = 'block';
+            } else {
+                console.error("One or more edit elements are missing in the DOM.");
+            }
         })
         .catch(error => {
             console.error(`Error fetching appointment details:`, error);
