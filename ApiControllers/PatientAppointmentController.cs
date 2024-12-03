@@ -23,16 +23,18 @@ namespace PatientManagementApp.ApiControllers
 
         // GET: api/PatientAppointment/appointments
         [HttpGet("appointments")]
-        public async Task<IActionResult> GetAppointments([FromQuery] DateTime? date)
+        public async Task<IActionResult> GetAppointments([FromQuery] DateTimeOffset? date)
         {
             if (date == null)
             {
                 return BadRequest(new { message = "Date parameter is required." });
             }
 
+            var localDate = new DateTimeOffset(date.Value.Date, TimeSpan.Zero).ToLocalTime();
+
             var appointments = await _context.PatientAppointmentEntity
                 .Include(a => a.Patient)
-                .Where(a => a.AppointmentDate.Date == date.Value.Date)
+                .Where(a => a.AppointmentDate.Date == localDate.Date)
                 .ToListAsync();
 
             return Ok(appointments);
@@ -53,35 +55,6 @@ namespace PatientManagementApp.ApiControllers
 
             return Ok(appointment);
         }
-
-        //[HttpGet("appointmentsbydate")]
-        //public IActionResult GetAppointmentsByDate([FromQuery] DateTime? date)
-        //{
-        //    if (date == null)
-        //    {
-        //        return BadRequest(new { message = "Date parameter is required." });
-        //    }
-
-        //    try
-        //    {
-        //        var appointments = _context.PatientAppointmentEntity
-        //            .Include(a => a.Patient)
-        //            .Where(a => a.AppointmentDate.Date == date.Value.Date)
-        //            .Select(a => new
-        //            {
-        //                a.AppointmentDate,
-        //                PatientPersonalName = a.Patient != null ? a.Patient.PersonalName : "Unknown",
-        //                a.AppointmentNote
-        //            })
-        //            .ToList();
-
-        //        return Ok(appointments);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while retrieving appointments.", details = ex.Message });
-        //    }
-        //}
 
         // PUT: api/PatientAppointment/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

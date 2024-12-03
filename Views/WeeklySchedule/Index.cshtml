@@ -22,22 +22,23 @@
     </table>
 </div>
 
-<!-- Edit Appointment Popup -->
-<div id="editModal" class="edit-modal">
+<!-- Edit Appointment Modal -->
+<div id="editAppointmentModal" class="modal">
     <div class="edit-modal-content">
-        <span class="close" onclick="document.getElementById('editPopup').style.display='none'">&times;</span>
+        <span class="close" onclick="closeEditModal()">&times;</span>
         <h2>Edit Appointment</h2>
         <label for="editPatientName">Patient Name</label>
-        <input type="text" id="editPatientName" disabled>
+        <input type="text" id="editPatientName" name="personalName" disabled>
         <label for="editAppointmentDate">Appointment Date</label>
-        <input type="datetime-local" id="editAppointmentDate">
+        <input type="datetime-local" id="editAppointmentDate" name="appointmentDate">
         <label for="editAppointmentNote">Appointment Note</label>
-        <input type="text" id="editAppointmentNote">
+        <input type="text" id="editAppointmentNote" name="appointmentNote">
         <input type="hidden" id="editAppointmentId">
-        <button id="saveEditBtn">Save</button>
+        <button id="saveEditBtn" onclick="saveEditedAppointment()">Save</button>
     </div>
 </div>
 
+
 @section Scripts {
-<script src="~/js/weeklyschedule.js"></script>
+    <script src="~/js/weeklyschedule.js"></script>
 }

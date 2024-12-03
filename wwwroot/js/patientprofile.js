@@ -99,13 +99,6 @@ async function savePatientData() {
 
     patientData.patientId = getPatientId();
 
-    // Extract firstName, lastName, and fathersName from fullName
-    //const fullName = form.fullName.value;
-    //const fullNameParts = fullName.split(' ');
-    //patientData.firstName = fullNameParts[0];
-    //patientData.lastName = fullNameParts[fullNameParts.length - 1];
-    //patientData.fathersName = fullNameParts.slice(1, -1).join(' ');
-
     if (patientData.yearOfBirth) {
         const year = parseInt(patientData.yearOfBirth, 10);
         patientData.yearOfBirth = new Date(Date.UTC(year, 0, 1)).toISOString();

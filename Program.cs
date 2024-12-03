@@ -24,8 +24,6 @@ namespace PatientManagementApp
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PatientManagementApp", Version = "v1" });
 
-                c.OperationFilter<SwaggerFileOperationFilter>();
-
                 c.CustomOperationIds(apiDesc =>
                 {
                     return apiDesc.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : null;

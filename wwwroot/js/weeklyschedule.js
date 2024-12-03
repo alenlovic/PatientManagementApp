@@ -168,8 +168,16 @@ function fetchAndDisplayAppointments() {
             result.appointments.forEach(appointment => {
                 console.log("Appointment object:", appointment); // Log the appointment object
 
-                const appointmentDate = moment(appointment.appointmentDate);
-                const formattedDate = appointmentDate.format('DD.MM.YYYY HH:mm');
+                const appointmentDate = new Date(appointment.appointmentDate);
+                const formattedDate = appointmentDate.toLocaleString('en-GB', {
+                    timeZone: 'Europe/Belgrade', 
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                });
                 const patientBox = document.createElement("div");
                 patientBox.className = "patient-box";
                 const nameStyle = appointment.patient && appointment.patient.isCritical ? 'style="color: red;"' : '';
@@ -239,15 +247,21 @@ function openEditPopup(patientAppointmentId) {
             const editPatientName = document.getElementById('editPatientName');
             const editAppointmentDate = document.getElementById('editAppointmentDate');
             const editAppointmentNote = document.getElementById('editAppointmentNote');
+            const editAppointmentId = document.getElementById('editAppointmentId');
 
             if (editPatientName && editAppointmentDate && editAppointmentNote) {
                 editPatientName.value = data.patient.personalName;
                 editAppointmentDate.value = new Date(data.appointmentDate).toISOString().slice(0, 16);
                 editAppointmentNote.value = data.appointmentNote;
+                editAppointmentId.value = data.patientAppointmentId;
 
                 // Open the edit popup
                 const editModal = document.getElementById('editAppointmentModal');
-                editModal.style.display = 'block';
+                if (editModal) {
+                    editModal.style.display = 'block';
+                } else {
+                    console.error('Edit modal element not found');
+                }
             } else {
                 console.error("One or more edit elements are missing in the DOM.");
             }
@@ -255,6 +269,15 @@ function openEditPopup(patientAppointmentId) {
         .catch(error => {
             console.error(`Error fetching appointment details:`, error);
         });
+}
+
+function closeEditModal() {
+    const editModal = document.getElementById('editAppointmentModal');
+    if (editModal) {
+        editModal.style.display = 'none';
+    } else {
+        console.error('Edit modal element not found');
+    }
 }
 
 async function deleteAppointment(appointmentId) {

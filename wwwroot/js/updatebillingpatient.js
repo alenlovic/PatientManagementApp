@@ -17,26 +17,26 @@ async function editBilling(billingId) {
         const editBillingId = document.getElementById("editBillingId");
         const editPatientId = document.getElementById("editPatientId");
         const editPatientName = document.getElementById("editPatientName");
+        const editServiceName = document.getElementById("editServiceName");
+        const editServiceCost = document.getElementById("editServiceCost");
         const editPaymentMethod = document.getElementById("editPaymentMethod");
-        const editCurrentAmount = document.getElementById("editCurrentAmount");
+        const editPayedAmount = document.getElementById("editPayedAmount");
         const editDateOfLastPayment = document.getElementById("editDateOfLastPayment");
         const editRemainingAmount = document.getElementById("editRemainingAmount");
         const editBillingNote = document.getElementById("editBillingNote");
 
-        if (editBillingId && editPatientId && editPatientName && editPaymentMethod && editCurrentAmount && editDateOfLastPayment && editRemainingAmount && editBillingNote) {
-            editBillingId.value = billingId;
-            editPatientId.value = billing.patient ? billing.patient.patientId : '';
-            editPatientName.value = billing.patient ? billing.patient.personalName : 'N/A';
-            editPaymentMethod.value = billing.paymentMethod || '';
-            editCurrentAmount.value = billing.currentAmount || '';
-            editDateOfLastPayment.value = billing.dateOfLastPayment ? new Date(billing.dateOfLastPayment).toISOString().split('T')[0] : '';
-            editRemainingAmount.value = billing.remainingAmount || '';
-            editBillingNote.value = billing.billingNote || '';
+        editBillingId.value = billingId;
+        editPatientId.value = billing.patient ? billing.patient.patientId : '';
+        editPatientName.value = billing.patient ? billing.patient.personalName : 'N/A';
+        editServiceName.value = billing.serviceName || '';
+        editServiceCost.value = billing.serviceCost || '';
+        editPaymentMethod.value = billing.paymentMethod || '';
+        editPayedAmount.value = billing.payedAmount || '';
+        editDateOfLastPayment.value = billing.dateOfLastPayment ? new Date(billing.dateOfLastPayment).toISOString().split('T')[0] : '';
+        editRemainingAmount.value = billing.remainingAmount || '';
+        editBillingNote.value = billing.billingNote || '';
 
-            editModal.style.display = "flex";
-        } else {
-            console.error('One or more elements are not found in the DOM.');
-        }
+        editModal.style.display = "flex";
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
     }
@@ -48,12 +48,13 @@ editForm.addEventListener("submit", async (event) => {
 
     const updatedBilling = {
         billingId: document.getElementById("editBillingId").value,
-        patientId: document.getElementById("editPatientId").value, 
-        currentAmount: document.getElementById("editCurrentAmount").value,
-        remainingAmount: document.getElementById("editRemainingAmount").value,
-        billingStatus: document.getElementById("editBillingStatus").value,
-        dateOfLastPayment: document.getElementById("editDateOfLastPayment").value,
+        patientId: document.getElementById("editPatientId").value,
+        serviceName: document.getElementById("editServiceName").value,
+        serviceCost: document.getElementById("editServiceCost").value,
         paymentMethod: document.getElementById("editPaymentMethod").value,
+        payedAmount: document.getElementById("editPayedAmount").value,
+        dateOfLastPayment: document.getElementById("editDateOfLastPayment").value,
+        remainingAmount: document.getElementById("editRemainingAmount").value,
         billingNote: document.getElementById("editBillingNote").value
     };
 
@@ -75,7 +76,7 @@ editForm.addEventListener("submit", async (event) => {
             throw new Error('Network response was not ok');
         }
 
-        fetchAllBillingData(); 
+        fetchAllBillingData();
         closeModal();
     } catch (error) {
         console.error('There has been a problem with your update operation:', error);
