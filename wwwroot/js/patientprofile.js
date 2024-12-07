@@ -173,10 +173,10 @@ async function fetchPatientData(patientId) {
     }
 }
 
-async function deletePatientFile(fileId, patientId) {
+async function deletePatientFile(fileName, patientId) {
     try {
-        console.log(`Attempting to delete file with ID: ${fileId}`);
-        const response = await fetch(`https://localhost:44376/api/patientfile/${fileId}`, {
+        console.log(`Attempting to delete file with ID: ${fileName}`);
+        const response = await fetch(`https://localhost:44376/api/patientfile/${fileName}`, {
             method: 'DELETE'
         });
 
@@ -207,16 +207,16 @@ async function displayPatientFiles(patientId) {
         const files = await response.json();
         console.log('Fetched files:', files);
 
-        filesContainer.innerHTML = ''; // Očisti prethodni sadržaj
+        filesContainer.innerHTML = ''; // Clear previous content
 
         files.forEach(file => {
-            console.log('Individual file object:', file); // Log strukture fajla
+            console.log('Individual file object:', file); // Log file structure
 
-            // Div za svaki fajl
+            // Create a div for each file
             const fileElement = document.createElement('div');
             fileElement.classList.add('file-item');
 
-            // Prikaz originalnog imena fajla
+            // Display the original file name
             if (file.fileOriginalName) {
                 const fileNameElement = document.createElement('div');
                 fileNameElement.textContent = `${file.fileOriginalName}`;
@@ -231,11 +231,14 @@ async function displayPatientFiles(patientId) {
             const previewIcon = document.createElement('i');
             previewIcon.classList.add('fas', 'fa-eye', 'action-icon');
             previewIcon.title = 'Preview';
+            previewIcon.addEventListener('click', () => {
+                window.open(`https://localhost:44376/api/patientfile/preview/${file.fileName}`, '_blank');
+            });
             actionsContainer.appendChild(previewIcon);
 
             // Download icon
             const downloadIcon = document.createElement('a');
-            downloadIcon.href = `data:image/jpeg;base64,${file.imageBase64}`;
+            downloadIcon.href = `https://localhost:44376/api/patientfile/preview/${file.fileName}?download=true`;
             downloadIcon.download = file.fileOriginalName;
             downloadIcon.classList.add('fas', 'fa-download', 'action-icon');
             downloadIcon.title = 'Download';
@@ -248,7 +251,8 @@ async function displayPatientFiles(patientId) {
             deleteIcon.addEventListener('click', () => {
                 const confirmation = confirm('Da li ste sigurni da želite izbrisati ovaj fajl?');
                 if (confirmation) {
-                    deletePatientFile(file.fileId, patientId);
+                    console.log('Deleting file with ID:', file.fileName);
+                    deletePatientFile(file.fileName, patientId);
                 }
             });
             actionsContainer.appendChild(deleteIcon);
@@ -260,6 +264,7 @@ async function displayPatientFiles(patientId) {
         console.error('Došlo je do greške prilikom dohvatanja fajlova:', error);
     }
 }
+
 
 function combineData(patient, billing, record, files) {
     console.log('Combining data:', { patient, billing, record, files });
@@ -367,7 +372,45 @@ function populatePatientInfo(combinedData, patientId) {
         </div>
     `;
 
-    if (combinedData.serviceCost > 0) {
+
+    //// Add payment details
+    //const paymentDiv = document.createElement('div');
+    //paymentDiv.classList.add('personal-info-patient');
+
+    //// Calculate total remaining amount and find the latest payment date
+    //let totalRemainingAmount = 0;
+    //let latestPaymentDate = new Date(0);
+
+    //if (combinedData.remainingAmount !== undefined) {
+    //    totalRemainingAmount += combinedData.remainingAmount;
+    //}
+
+    //if (combinedData.dateOfLastPayment) {
+    //    const paymentDate = new Date(combinedData.dateOfLastPayment);
+    //    if (paymentDate > latestPaymentDate) {
+    //        latestPaymentDate = paymentDate;
+    //    }
+    //}
+
+    //console.log('Total Remaining Amount:', totalRemainingAmount);
+    //console.log('Latest Payment Date:', latestPaymentDate);
+
+    //paymentDiv.innerHTML = `
+    //    <h4>Detalji o plaćanju</h4>
+    //    <hr>
+    //    <div class="info-row">
+    //        <span class="info-label">Ukupno dugovanje:</span>
+    //        <span class="info-value">${totalRemainingAmount || 'N/A'}</span>
+    //    </div>
+    //    <div class="info-row">
+    //        <span class="info-label">Datum zadnje uplate:</span>
+    //        <span class="info-value">${latestPaymentDate.getTime() !== 0 ? latestPaymentDate.toLocaleDateString() : 'N/A'}</span>
+    //    </div>
+    //`;
+    //patientProfileContainer.appendChild(paymentDiv);
+
+
+
         const paymentDiv = document.createElement('div');
         paymentDiv.classList.add('personal-info-patient');
         paymentDiv.innerHTML = `
@@ -403,7 +446,6 @@ function populatePatientInfo(combinedData, patientId) {
             </div>
         `;
         patientDiv.appendChild(paymentDiv);
-    }
 
     if (combinedData.fileName) {
         const filesDiv = document.createElement('div');
@@ -538,54 +580,77 @@ async function saveMedicalData() {
     }
 }
 
+async function uploadRTGUpload(patientId, file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('patientId', patientId)
+
+    try {
+        const response = await fetch(`https://localhost:44376/api/patientfile`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to upload RTG file');
+        }
+
+        window.location.reload();
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('Došlo je do greške prilikom uploadovanja fajla.');
+    }
+}
+
 function setupRtgUpload(patientId) {
     const uploadButton = document.getElementById('uploadRtgButton');
     const fileInput = document.getElementById('rtgFileInput');
 
     if (uploadButton && fileInput) {
         uploadButton.addEventListener('click', () => {
-            try {
-                fileInput.click();
-            } catch (error) {
-                console.error('Error opening file input:', error);
-            }
-        });
-
-        fileInput.addEventListener('change', async (event) => {
-            const file = event.target.files[0];
+            const file = fileInput.files[0];
             if (file) {
-                // Check file size (example: limit to 5MB)
-                const maxSize = 5 * 1024 * 1024; // 5MB
-                if (file.size > maxSize) {
-                    alert('File size exceeds the 5MB limit.');
-                    return;
-                }
-
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('patientId', patientId);
-
-                try {
-                    const response = await fetch(`https://localhost:44376/api/patientfile/uploadRtg`, {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`Network response was not ok: ${errorText}`);
-                    }
-
-                    const result = await response.json();
-                    const rtgImage = document.getElementById('rtgImage');
-                    if (rtgImage) {
-                        rtgImage.src = `data:image/jpeg;base64,${result.imageBase64}`;
-                        rtgImage.style.display = 'block';
-                    }
-                } catch (error) {
-                    console.error('Error uploading RTG image', error);
-                }
+                uploadRTGUpload(patientId, file);
+            } else {
+                alert('Molimo odaberite fajl za uploadovanje.');
             }
         });
+
+        //fileInput.addEventListener('change', async (event) => {
+        //    const file = event.target.files[0];
+        //    if (file) {
+        //        // Check file size (example: limit to 5MB)
+        //        const maxSize = 5 * 1024 * 1024; // 5MB
+        //        if (file.size > maxSize) {
+        //            alert('File size exceeds the 5MB limit.');
+        //            return;
+        //        }
+
+        //        const formData = new FormData();
+        //        formData.append('file', file);
+        //        formData.append('patientId', patientId);
+
+        //        try {
+        //            const response = await fetch(`https://localhost:44376/api/patientfile/uploadRtg`, {
+        //                method: 'POST',
+        //                body: formData
+        //            });
+
+        //            if (!response.ok) {
+        //                const errorText = await response.text();
+        //                throw new Error(`Network response was not ok: ${errorText}`);
+        //            }
+
+        //            const result = await response.json();
+        //            const rtgImage = document.getElementById('rtgImage');
+        //            if (rtgImage) {
+        //                rtgImage.src = `data:image/jpeg;base64,${result.imageBase64}`;
+        //                rtgImage.style.display = 'block';
+        //            }
+        //        } catch (error) {
+        //            console.error('Error uploading RTG image', error);
+        //        }
+        //    }
+        //});
     }
 }
