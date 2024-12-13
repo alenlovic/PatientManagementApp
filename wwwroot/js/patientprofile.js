@@ -123,11 +123,11 @@ async function fetchPatientData(patientId) {
     try {
         const billingUrl = `${urlBilling}?patientId=${patientId}`;
         const recordUrl = `${urlRecord}/ByPatientId/${patientId}`;
-        const fileUrl = `${urlFiles}?patientId=${patientId}`
+        const fileUrl = `${urlFiles}?patientId=${patientId}`;
 
         console.log('Fetching Billing Data from:', billingUrl);
         console.log('Fetching Record Data from:', recordUrl);
-        console.log('Fetching files from:', fileUrl)
+        console.log('Fetching files from:', fileUrl);
 
         const [patientResponse, billingResponse, recordResponse, filesResponse] = await Promise.all([
             fetch(`${urlPatient}/${patientId}`),
@@ -150,7 +150,7 @@ async function fetchPatientData(patientId) {
         console.log('Patient Data:', patient);
         console.log('Billing Data:', billing);
         console.log('Record Data:', record);
-        console.log('Files data:', files)
+        console.log('Files data:', files);
 
         if (record.length === 0) {
             console.warn('No record data found for patient:', patientId);
@@ -159,7 +159,7 @@ async function fetchPatientData(patientId) {
         const combinedData = combineData(patient, billing, record, files);
         console.log('Combined Data:', combinedData);
 
-        populatePatientInfo(combinedData, patientId);
+        populatePatientInfo(combinedData, patientId, billing);
         displayPatientFiles(patientId);
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -264,7 +264,7 @@ function combineData(patient, billing, record, files) {
 }
 
 
-function populatePatientInfo(combinedData, patientId) {
+function populatePatientInfo(combinedData, patientId, billingData) {
     const patientProfileContainer = document.querySelector('.patient-profile-container');
     if (!patientProfileContainer) {
         console.error('Patient profile container not found');
@@ -361,41 +361,31 @@ function populatePatientInfo(combinedData, patientId) {
         </div>
     `;
 
-        const paymentDiv = document.createElement('div');
-        paymentDiv.classList.add('personal-info-patient');
-        paymentDiv.innerHTML = `
-            <h4>Detalji o plaćanju</h4>
-            <hr>
-            <div class="info-row">
-                <span class="info-label">Naziv usluge:</span>
-                <span class="info-value">${combinedData.serviceName || 'N/A'}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Cijena usluge:</span>
-                <span class="info-value">${combinedData.serviceCost || 'N/A'}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Način plaćanja:</span>
-                <span class="info-value">${combinedData.paymentMethod || 'N/A'}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Uplaćeno:</span>
-                <span class="info-value">${combinedData.payedAmount || 'N/A'}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Datum zadnje uplate:</span>
-                <span class="info-value">${new Date(combinedData.dateOfLastPayment).toLocaleDateString() || 'N/A'}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Preostali iznos:</span>
-                <span class="info-value">${combinedData.remainingAmount || 'N/A'}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Detalji:</span>
-                <span class="info-value">${combinedData.billingNote || 'N/A'}</span>
-            </div>
-        `;
-        patientDiv.appendChild(paymentDiv);
+    const paymentDiv = document.createElement('div');
+    paymentDiv.classList.add('personal-info-patient');
+    paymentDiv.innerHTML = `
+        <h4>Detalji o plaćanju</h4>
+        <hr>
+    `;
+
+    const totalRemainingAmount = billingData.reduce((sum, bill) => sum + bill.remainingAmount, 0);
+    const latestPaymentDate = billingData.reduce((latest, bill) => {
+        const billDate = new Date(bill.dateOfLastPayment);
+        return billDate > latest ? billDate : latest;
+    }, new Date(0)).toLocaleDateString();
+
+    paymentDiv.innerHTML += `
+        <div class="info-row">
+            <span class="info-label">Ukupan dug:</span>
+            <span class="info-value">${totalRemainingAmount}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Datum posljedne isplate:</span>
+            <span class="info-value">${latestPaymentDate}</span>
+        </div>
+    `;
+
+    patientDiv.appendChild(paymentDiv);
 
     if (combinedData.fileName) {
         const filesDiv = document.createElement('div');
@@ -420,7 +410,6 @@ function populatePatientInfo(combinedData, patientId) {
     setupEditButton(patientId, combinedData);
     setupRtgUpload(patientId);
 
-    // Add event listener for the critical checkbox
     const criticalCheckbox = document.getElementById('isCriticalCheckbox');
     if (criticalCheckbox) {
         criticalCheckbox.addEventListener('change', async () => {
