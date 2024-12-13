@@ -19,7 +19,7 @@ async function addNewAppointment() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(newApp)
+            body: JSON.stringify(newAppointment)
         });
 
         if (!response.ok) {
@@ -114,6 +114,35 @@ function savePresence(patientId, patientAppointmentId) {
     console.log(`Saved presence for patient ${patientId} with appointment ${patientAppointmentId} in week ${weekIdentifier}`);
 }
 
+function markAsAbsent(patientBox, patientId, patientAppointmentId) {
+    if (!patientId || !patientAppointmentId) {
+        console.error("Invalid patientId or patientAppointmentId:", patientId, patientAppointmentId);
+        return;
+    }
+    console.log(`Marking patient ${patientId} as absent`);
+    patientBox.style.backgroundColor = "orange";
+    saveAbsence(patientId, patientAppointmentId);
+}
+
+function saveAbsence(patientId, patientAppointmentId) {
+    if (!patientId || !patientAppointmentId) {
+        console.error("Invalid patientId or patientAppointmentId:", patientId, patientAppointmentId);
+        return;
+    }
+    const weekIdentifier = getCurrentWeekIdentifier();
+    let absentPatients = [];
+    try {
+        absentPatients = JSON.parse(localStorage.getItem(weekIdentifier + '-absent')) || [];
+    } catch (e) {
+        console.error("Error parsing localStorage data:", e);
+    }
+    if (!absentPatients.includes(patientAppointmentId)) {
+        absentPatients.push(patientAppointmentId);
+    }
+    localStorage.setItem(weekIdentifier + '-absent', JSON.stringify(absentPatients));
+    console.log(`Saved absence for patient ${patientId} with appointment ${patientAppointmentId} in week ${weekIdentifier}`);
+}
+
 function loadPresence() {
     const weekIdentifier = getCurrentWeekIdentifier();
     let presentPatients = [];
@@ -124,6 +153,18 @@ function loadPresence() {
     }
     console.log(`Loaded presence for week ${weekIdentifier}:`, presentPatients);
     return presentPatients;
+}
+
+function loadAbsence() {
+    const weekIdentifier = getCurrentWeekIdentifier();
+    let absentPatients = [];
+    try {
+        absentPatients = JSON.parse(localStorage.getItem(weekIdentifier + '-absent')) || [];
+    } catch (e) {
+        console.error("Error parsing localStorage data:", e);
+    }
+    console.log(`Loaded absence for week ${weekIdentifier}:`, absentPatients);
+    return absentPatients;
 }
 
 function fetchAppointmentsForDate(date) {
@@ -162,6 +203,7 @@ function fetchAndDisplayAppointments() {
         wscheduleList.innerHTML = "";
 
         const presentPatients = loadPresence();
+        const absentPatients = loadAbsence();
         const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
         results.forEach((result, index) => {
             const dayCell = document.createElement("td");
@@ -170,7 +212,7 @@ function fetchAndDisplayAppointments() {
 
                 const appointmentDate = new Date(appointment.appointmentDate);
                 const formattedDate = appointmentDate.toLocaleString('en-GB', {
-                    timeZone: 'Europe/Belgrade', 
+                    timeZone: 'Europe/Belgrade',
                     day: '2-digit',
                     month: '2-digit',
                     year: 'numeric',
@@ -188,6 +230,9 @@ function fetchAndDisplayAppointments() {
                     <button class="mark-present-btn" data-appointment-id="${appointment.patientAppointmentId}">
                         <i class="fas fa-check"></i>
                     </button>
+                    <button class="mark-absent-btn" data-appointment-id="${appointment.patientAppointmentId}">
+                        <i class="fas fa-times"></i>
+                    </button>
                     <button class="edit-appointment-btn" data-appointment-id="${appointment.patientAppointmentId}">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -197,6 +242,8 @@ function fetchAndDisplayAppointments() {
                 `;
                 if (presentPatients.includes(appointment.patientAppointmentId)) {
                     patientBox.style.backgroundColor = "lightgreen";
+                } else if (absentPatients.includes(appointment.patientAppointmentId)) {
+                    patientBox.style.backgroundColor = "orange";
                 }
                 dayCell.appendChild(patientBox);
 
@@ -209,6 +256,17 @@ function fetchAndDisplayAppointments() {
                     });
                 } else {
                     console.error("Element with class 'mark-present-btn' not found.");
+                }
+
+                const markAbsentBtn = patientBox.querySelector(".mark-absent-btn");
+                if (markAbsentBtn) {
+                    markAbsentBtn.addEventListener("click", () => {
+                        const patientId = appointment.patientId;
+                        const patientAppointmentId = appointment.patientAppointmentId;
+                        markAsAbsent(patientBox, patientId, patientAppointmentId);
+                    });
+                } else {
+                    console.error("Element with class 'mark-absent-btn' not found.");
                 }
 
                 const editAppointmentBtn = patientBox.querySelector(".edit-appointment-btn");
@@ -228,6 +286,8 @@ function fetchAndDisplayAppointments() {
         });
     });
 }
+
+
 
 
 function openEditPopup(patientAppointmentId) {

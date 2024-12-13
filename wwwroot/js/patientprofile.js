@@ -60,9 +60,9 @@ function openEditPopup(patientId, patient) {
     }
 
     form.fullName.value = patient.fullName;
-    form.fullName.readOnly = true; // Make the field read-only
-    form.fullName.style.backgroundColor = "#e9ecef"; // Gray out the field
-    form.fullName.style.pointerEvents = "none"; // Make it unavailable for clicking
+    form.fullName.readOnly = true; 
+    form.fullName.style.backgroundColor = "#e9ecef"; 
+    form.fullName.style.pointerEvents = "none";
 
     form.yearOfBirth.value = new Date(patient.yearOfBirth).getFullYear();
     form.placeOfBirth.value = patient.placeOfBirth;
@@ -160,7 +160,7 @@ async function fetchPatientData(patientId) {
         console.log('Combined Data:', combinedData);
 
         populatePatientInfo(combinedData, patientId);
-        displayPatientFiles(files);
+        displayPatientFiles(patientId);
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -187,76 +187,72 @@ async function deletePatientFile(fileName, patientId) {
 
 async function displayPatientFiles(patientId) {
     const filesContainer = document.getElementById('patient-files-container');
-    if (!filesContainer) {
-        console.error('Files container not found');
-        return;
-    }
 
     try {
-        const response = await fetch(`https://localhost:44376/api/patientfile?patientId=${patientId}`);
+        const response = await fetch(`${urlFiles}?patientId=${patientId}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         const files = await response.json();
         console.log('Fetched files:', files);
 
-        filesContainer.innerHTML = ''; // Clear previous content
+        filesContainer.innerHTML = '';
 
         files.forEach(file => {
-            console.log('Individual file object:', file); // Log file structure
+            if (file.patientId == patientId) {
+                console.log('Individual file object:', file);
 
-            // Create a div for each file
-            const fileElement = document.createElement('div');
-            fileElement.classList.add('file-item');
+                const fileElement = document.createElement('div');
+                fileElement.classList.add('file-item');
 
-            // Display the original file name
-            if (file.fileOriginalName) {
-                const fileNameElement = document.createElement('div');
-                fileNameElement.textContent = `${file.fileOriginalName}`;
-                fileElement.appendChild(fileNameElement);
-            }
-
-            // Action icons container
-            const actionsContainer = document.createElement('div');
-            actionsContainer.classList.add('file-actions');
-
-            // Preview icon
-            const previewIcon = document.createElement('i');
-            previewIcon.classList.add('fas', 'fa-eye', 'action-icon');
-            previewIcon.title = 'Preview';
-            previewIcon.addEventListener('click', () => {
-                window.open(`https://localhost:44376/api/patientfile/preview/${file.fileName}`, '_blank');
-            });
-            actionsContainer.appendChild(previewIcon);
-
-            // Download icon
-            const downloadIcon = document.createElement('a');
-            downloadIcon.href = `https://localhost:44376/api/patientfile/preview/${file.fileName}?download=true`;
-            downloadIcon.download = file.fileOriginalName;
-            downloadIcon.classList.add('fas', 'fa-download', 'action-icon');
-            downloadIcon.title = 'Download';
-            actionsContainer.appendChild(downloadIcon);
-
-            // Delete icon
-            const deleteIcon = document.createElement('i');
-            deleteIcon.classList.add('fas', 'fa-trash', 'action-icon');
-            deleteIcon.title = 'Delete';
-            deleteIcon.addEventListener('click', () => {
-                const confirmation = confirm('Da li ste sigurni da želite izbrisati ovaj fajl?');
-                if (confirmation) {
-                    console.log('Deleting file with ID:', file.fileName);
-                    deletePatientFile(file.fileName, patientId);
+                if (file.fileOriginalName) {
+                    const fileNameElement = document.createElement('div');
+                    fileNameElement.textContent = `${file.fileOriginalName}`;
+                    fileElement.appendChild(fileNameElement);
                 }
-            });
-            actionsContainer.appendChild(deleteIcon);
 
-            fileElement.appendChild(actionsContainer);
-            filesContainer.appendChild(fileElement);
+                const actionsContainer = document.createElement('div');
+                actionsContainer.classList.add('file-actions');
+
+                // Preview icon
+                const previewIcon = document.createElement('i');
+                previewIcon.classList.add('fas', 'fa-eye', 'action-icon');
+                previewIcon.title = 'Preview';
+                previewIcon.addEventListener('click', () => {
+                    window.open(`https://localhost:44376/api/patientfile/preview/${file.fileName}`, '_blank');
+                });
+                actionsContainer.appendChild(previewIcon);
+
+                // Download icon
+                const downloadIcon = document.createElement('a');
+                downloadIcon.href = `https://localhost:44376/api/patientfile/preview/${file.fileName}?download=true`;
+                downloadIcon.download = file.fileOriginalName;
+                downloadIcon.classList.add('fas', 'fa-download', 'action-icon');
+                downloadIcon.title = 'Download';
+                actionsContainer.appendChild(downloadIcon);
+
+                // Delete icon
+                const deleteIcon = document.createElement('i');
+                deleteIcon.classList.add('fas', 'fa-trash', 'action-icon');
+                deleteIcon.title = 'Delete';
+                deleteIcon.addEventListener('click', () => {
+                    const confirmation = confirm('Da li ste sigurni da želite izbrisati ovaj fajl?');
+                    if (confirmation) {
+                        console.log('Deleting file with ID:', file.fileName);
+                        deletePatientFile(file.fileName, patientId);
+                    }
+                });
+                actionsContainer.appendChild(deleteIcon);
+
+                fileElement.appendChild(actionsContainer);
+                filesContainer.appendChild(fileElement);
+            }
         });
     } catch (error) {
         console.error('Došlo je do greške prilikom dohvatanja fajlova:', error);
     }
 }
+
 
 
 function combineData(patient, billing, record, files) {
@@ -506,7 +502,7 @@ async function saveMedicalData() {
         medicalData[key] = value;
     });
 
-    medicalData.patientId = getPatientId();
+    medicalData.patientId = parseInt(getPatientId());
 
     console.log('Medical Data to be sent:', medicalData);
 
@@ -520,6 +516,8 @@ async function saveMedicalData() {
         });
 
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Server response:', errorText);
             throw new Error('Network response was not ok');
         }
 
@@ -561,16 +559,16 @@ function setupRtgUpload(patientId) {
     const fileInput = document.getElementById('rtgFileInput');
 
     uploadButton.addEventListener('click', () => {
-        fileInput.click();  // Ovo otvara dijalog za biranje fajla
+        fileInput.click();  
     });
 
     fileInput.addEventListener('change', () => {
         const file = fileInput.files[0];
         if (file) {
-            console.log('Fajl izabran:', file);  // Pomoć za debagovanje
+            console.log('Fajl izabran:', file);  
             uploadPatientFile(patientId, file);
         } else {
-            console.log('Nema izabranog fajla');  // Pomoć za debagovanje
+            console.log('Nema izabranog fajla');  
             alert('Molimo odaberite fajl za uploadovanje.');
         }
     });

@@ -1016,7 +1016,7 @@ input[readonly] {
     top: 5px;
     right: 5px;
     background: none;
-    border: 1px solid green;
+    border: 1px solid black;
     cursor: pointer;
     font-size: 16px;
     color: green;
@@ -1026,6 +1026,23 @@ input[readonly] {
 
 
     .mark-present-btn i {
+        font-size: 16px;
+    }
+
+.mark-absent-btn {
+    position: absolute;
+    top: 30px;
+    right: 5px;
+    background: none;
+    border: 1px solid black;
+    cursor: pointer;
+    font-size: 16px;
+    color: orange;
+    padding: 0.2px 4px;
+    background-color: #fff;
+}
+
+    .mark-absent-btn i {
         font-size: 16px;
     }
 
