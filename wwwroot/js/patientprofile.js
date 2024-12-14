@@ -8,6 +8,11 @@ function getPatientId() {
     return editPatientForm.dataset.patientid;
 }
 
+function getPatientRecordId() {
+    const editMedicalForm = document.getElementById('editMedicalForm');
+    return editMedicalForm.dataset.patientrecordid;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const patientId = getPatientId();
 
@@ -270,7 +275,7 @@ function populatePatientInfo(combinedData, patientId, billingData) {
         console.error('Patient profile container not found');
         return;
     }
-    patientProfileContainer.innerHTML = ''; // Clear any existing content
+    patientProfileContainer.innerHTML = ''; 
 
     const headerDiv = document.createElement('div');
     headerDiv.classList.add('header-container');
@@ -374,7 +379,14 @@ function populatePatientInfo(combinedData, patientId, billingData) {
         return billDate > latest ? billDate : latest;
     }, new Date(0)).toLocaleDateString();
 
-    paymentDiv.innerHTML += `
+    if (totalRemainingAmount == 0) {
+        paymentDiv.innerHTML += `
+        <div class="info-row">
+            <p> Pacijent <strong>${combinedData.fullName}</strong> trenutno nema aktivnih dugovanja.</p>
+        </div>
+    `;
+    } else {
+        paymentDiv.innerHTML += `
         <div class="info-row">
             <span class="info-label">Ukupan dug:</span>
             <span class="info-value">${totalRemainingAmount}</span>
@@ -384,6 +396,7 @@ function populatePatientInfo(combinedData, patientId, billingData) {
             <span class="info-value">${latestPaymentDate}</span>
         </div>
     `;
+    }
 
     patientDiv.appendChild(paymentDiv);
 
@@ -474,12 +487,13 @@ function openEditMedicalPopup(patient) {
     form.penicilinAllergy.value = patient.penicilinAllergy || '';
     form.recordNote.value = patient.recordNote || '';
 
+    form.dataset.patientrecordid = patient.patientRecordId;
+
     modal.style.display = "flex";
 }
 
 function closeEditMedicalPopup(patient) {
     const modal = document.getElementById("editMedicalModal");
-    // Show the modal
     modal.style.display = "none";
 }
 
@@ -488,20 +502,28 @@ async function saveMedicalData() {
     const formData = new FormData(form);
     const medicalData = {};
     formData.forEach((value, key) => {
-        medicalData[key] = value;
+        if (key !== 'patientId') { 
+            medicalData[key] = value;
+        }
     });
 
-    medicalData.patientId = parseInt(getPatientId());
+    const patientRecordId = parseInt(getPatientRecordId());
 
     console.log('Medical Data to be sent:', medicalData);
 
+    const patchData = Object.keys(medicalData).map(key => ({
+        op: 'replace',
+        path: `/${key}`,
+        value: medicalData[key]
+    }));
+
     try {
-        const response = await fetch(`${urlRecord}/${medicalData.patientId}`, {
-            method: 'PUT',
+        const response = await fetch(`${urlRecord}/${patientRecordId}`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(medicalData)
+            body: JSON.stringify(patchData)
         });
 
         if (!response.ok) {
@@ -510,8 +532,7 @@ async function saveMedicalData() {
             throw new Error('Network response was not ok');
         }
 
-        // Refresh the patient data
-        fetchPatientData(medicalData.patientId);
+        fetchPatientData(parseInt(getPatientId()));
         closeEditMedicalPopup();
     } catch (error) {
         console.error('Error saving medical data:', error);
@@ -547,18 +568,24 @@ function setupRtgUpload(patientId) {
     const uploadButton = document.getElementById('uploadRtgButton');
     const fileInput = document.getElementById('rtgFileInput');
 
+    if (!uploadButton || !fileInput) {
+        console.error('Upload button or file input not found');
+        return;
+    }
+
     uploadButton.addEventListener('click', () => {
-        fileInput.click();  
+        fileInput.click();
     });
 
     fileInput.addEventListener('change', () => {
         const file = fileInput.files[0];
         if (file) {
-            console.log('Fajl izabran:', file);  
+            console.log('Fajl izabran:', file);
             uploadPatientFile(patientId, file);
         } else {
-            console.log('Nema izabranog fajla');  
+            console.log('Nema izabranog fajla');
             alert('Molimo odaberite fajl za uploadovanje.');
         }
     });
 }
+

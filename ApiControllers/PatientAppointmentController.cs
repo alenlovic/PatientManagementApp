@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PatientManagementApp.Database;
+using PatientManagementApp.Migrations;
 using PatientManagementApp.Models;
 
 namespace PatientManagementApp.ApiControllers
@@ -45,7 +47,7 @@ namespace PatientManagementApp.ApiControllers
         public async Task<ActionResult<PatientAppointmentEntity>> GetAppointmentById(int id)
         {
             var appointment = await _context.PatientAppointmentEntity
-                .Include(a => a.Patient) 
+                .Include(a => a.Patient)
                 .FirstOrDefaultAsync(a => a.PatientAppointmentId == id);
 
             if (appointment == null)
@@ -56,33 +58,32 @@ namespace PatientManagementApp.ApiControllers
             return Ok(appointment);
         }
 
-        // PUT: api/PatientAppointment/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPatientAppointmentEntity(int id, PatientAppointmentEntity patientAppointmentEntity)
+        // PATCH
+        [HttpPatch("appointments/{id}")]
+        public IActionResult UpdateAppointment(int id, [FromBody] JsonPatchDocument<PatientAppointmentEntity> patchDoc)
         {
-            if (id != patientAppointmentEntity.PatientAppointmentId)
+            if (patchDoc == null)
             {
-                return BadRequest();
+                return BadRequest("Invalid appointment data.");
             }
 
-            _context.Entry(patientAppointmentEntity).State = EntityState.Modified;
+            var appointment = _context.PatientAppointmentEntity.Find(id);
+            if (appointment == null)
+            {
+                return NotFound();
+            }
 
-            try
+            patchDoc.ApplyTo(appointment, ModelState);
+
+            if (!ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
+                return BadRequest(ModelState);
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PatientAppointmentEntityExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            appointment.AppointmentDate = appointment.AppointmentDate.ToLocalTime();
+
+            _context.Entry(appointment).State = EntityState.Modified;
+            _context.SaveChanges();
 
             return NoContent();
         }

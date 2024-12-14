@@ -208,7 +208,7 @@ function fetchAndDisplayAppointments() {
         results.forEach((result, index) => {
             const dayCell = document.createElement("td");
             result.appointments.forEach(appointment => {
-                console.log("Appointment object:", appointment); // Log the appointment object
+                console.log("Appointment object:", appointment);
 
                 const appointmentDate = new Date(appointment.appointmentDate);
                 const formattedDate = appointmentDate.toLocaleString('en-GB', {
@@ -287,9 +287,6 @@ function fetchAndDisplayAppointments() {
     });
 }
 
-
-
-
 function openEditPopup(patientAppointmentId) {
     if (!patientAppointmentId) {
         console.error("Invalid appointmentId:", patientAppointmentId);
@@ -311,7 +308,9 @@ function openEditPopup(patientAppointmentId) {
 
             if (editPatientName && editAppointmentDate && editAppointmentNote) {
                 editPatientName.value = data.patient.personalName;
-                editAppointmentDate.value = new Date(data.appointmentDate).toISOString().slice(0, 16);
+                const localDate = new Date(data.appointmentDate);
+                const localDateString = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+                editAppointmentDate.value = localDateString;
                 editAppointmentNote.value = data.appointmentNote;
                 editAppointmentId.value = data.patientAppointmentId;
 
@@ -350,12 +349,49 @@ async function deleteAppointment(appointmentId) {
             throw new Error(`Network response was not ok: ${response.statusText}`);
         }
 
-        console.log('Appointment deleted successfully');
-        // Refresh the appointments list after deletion
         fetchAndDisplayAppointments();
     } catch (error) {
         console.error('Error deleting appointment:', error);
     }
 }
+
+async function saveEditedAppointment() {
+    const editAppointmentDate = document.getElementById('editAppointmentDate').value;
+    const editAppointmentNote = document.getElementById('editAppointmentNote').value;
+    const editAppointmentId = document.getElementById('editAppointmentId').value;
+
+    const localDate = new Date(editAppointmentDate);
+    const utcDateString = new Date(localDate.getTime() + localDate.getTimezoneOffset() * 60000).toISOString();
+
+    const patchDoc = [
+        { op: "replace", path: "/appointmentDate", value: utcDateString },
+        { op: "replace", path: "/appointmentNote", value: editAppointmentNote }
+    ];
+
+    console.log('Patch Document:', patchDoc); // Log the patch document
+
+    try {
+        const response = await fetch(`https://localhost:44376/api/patientappointment/appointments/${editAppointmentId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(patchDoc)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error Data:', errorData); // Log the error data
+            throw new Error(`Error updating appointment: ${JSON.stringify(errorData)}`);
+        }
+
+        console.log('Appointment updated successfully');
+        closeEditModal();
+        fetchAndDisplayAppointments();
+    } catch (error) {
+        console.error('Error updating appointment:', error);
+    }
+}
+
 
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -123,6 +124,47 @@ namespace PatientManagementApp.ApiControllers
 
             _context.PatientRecords.Remove(patientRecordEntity);
             await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // PATCH: api/PatientRecord/5
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchPatientRecordEntity(int id, [FromBody] JsonPatchDocument<PatientRecordEntity> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                return BadRequest();
+            }
+
+            var patientRecordEntity = await _context.PatientRecords.FindAsync(id);
+            if (patientRecordEntity == null)
+            {
+                return NotFound();
+            }
+
+            patchDoc.ApplyTo(patientRecordEntity, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PatientRecordEntityExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             return NoContent();
         }

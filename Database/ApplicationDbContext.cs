@@ -22,6 +22,30 @@ namespace PatientManagementApp.Database
                 .HasIndex(x => x.FileName)
                 .IsUnique();
         }
+
+        public override int SaveChanges()
+        {
+            foreach (var entry in ChangeTracker.Entries<PatientAppointmentEntity>())
+            {
+                if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+                {
+                    entry.Entity.AppointmentDate = entry.Entity.AppointmentDate.ToLocalTime();
+                }
+            }
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries<PatientAppointmentEntity>())
+            {
+                if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+                {
+                    entry.Entity.AppointmentDate = entry.Entity.AppointmentDate.ToLocalTime();
+                }
+            }
+            return base.SaveChangesAsync(cancellationToken);
+        }
     }
 
 

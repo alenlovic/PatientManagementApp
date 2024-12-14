@@ -26,12 +26,12 @@
 <div id="editAppointmentModal" class="modal">
     <div class="edit-modal-content">
         <span class="close" onclick="closeEditModal()">&times;</span>
-        <h2>Edit Appointment</h2>
-        <label for="editPatientName">Patient Name</label>
+        <h2>Uredi detalje o terminu</h2>
+        <label for="editPatientName">Pacijent</label>
         <input type="text" id="editPatientName" name="personalName" disabled>
-        <label for="editAppointmentDate">Appointment Date</label>
+        <label for="editAppointmentDate">Datum i vrijeme</label>
         <input type="datetime-local" id="editAppointmentDate" name="appointmentDate">
-        <label for="editAppointmentNote">Appointment Note</label>
+        <label for="editAppointmentNote">Napomena</label>
         <input type="text" id="editAppointmentNote" name="appointmentNote">
         <input type="hidden" id="editAppointmentId">
         <button id="saveEditBtn" onclick="saveEditedAppointment()">Save</button>
