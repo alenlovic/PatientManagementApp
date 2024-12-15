@@ -90,9 +90,59 @@ function markAsPresent(patientBox, patientId, patientAppointmentId) {
         console.error("Invalid patientId or patientAppointmentId:", patientId, patientAppointmentId);
         return;
     }
-    console.log(`Marking patient ${patientId} as present`);
-    patientBox.style.backgroundColor = "lightgreen";
-    savePresence(patientId, patientAppointmentId);
+    if (patientBox.style.backgroundColor === "lightgreen") {
+        patientBox.style.backgroundColor = "white";
+        removePresence(patientId, patientAppointmentId);
+    } else {
+        patientBox.style.backgroundColor = "lightgreen";
+        savePresence(patientId, patientAppointmentId);
+    }
+}
+
+function removePresence(patientId, patientAppointmentId) {
+    const weekIdentifier = getCurrentWeekIdentifier();
+    let presentPatients = [];
+    try {
+        presentPatients = JSON.parse(localStorage.getItem(weekIdentifier)) || [];
+    } catch (e) {
+        console.error("Error parsing localStorage data:", e);
+    }
+    const index = presentPatients.indexOf(patientAppointmentId);
+    if (index > -1) {
+        presentPatients.splice(index, 1);
+    }
+    localStorage.setItem(weekIdentifier, JSON.stringify(presentPatients));
+    console.log(`Removed presence for patient ${patientId} with appointment ${patientAppointmentId} in week ${weekIdentifier}`);
+}
+
+function markAsAbsent(patientBox, patientId, patientAppointmentId) {
+    if (!patientId || !patientAppointmentId) {
+        console.error("Invalid patientId or patientAppointmentId:", patientId, patientAppointmentId);
+        return;
+    }
+    if (patientBox.style.backgroundColor === "orange") {
+        patientBox.style.backgroundColor = "white";
+        removeAbsence(patientId, patientAppointmentId);
+    } else {
+        patientBox.style.backgroundColor = "orange";
+        saveAbsence(patientId, patientAppointmentId);
+    }
+}
+
+function removeAbsence(patientId, patientAppointmentId) {
+    const weekIdentifier = getCurrentWeekIdentifier();
+    let absentPatients = [];
+    try {
+        absentPatients = JSON.parse(localStorage.getItem(weekIdentifier + '-absent')) || [];
+    } catch (e) {
+        console.error("Error parsing localStorage data:", e);
+    }
+    const index = absentPatients.indexOf(patientAppointmentId);
+    if (index > -1) {
+        absentPatients.splice(index, 1);
+    }
+    localStorage.setItem(weekIdentifier + '-absent', JSON.stringify(absentPatients));
+    console.log(`Removed absence for patient ${patientId} with appointment ${patientAppointmentId} in week ${weekIdentifier}`);
 }
 
 function savePresence(patientId, patientAppointmentId) {
@@ -112,16 +162,6 @@ function savePresence(patientId, patientAppointmentId) {
     }
     localStorage.setItem(weekIdentifier, JSON.stringify(presentPatients));
     console.log(`Saved presence for patient ${patientId} with appointment ${patientAppointmentId} in week ${weekIdentifier}`);
-}
-
-function markAsAbsent(patientBox, patientId, patientAppointmentId) {
-    if (!patientId || !patientAppointmentId) {
-        console.error("Invalid patientId or patientAppointmentId:", patientId, patientAppointmentId);
-        return;
-    }
-    console.log(`Marking patient ${patientId} as absent`);
-    patientBox.style.backgroundColor = "orange";
-    saveAbsence(patientId, patientAppointmentId);
 }
 
 function saveAbsence(patientId, patientAppointmentId) {

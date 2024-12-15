@@ -258,8 +258,6 @@ async function displayPatientFiles(patientId) {
     }
 }
 
-
-
 function combineData(patient, billing, record, files) {
     console.log('Combining data:', { patient, billing, record, files });
     const patientBilling = billing.length > 0 ? billing[0] : {};
@@ -267,7 +265,6 @@ function combineData(patient, billing, record, files) {
     const patientFiles = files.length > 0 ? files[0] : {};
     return { ...patient, ...patientBilling, ...patientRecord, ...patientFiles };
 }
-
 
 function populatePatientInfo(combinedData, patientId, billingData) {
     const patientProfileContainer = document.querySelector('.patient-profile-container');
@@ -415,7 +412,7 @@ function populatePatientInfo(combinedData, patientId, billingData) {
         </div>
     `;
         patientDiv.appendChild(filesDiv);
-    }
+    } 
 
     patientProfileContainer.appendChild(patientDiv);
 
