@@ -58,6 +58,19 @@ namespace PatientManagementApp.ApiControllers
             return Ok(appointment);
         }
 
+        // GET: api/PatientAppointment/appointmentsmonthly
+        [HttpGet("appointmentsmonthly")]
+        public async Task<IActionResult> GetAppointments([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        {
+            var appointments = await _context.PatientAppointmentEntity
+                .Include(a => a.Patient)
+                .Where(a => a.AppointmentDate >= startDate && a.AppointmentDate <= endDate)
+                .ToListAsync();
+
+            return Ok(appointments);
+        }
+
+
         // PATCH
         [HttpPatch("appointments/{id}")]
         public IActionResult UpdateAppointment(int id, [FromBody] JsonPatchDocument<PatientAppointmentEntity> patchDoc)

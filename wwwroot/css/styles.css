@@ -85,7 +85,8 @@ body.index-body, html.index-body {
 .wschedule-container,
 .patients-container,
 .billing-container,
-.dschedule-container {
+.dschedule-container,
+.mschedule-container {
     width: 80%;
     height: auto;
     overflow-y: auto;
@@ -1115,3 +1116,56 @@ input[readonly] {
         .file-actions i:hover {
             color: #1abc9c;
         }
+
+.mschedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+    .mschedule-table th,
+    .mschedule-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+        vertical-align: top;
+        width: 20%;
+    }
+
+    .mschedule-table th {
+        background-color: #1abc9c;
+        color: white;
+        text-align: center;
+    }
+
+.patient-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+    .patient-box span {
+        display: block;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+.mschedule-table tr:nth-child(even) {
+    background-color: #e9ecef;
+}
+
+.mschedule-table tr:hover {
+    background-color: #dee2e6;
+}
+
+.month-container {
+    position: absolute;
+    right: 0;
+    top: 10px;
+    padding: 10px;
+    height: 100vh;
+    width: 300px; /* Adjust the width as needed */
+}
+

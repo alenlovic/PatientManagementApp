@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Mjesečni raspored";
+}
+
+<div class="month-container">
+    <label for="monthPicker">Izaberite mjesec:</label>
+    <input type="month" id="monthPicker" name="monthPicker" value="@DateTime.Now.ToString("yyyy-MM")" />
+</div>
+
+<div class="mschedule-container">
+    <h3>@ViewData["Title"] - pacijenti</h3>
+    <table class="mschedule-table">
+        <thead>
+            <tr>
+                <th>Ponedeljak</th>
+                <th>Utorak</th>
+                <th>Srijeda</th>
+                <th>Četvrtak</th>
+                <th>Petak</th>
+            </tr>
+        </thead>
+        <tbody class="appointments-table">
+            <!-- Appointments will be dynamically inserted here -->
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="~/js/monthlyschedule.js"></script>
+}
