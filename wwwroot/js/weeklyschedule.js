@@ -319,7 +319,9 @@ function fetchAndDisplayAppointments() {
                 const deleteAppointmentBtn = patientBox.querySelector(".delete-appointment-btn");
                 deleteAppointmentBtn.addEventListener("click", () => {
                     const patientAppointmentId = appointment.patientAppointmentId;
-                    deleteAppointment(patientAppointmentId);
+                    if (confirm("Da li ste sigurni da želite izbrisati ovaj termin?")) {
+                        deleteAppointment(patientAppointmentId);
+                    }
                 });
             });
             wscheduleList.appendChild(dayCell);

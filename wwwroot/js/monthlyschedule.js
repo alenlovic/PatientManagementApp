@@ -48,11 +48,13 @@ function displayAppointments(appointments, startDate, endDate) {
     let currentRow = document.createElement('tr');
     let dayOfWeek = new Date(startDate.getFullYear(), startDate.getMonth(), 1).getDay();
 
-    // Dodaj prazne ćelije za dane pre početka meseca
-    for (let i = 1; i < dayOfWeek; i++) {
-        if (i >= 1 && i <= 5) {
-            const emptyCell = document.createElement('td');
-            currentRow.appendChild(emptyCell);
+    // Dodaj prazne ćelije za dane pre početka meseca, ali samo ako prvi radni dan nije 1.
+    if (dayOfWeek !== 1) {
+        for (let i = 1; i < dayOfWeek; i++) {
+            if (i >= 1 && i <= 5) {
+                const emptyCell = document.createElement('td');
+                currentRow.appendChild(emptyCell);
+            }
         }
     }
 
@@ -88,8 +90,19 @@ function displayAppointments(appointments, startDate, endDate) {
                     patientBox.innerHTML = `
                         <span class="patient-name" ${nameStyle}>${appointment.patientPersonalName || 'Nije pronađeno ime pacijenta'}</span>
                         <span class="appointment-date">${appointmentTime}</span>
+                        <button class="delete-appointment-btn" data-appointment-id="${appointment.patientAppointmentId}">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     `;
                     cell.appendChild(patientBox);
+
+                    const deleteAppointmentBtn = patientBox.querySelector(".delete-appointment-btn");
+                    deleteAppointmentBtn.addEventListener("click", () => {
+                        const patientAppointmentId = appointment.patientAppointmentId;
+                        if (confirm("Da li ste sigurni da želite izbrisati ovaj termin?")) {
+                            deleteAppointment(patientAppointmentId);
+                        }
+                    });
                 });
             }
 
@@ -107,3 +120,21 @@ function displayAppointments(appointments, startDate, endDate) {
         appointmentsTableBody.appendChild(currentRow);
     }
 }
+
+async function deleteAppointment(appointmentId) {
+    try {
+        const response = await fetch(`https://localhost:44376/api/patientappointment/appointments/${appointmentId}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.statusText}`);
+        }
+
+        fetchAndDisplayAppointments(document.getElementById('monthPicker').value);
+    } catch (error) {
+        console.error('Error deleting appointment:', error);
+    }
+}
+
+
